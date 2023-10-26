@@ -1,5 +1,9 @@
 This is a page about update suppression.
-To understand update suppression one should first know about tick phases.
+
+An excellent video explanation is [Xcoms Update Suppression Explained](https://www.youtube.com/watch?v=IJhZpK-8p54)
+
+Prerequisites: 
+-Tick phases: In every tick there is a player phase. There is a distinction between things happening immediately, and things being scheduled to happen in a tick phase.
 
 # Introduction
 
