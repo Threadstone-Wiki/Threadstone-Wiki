@@ -80,7 +80,7 @@ One can cause an [update suppression](../update-suppression.md) in the middle of
 A video explanation of this is in [Falling Block Episode 1](https://www.youtube.com/watch?v=KU3lN1IUhuE).
 
 ## Instant Tile Ticks
-Whenever a liquid pocket is placed, the game turns on the [instant tile tick flag](../global-flags.md) right before placing the liquid pocket, then places the liquid pocket, then updates the liquid pocket, and then turns the instant tile tick flag off again.
+Whenever a liquid pocket is placed, the game turns on the [instant tile tick flag](../global-flags.md#instant-tile-ticks) right before placing the liquid pocket, then places the liquid pocket, then updates the liquid pocket, and then turns the instant tile tick flag off again.
 If an update suppression occurs while the liquid pocket gets updated, the instant tile tick flag stays on permanently.
 Since the instant tile tick flag is on while the liquid pocket gets updated, one can very easily cause an update suppression without requiring thousands of rails.
 
