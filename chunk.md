@@ -1,7 +1,5 @@
---
-title: Chunk
-description: Space in Minecraft is separated into Chunks
---
+Space in Minecraft is separated into Chunks
+The following mechanics are related to chunks.
 
 # Loading
 
