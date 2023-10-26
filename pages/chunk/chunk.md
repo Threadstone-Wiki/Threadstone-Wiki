@@ -9,6 +9,6 @@ When a chunk is loaded it immediately checks whether a [terrain population](popu
 
 # Unloading
 
-# Saving
+## Saving
 After a chunk is unloaded, it gets saved to disk.
 Chunk saving can be prevented using [chunk savestates](savestate.md).
