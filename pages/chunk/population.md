@@ -108,7 +108,9 @@ This system is necessary to prevent redstone dust from powering itself.
 If an update suppression occurs while the redstone checks whether it is receiving power, then the redstone power flag stays on permanently.
 While the redstone dust checks whether it is receiving power it is only doing getBlockState() calls and does not send out any block updates, unless one of the getBlockState() calls triggers a terrain population.
 Without terrain population it is thus very difficult to cause an update suppression while redstone dust is checking whether it is receiving power.
-With terrain population however the getBlockState() call can trigger a setBlockState() call which can send block updates which can be easily update suppressed.
+With terrain population however the getBlockState() call can trigger a setBlockState() call which can send block updates which can be easily update suppressed and permanently turn on the redstone power flag.
+
+The redstone power flag will turn back off again if a piece of redstone dust gets successfully updated.
 
 ## Pulling immovable blocks
 A video explanation of pulling immovable blocks is in [Panda's Generating a Pig Spawner in 1.11](https://www.youtube.com/watch?v=cVvB53sWETg).
