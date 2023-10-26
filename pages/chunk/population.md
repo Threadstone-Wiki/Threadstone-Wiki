@@ -30,8 +30,12 @@ For example, Panda4994, KaboPC and DanielKotes used flying-machine-like Kobra co
 to generate a quadruple skeleton spawner in a player-built structure: https://www.youtube.com/watch?v=9iaU1TvIQqM
 
 ## Savestates
+[Savestates](savestate.md) are the most important method for building contraptions next to unpopulated chunks.
 
 ## Invisible Chunks
+Invisible chunks allow you to place immovable blocks inside unpopulated chunks at the chunk border. This makes invisible chunks the most powerful method for building contraptions around unpopulated chunks, but this method is not completely self-sufficient, because to create an invisible chunk you need to manipulate terrain population, using flying machines or savestates.
+
+An explanation of what exactly invisible chunks are and how to create them is below in the section on Population Suppression.
 
 # Population Suppression
 
