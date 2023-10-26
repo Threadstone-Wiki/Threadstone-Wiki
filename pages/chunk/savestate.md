@@ -41,6 +41,7 @@ The savestate books can then be copied using a crafting table.
 
 For most automatic savestate contraptions it is furthermore required that the type 2 savestate books are given 13 different names, using an anvil.
 This renaming is necessary, to make it impossible for the type 2 savestate books to stack together in a single inventory slot.
+One usually adds characters 'a', 'b', 'c', and so on to the end of the name of the type 2 savestate books to make them different.
 
 ## Simplest savestate contraption
 
@@ -54,7 +55,7 @@ The white shulker boxes contain a checker board pattern of type 1 savestate book
 
 The chests each contain 13 type 2 savestate books, and within each chest each type 2 savestate book has a unique name.
 
-![Type 2 savestate books](/images/Type2Savestate.PNG.PNG)
+![Type 2 savestate books](/images/Type2Savestate.PNG)
 
 As long as the lever is not flicked, the data in both the chests and the shulker boxes can be easily compressed.
 
