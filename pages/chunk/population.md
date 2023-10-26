@@ -15,7 +15,7 @@
   * [Redstone Power Flag Suppression](#redstone-power-flag-suppression)
   * [Pulling immovable blocks](#pulling-immovable-blocks)
   * [Beacon threads causing async updates](#beacon-threads-causing-async-updates)
-- [Version 1.8](#version-1.8)
+- [Version 1.8](#version-18)
   * [End Crystal Generation](#end-crystal-generation)
   * [Bedrock Item](#bedrock-item)
 
