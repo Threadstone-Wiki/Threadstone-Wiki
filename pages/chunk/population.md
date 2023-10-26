@@ -6,6 +6,8 @@
   * [Savestates](#savestates)
   * [Invisible Chunks](#invisible-chunks)
 - [Population RNG](#population-rng)
+  * [Nether and End](#nether-and-end)
+  * [Liquid Pocket RNG](#liquid-pocket-rng)
 - [Population Suppression](#population-suppression)
   * [Instant Tile Ticks](#instant-tile-ticks)
   * [Instant Falling](#instant-falling)
@@ -62,12 +64,13 @@ to generate a quadruple skeleton spawner in a player-built structure: https://ww
 To effectively exploit terrain population one needs to predict where it will place blocks.
 Every dimension has a random number generator that is used solely for chunk generation and terrain population. We will call this the *population RNG* of the dimension.
 
+# Nether and End
 In the overworld the population RNG is seeded at the beginning of every chunk generation and terrain population.
-In the nether and end the population RNG is seeded at the beginning of every chunk generation, but it does not get seeded during terrain population. ( https://www.youtube.com/watch?v=nqyILYLu1Zo )
-The blocks that get placed during a terrain population in the nether or end depend not only on the blocks in the area, but also on which chunk last got generated in the dimension.
+In the nether and end the population RNG is seeded at the beginning of every chunk generation, but it does not get seeded during terrain population. A video explanation is [Earthcomputer's End Generation Bug](https://www.youtube.com/watch?v=nqyILYLu1Zo )
+The blocks that get placed during a terrain population in the nether or end depend not only on the blocks in the area, but also on which chunk last got generated in the dimension, and what chunks were populated since the last chunk generation.
 
-Even when population is consistent, like in the overworld, it can drastically change when a few blocks are changed in the population area.
-It is often important to predict liquid pocket locations, because they enable instant tile ticks.
+# Liquid Pocket RNG
+It is often important to predict liquid pocket locations, because they enable [instant tile ticks](#instant-tile-ticks).
 Liquid pockets locations are highly volative, because they get generated near the end of terrain population, and their location depends on how many random calls were made during all other parts of terrain population.
 For example replacing one grass block visible from the sky by a stone block in the population area will change how many random calls the tree and tallgrass generators make, and this then changes the liquid pocket locations.
 The best way to keep liquid pocket locations consistent is to make sure that the same blocks remain visible from the sky. Beyond that a bit of trial and error is inevitable.
