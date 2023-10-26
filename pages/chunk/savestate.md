@@ -2,15 +2,15 @@ This page is about Chunk Savestates.
 
 # Introduction
 
-1. If the game tries to save a chunk to disk while the chunk contains more than 1 Mega-Byte of data, the game will not save the chunk at all.
+1. **If the game tries to save a chunk to disk while the chunk contains more than 1 Mega-Byte of data, the game will not save the chunk at all**.
 
-A chunk which contains more than 1 Mega-Byte of data is called a savestated chunk.
+A chunk which contains more than 1 Mega-Byte of data is called a *savestated chunk*.
 When a chunk is savestated, anything that happens in that chunk will be reversed when the chunk is unloaded and loaded again.
 Savestating chunks is a powerful duplication glitch: If you savestate a chunk containing a diamond block, the mine the diamond block, and then unload and reload the savestated chunk, you have two diamond blocks.
 
-2. By using multiple books filled with random unicode characters, one can easily create more than 1 Mega-Byte of data in-game, and use this to savestate chunks.
+2. **By using multiple books filled with random unicode characters, one can easily create more than 1 Mega-Byte of data in-game and savestate chunks**.
 
-A book that is filled with unicode characters on every page is called a savestate book.
+A book that is filled with unicode characters on every page is called a *savestate book*.
 
 ![A screenshot showing page 1 of a 50 page book filled with random chinese characters](/images/SavestateBook.PNG)
 
@@ -21,7 +21,7 @@ Chunk Savestates were discovered by Earthcomputer and Skyrising: https://www.you
 The game uses data compression algorithms to minimize the amount of data it has to save.
 If multiple identical savestate books are in an inventory with no other items inbetween, then the total data will not be much larger than that of a single savestate book.
 
-To maximize data, one therefore uses two different kinds of savestate books, called type 1 savestate books and type 2 savestate books.
+To maximize data, one therefore uses two different kinds of savestate books, called *type 1 savestate books* and *type 2 savestate books*.
 All type 1 savestate books contain the same unicode characters, and all type 2 savestate books contain the same unicode characters,
 but type 1 savestate books contain different unicode characters than type 2 savestate books.
 An inventory containing only a single type of savestate books can be compressed, so that it does not contain a lot of data.
@@ -48,6 +48,8 @@ The savestate books can then be copied using a crafting table.
 For most automatic savestate contraptions it is furthermore required that the type 2 savestate books are given 13 different names, using an anvil.
 This renaming is necessary, to make it impossible for the type 2 savestate books to stack together in a single inventory slot.
 One usually adds characters 'a', 'b', 'c', and so on to the end of the name of the type 2 savestate books to make them different.
+
+Instead of using AutoHotKey you can also manually copy and paste unicode characters into a book.
 
 ## Simplest savestate contraption
 
@@ -78,9 +80,9 @@ and then build contraptions around the savestated chunk.
 After unloading the whole area, one has on disk an unpopulated chunk surrounded by the contraptions that one built around it.
 
 To do this one uses savestate shulker boxes.
-An activated savestate shulker box is a shulker box containing type 1 and type 2 savestate books in an alternating fahsion.
-An unactivated type 1 savestate shulker box is a shulker box that contains a checkerboard pattern of type 1 savestate books.
-An unactivated type 2 savestate shulker box is a shulker box containing 13 type 2 savestate books, where each has a different name.
+An *activated savestate shulker box* is a shulker box containing type 1 and type 2 savestate books in an alternating fahsion.
+An *unactivated type 1 savestate shulker box* is a shulker box that contains a checkerboard pattern of type 1 savestate books.
+An *unactivated type 2 savestate shulker box* is a shulker box containing 13 type 2 savestate books, where each has a different name.
 
 The process for manually savestating a chunk as unpopulated is as follows:
 
