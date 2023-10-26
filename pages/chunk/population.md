@@ -64,12 +64,12 @@ to generate a quadruple skeleton spawner in a player-built structure, in the vid
 To effectively exploit terrain population one needs to predict where it will place blocks.
 Every dimension has a random number generator that is used solely for chunk generation and terrain population. We will call this the *population RNG* of the dimension.
 
-# Nether and End
+## Nether and End
 In the overworld the population RNG is seeded at the beginning of every chunk generation and terrain population.
 In the nether and end the population RNG is seeded at the beginning of every chunk generation, but it does not get seeded during terrain population. A video explanation is [Earthcomputer's End Generation Bug](https://www.youtube.com/watch?v=nqyILYLu1Zo )
 The blocks that get placed during a terrain population in the nether or end depend not only on the blocks in the area, but also on which chunk last got generated in the dimension, and what chunks were populated since the last chunk generation.
 
-# Liquid Pocket RNG
+## Liquid Pocket RNG
 It is often important to predict liquid pocket locations, because they enable [instant tile ticks](#instant-tile-ticks).
 Liquid pockets locations are highly volative, because they get generated near the end of terrain population, and their location depends on how many random calls were made during all other parts of terrain population.
 For example replacing one grass block visible from the sky by a stone block in the population area will change how many random calls the tree and tallgrass generators make, and this then changes the liquid pocket locations.
