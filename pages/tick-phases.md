@@ -1,5 +1,5 @@
 Time in minecraft is separated into gameticks.
 
-#Introduction
+# Introduction
 
-#Immediate Updates
+# Immediate Updates
