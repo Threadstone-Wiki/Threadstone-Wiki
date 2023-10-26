@@ -2,13 +2,19 @@ This page is about Chunk Savestates.
 
 # Introduction
 
-If the game tries to save a chunk while the chunk contains more than 1 Mega-Byte of data, the game will not save the chunk at all.
+1. If the game tries to save a chunk to disk while the chunk contains more than 1 Mega-Byte of data, the game will not save the chunk at all.
 
-By using multiple books filled with random unicode characters, one can easily create more than 1 Mega-Byte of data in-game.
+A chunk which contains more than 1 Mega-Byte of data is called a savestated chunk.
+When a chunk is savestated, anything that happens in that chunk will be reversed when the chunk is unloaded and loaded again.
+Savestating chunks is a powerful duplication glitch: If you savestate a chunk containing a diamond block, the mine the diamond block, and then unload and reload the savestated chunk, you have two diamond blocks.
+
+2. By using multiple books filled with random unicode characters, one can easily create more than 1 Mega-Byte of data in-game, and use this to savestate chunks.
 
 A book that is filled with unicode characters on every page is called a savestate book.
 
 ![A screenshot showing page 1 of a 50 page book filled with random chinese characters](/images/SavestateBook.PNG)
+
+
 
 ## Data compression
 
@@ -64,11 +70,71 @@ Since the type 2 savestate books all have different names, they will all enter d
 The shulker box will then contain an alternating pattern of type 1 and type 2 savestate books.
 Two such shulker boxes are enough to savestate the chunk.
 
+# Unpopulated chunks
 
+Savestates are one of the most powerful methods for building contraptions near unpopulated chunks:
+One can fly to an unpopulated chunk (and thereby populate it), then savestate the chunk before it gets saved, (so that the chunk is populated in game but unpopulated on disk),
+and then build contraptions around the savestated chunk.
+After unloading the whole area, one has on disk an unpopulated chunk surrounded by the contraptions that one built around it.
 
+To do this one uses savestate shulker boxes.
+An activated savestate shulker box is a shulker box containing type 1 and type 2 savestate books in an alternating fahsion.
+An unactivated type 1 savestate shulker box is a shulker box that contains a checkerboard pattern of type 1 savestate books.
+An unactivated type 2 savestate shulker box is a shulker box containing 13 type 2 savestate books, where each has a different name.
 
+The process for manually savestating a chunk as unpopulated is as follows:
+
+-Ensure that the chunk you want to savestate has never been generated and populated before.
+
+-Start right out of view distance of that chunk. Put two activated savestate shulker boxes in your inventory.
+
+-Wait for an autosave. Autosaves can be detected either by using the carpet command "/log autosave", or by building an autosave detector.
+
+-After the autosave, within 45 seconds, fly to the chunk and place two active savestate shulker boxes in the chunk.
+
+## Book bans
+If one wants to manually savestate multiple unpopulated chunks that are close to each other, one has to additionally circumvent book bans:
+If a player carries around more than 3 activated savestate shulker boxes, they get kicked from the server. This behavior is called the book ban.
+
+Book bans can be cheatily disabled by using the carpet command "/carpet disableBookBan true" and using a carpet client.
+
+In vanilla book bans can be circumvented by using multiple players, each of whom only carries around at most 3 activated savestate shulker boxes.
+
+If one wants to savestate more unpopulated chunks than one has players available, one needs to carry around unactivated savestate shulker boxes and hoppers,
+and activate the savestates after one has flown to the chunk.
+In this case, one waits for an autosave, flies to the chunk, places down two unactivated type 1 savestate shulker boxes in each chunk one wants to savestate, then places a hopper facing into each of those shulker boxes,
+and then places unactivated type 2 savestate shulker boxes above the hoppers.
+The hoppers will then transfer type 2 savestate books into the unactivated type 1 savestate shulker boxes and thereby activate the savestates.
+
+Since the hoppers take a few seconds to transfer the items, and one only has 45 seconds for the whole operation, this needs to be done quickly.
+
+This process can be seen at the beginning of this video: https://www.youtube.com/watch?v=z7-Fw51WFOc
+
+## Automatic savestate contraption for unpopulated chunks
+
+After one has manually savestated an unpopulated chunks (in the sense that it is populated and savestated in game but unpopulated on disk), one sometimes wants to build a contraption that savestates the unpopulated chunk again every time it gets reloaded. One cannot directly build a savestate contraption in the savestated chunk itself, because such a contraption would disappear after reloading the chunk. But one can build in an adjacent chunk a contraption that can dispense activated savestate shulker boxes into the chunk. In order to not lose these shulker boxes after repeated use of the contraption, one uses savestates to also dupe those savestate shulker boxes.
+
+# Other applicatoins
+
+## Entity duplication
+
+## Virus flying machine
+
+# Quick reloads break savestates
+When you unload a savestate chunk, you need to wait for a second or two before reloading it,
+or the savestates will not work and you simply get the savestated chunk with the activated savestates back.
+This happens for the following reason:
+When a chunk is unloaded, before it gets saved, it gets put into a cache in the AnvilChunkLoader.
+A separate thread in the ThreadedFileIOBase one by one takes chunks from that cache and saves them to disk.
+If a chunk is unloaded and then reloaded while it is still in the cache, then the chunk does not get loaded from disk, but simply gets returned from the cache.
+Since savestated chunks contain a large amount of data, it takes a long time to (fail to) save them,
+which means that it takes much longer for chunks to leave the cache if the cache contains savestated chunks.
 
 
 # History
 
 Chunk Savestates were discovered by Earthcomputer and Skyrising: https://www.youtube.com/watch?v=uw7vEGhKoH8
+
+Automatic savestate contraptions for unpopulated chunks were invented by 0x in collaboration with members of the Prototech server.
+
+
