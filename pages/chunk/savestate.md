@@ -54,6 +54,8 @@ The white shulker boxes contain a checker board pattern of type 1 savestate book
 
 The chests each contain 13 type 2 savestate books, and within each chest each type 2 savestate book has a unique name.
 
+![Type 2 savestate books](/images/Type2Savestate.PNG.PNG)
+
 As long as the lever is not flicked, the data in both the chests and the shulker boxes can be easily compressed.
 
 Flicking the lever will unlock the hopper and transfer type 2 savestate books from the chests into the shulker boxes.
