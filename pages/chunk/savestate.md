@@ -14,7 +14,7 @@ A book that is filled with unicode characters on every page is called a savestat
 
 ![A screenshot showing page 1 of a 50 page book filled with random chinese characters](/images/SavestateBook.PNG)
 
-
+Chunk Savestates were discovered by Earthcomputer and Skyrising: https://www.youtube.com/watch?v=uw7vEGhKoH8
 
 ## Data compression
 
@@ -114,13 +114,31 @@ This process can be seen at the beginning of this video: https://www.youtube.com
 
 After one has manually savestated an unpopulated chunks (in the sense that it is populated and savestated in game but unpopulated on disk), one sometimes wants to build a contraption that savestates the unpopulated chunk again every time it gets reloaded. One cannot directly build a savestate contraption in the savestated chunk itself, because such a contraption would disappear after reloading the chunk. But one can build in an adjacent chunk a contraption that can dispense activated savestate shulker boxes into the chunk. In order to not lose these shulker boxes after repeated use of the contraption, one uses savestates to also dupe those savestate shulker boxes.
 
-# Other applicatoins
+Here is a picture of an automatic savestate contraption:
 
-## Entity duplication
+![A screenshot of automatic savestate](/images/0xSavestate.png)
 
-## Virus flying machine
+The four white shulker boxes contain a checkerboard pattern of type 1 savestate books. The four droppers and the four hoppers below the droppers contain uniquely named type 2 savestate books.
+When the contraption is activated the hoppers below the droppers are unlocked, making all four white shulker boxes into activated savestate shulker boxes.
+Two of the white shulker boxes get destroyed by pistons, picked up by hoppers, transferred into the dispensers, and then dispensed into the adjacent chunk.
+This savestates the adjacent chunk, without requiring any blocks to be in that chunk in the beginning.
+The other two white shulker boxes stay with the contraption to savestate the contraption itself and make it infinitely reusable.
 
-# Quick reloads break savestates
+These kinds of automatic savestate contraptions for unpopulated chunks were invented by 0x in collaboration with members of the Prototech server: https://www.youtube.com/@xeeebee
+The specific design shown above is by PrgmTrouble: https://www.youtube.com/@prgmTrouble
+
+## Atomic savestates for unpopulated chunks
+
+The above savestate contraption can fail, if one reloads the unpopulated chunk without reloading the chunk containing the savestate contraption.
+Using invisible chunks, it is also possible to build a savestate contraption direclty in the unpopulated chunk and save it to disk.
+
+# Miscellaneous
+
+## Duplicated entity UUIDs
+If you use savestates to duplicate an entity, then the two resulting entities will have the exact same UUID.
+When multiple entities with the same UUID are loaded in the same dimension, all but one of them will be invisbile and hard to interact with.
+
+## Quick reloads break savestates
 When you unload a savestate chunk, you need to wait for a second or two before reloading it,
 or the savestates will not work and you simply get the savestated chunk with the activated savestates back.
 This happens for the following reason:
@@ -130,11 +148,5 @@ If a chunk is unloaded and then reloaded while it is still in the cache, then th
 Since savestated chunks contain a large amount of data, it takes a long time to (fail to) save them,
 which means that it takes much longer for chunks to leave the cache if the cache contains savestated chunks.
 
-
-# History
-
-Chunk Savestates were discovered by Earthcomputer and Skyrising: https://www.youtube.com/watch?v=uw7vEGhKoH8
-
-Automatic savestate contraptions for unpopulated chunks were invented by 0x in collaboration with members of the Prototech server.
-
-
+## Virus flying machine
+Samnrad, Earthcomputer, Pingu and Xyor made a flying machine version of savestates called the virus flying machine: https://www.youtube.com/watch?v=ybr9WtJ-NeE
