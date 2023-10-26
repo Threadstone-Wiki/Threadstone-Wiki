@@ -38,19 +38,28 @@ Invisible chunks allow you to place immovable blocks inside unpopulated chunks a
 An explanation of what exactly invisible chunks are and how to create them is below in the section on Population Suppression.
 
 # Population Suppression
+One can cause an [update suppression](../update_suppression.md) in the middle of a terrain population to cause additional powerful exploits.
+This is also covered in [Falling Block Episode 1](https://www.youtube.com/watch?v=KU3lN1IUhuE).
 
 ## Instant Tile Ticks
 
 ## Instant Falling
 
+## Redstone Power Flag
+
 ## Invisible Chunks
 
 ## Igloo Barrier Block
+https://www.youtube.com/watch?v=zQUBR8dSUlA
 
-# GetBlockState() to SetBlockState() exploits
+# getBlockState() to setBlockState() exploits
+A getBlockState() call can trigger chunk loading.
+Chunk loading can trigger terrain population.
+Terrain population triggers setBlockState() calls.
+
+So thanks to terrain population, it is possible for a getBlockState() call to trigger a setBlockState() call during its execution.
 
 ## Pulling immovable blocks
-
-## Redstone Power Flag Suppression
+https://www.youtube.com/watch?v=cVvB53sWETg
 
 ## Beacon threads causing async updates
