@@ -1,8 +1,23 @@
-This page is about terrain population.
+# Terrain Population
 
-A video explanation of terrain population is in [Panda's Survival #22: End Crystal Generation. Time: 7:00](https://www.youtube.com/watch?v=EeobLrHkfYI&t=420s)
+- [Introduction](#introduction)
+  * [Flying machines](#flying-machines)
+  * [Savestates](#savestates)
+  * [Invisible Chunks](#invisible-chunks)
+- [Population RNG](#population-rng)
+- [Population Suppression](#population-suppression)
+  * [Instant Tile Ticks](#instant-tile-ticks)
+  * [Instant Falling](#instant-falling)
+  * [Invisible Chunks](#invisible-chunks-1)
+  * [Igloo Barrier Block](#igloo-barrier-block)
+- [getBlockState() to setBlockState() exploits](#getblockstate---to-setblockstate---exploits)
+  * [Redstone Power Flag Suppression](#redstone-power-flag-suppression)
+  * [Pulling immovable blocks](#pulling-immovable-blocks)
+  * [Beacon threads causing async updates](#beacon-threads-causing-async-updates)
 
 # Introduction
+
+A video explanation of terrain population is in [Panda's Survival #22: End Crystal Generation. Time: 7:00](https://www.youtube.com/watch?v=EeobLrHkfYI&t=420s)
 
 Minecraft has procedural world generation, consisting of two steps. The first step is called "Generation" and happens as soon as the chunk is loaded for the first time.
 The second step is called "Terrain Population" and only occurs if the 2x2 grid of chunks consisting of the chunk and the chunks adjcaent to it in +x and +z direction are also loaded.
