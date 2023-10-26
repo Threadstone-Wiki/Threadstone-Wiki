@@ -71,7 +71,7 @@ Terrain population triggers setBlockState() calls.
 
 So thanks to terrain population, it is possible for a getBlockState() call to trigger a setBlockState() call during its execution.
 
-## Redstone Power Flag
+## Redstone Power Flag Suppression
 
 ## Pulling immovable blocks
 https://www.youtube.com/watch?v=cVvB53sWETg
