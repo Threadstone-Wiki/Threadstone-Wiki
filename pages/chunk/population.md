@@ -80,11 +80,15 @@ One can cause an [update suppression](../update-suppression.md) in the middle of
 A video explanation of this is in [Falling Block Episode 1](https://www.youtube.com/watch?v=KU3lN1IUhuE).
 
 ## Instant Tile Ticks
-Whenever a liquid pocket is placed, the game turns on the [instant tile tick flag](../global-flags.md#instant-tile-ticks) right before placing the liquid pocket, then places the liquid pocket, then updates the liquid pocket, and then turns the instant tile tick flag off again.
+Whenever a liquid pocket is placed during population, the game turns on the [instant tile tick flag](../global-flags.md#instant-tile-ticks) right before placing the liquid pocket, then places the liquid pocket, then updates the liquid pocket, and then turns the instant tile tick flag off again.
 If an update suppression occurs while the liquid pocket gets updated, the instant tile tick flag stays on permanently.
 Since the instant tile tick flag is on while the liquid pocket gets updated, one can very easily cause an update suppression without requiring thousands of rails.
+The instant tile tick flag will turn back off again if another population successfully finishes placing a liquid pocket.
 
 ## Instant Falling
+Whenever any terrain population occurs, the game tursn on the [instant falling flag](../global-flags.md#instant-falling) right at the beginning of the population, and turns it back off at the end of the population.
+If any update suppression occurs in any kind of population, the instant falling flag stays on permanently.
+The instant falling flag will turn back off again if another population successfully finishes.
 
 ## Invisible Chunks
 
@@ -99,6 +103,12 @@ Terrain population triggers setBlockState() calls.
 So thanks to terrain population, it is possible for a getBlockState() call to trigger a setBlockState() call during its execution.
 
 ## Redstone Power Flag Suppression
+There is a [global redstone power flag](../global-flags.md#redstone-power-flag). Whenever redstone dust is updated, it turns off the redstone power flag, then checks whether it is receiving power from adjacent blocks, and then turns the redstone power flag back on again.
+This system is necessary to prevent redstone dust from powering itself.
+If an update suppression occurs while the redstone checks whether it is receiving power, then the redstone power flag stays on permanently.
+While the redstone dust checks whether it is receiving power it is only doing getBlockState() calls and does not send out any block updates, unless one of the getBlockState() calls triggers a terrain population.
+Without terrain population it is thus very difficult to cause an update suppression while redstone dust is checking whether it is receiving power.
+With terrain population however the getBlockState() call can trigger a setBlockState() call which can send block updates which can be easily update suppressed.
 
 ## Pulling immovable blocks
 A video explanation of pulling immovable blocks is in [Panda's Generating a Pig Spawner in 1.11](https://www.youtube.com/watch?v=cVvB53sWETg).
