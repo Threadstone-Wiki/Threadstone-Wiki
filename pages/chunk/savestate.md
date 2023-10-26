@@ -37,7 +37,29 @@ The script will paste in unicode symbols on the current page, then left-click wi
 
 If you do the same steps but press Ctrl+Alt+F9 instead, it will create type 2 savestate books.
 
+The savestate books can then be copied using a crafting table.
 
+For most automatic savestate contraptions it is furthermore required that the type 2 savestate books are given 13 different names, using an anvil.
+This renaming is necessary, to make it impossible for the type 2 savestate books to stack together in a single inventory slot.
+
+## Simplest savestate contraption
+
+The picture below shows a simple automatic savestate contraption.
+
+![A screenshot of a savestate contraption](/images/2023-10-26_16.50.50.png)
+
+The white shulker boxes contain a checker board pattern of type 1 savestate books.
+
+![Checkerboard pattern of type 1 savestate books](/images/InactiveSavestateShulker.PNG)
+
+The chests each contain 13 type 2 savestate books, and within each chest each type 2 savestate book has a unique name.
+
+As long as the lever is not flicked, the data in both the chests and the shulker boxes can be easily compressed.
+
+Flicking the lever will unlock the hopper and transfer type 2 savestate books from the chests into the shulker boxes.
+Since the type 2 savestate books all have different names, they will all enter different inventory slots in the shulker box.
+The shulker box will then contain an alternating pattern of type 1 and type 2 savestate books.
+Two such shulker boxes are enough to savestate the chunk.
 
 
 
