@@ -8,6 +8,8 @@ By using multiple books filled with random unicode characters, one can easily cr
 
 A book that is filled with unicode characters on every page is called a savestate book.
 
+![A screenshot showing page 1 of a 50 page book filled with random chinese characters](../images/SavestateBook.PNG)
+
 # Data compression
 
 The game uses data compression algorithms to minimize the amount of data it has to save.
