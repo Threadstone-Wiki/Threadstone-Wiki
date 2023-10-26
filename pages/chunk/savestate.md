@@ -27,7 +27,16 @@ Two chests filled with an alternating pattern of type 1 and type 2 savestate boo
 
 ## Creating savestate books
 
-To create savestate books in-game you can use the following autohotkey script: TODO!
+To create savestate books in-game you can use the following autohotkey script: ![Xcoms Savestate Book Script](../../Xcoms_Automatic_Bookdupe_Paster.ahk)
+To use it, first install autohotkey: https://www.autohotkey.com/
+Run the script.
+Open a writable book in minecraft.
+Hover with your mouse over the next page button.
+Then press Ctrl+Alt+F5 to create a type 1 savestate book.
+The script will paste in unicode symbols on the current page, then left-click with your mouse to go to the next page, and then repeat.
+
+If you do the same steps but press Ctrl+Alt+F9 instead, it will create type 2 savestate books.
+
 
 
 
