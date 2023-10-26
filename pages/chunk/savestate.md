@@ -34,11 +34,17 @@ Two chests filled with an alternating pattern of type 1 and type 2 savestate boo
 ## Creating savestate books
 
 To create savestate books in-game you can use the following autohotkey script: [Xcoms Savestate Book Script](/resources/Xcoms_Automatic_Bookdupe_Paster.ahk)
+
 To use it, first install [autohotkey](https://www.autohotkey.com/)
+
 Run the script.
+
 Open a writable book in minecraft.
+
 Hover with your mouse over the next page button.
+
 Then press Ctrl+Alt+F5 to create a type 1 savestate book.
+
 The script will paste in unicode symbols on the current page, then left-click with your mouse to go to the next page, and then repeat.
 
 If you do the same steps but press Ctrl+Alt+F9 instead, it will create type 2 savestate books.
@@ -127,7 +133,10 @@ This savestates the adjacent chunk, without requiring any blocks to be in that c
 The other two white shulker boxes stay with the contraption to savestate the contraption itself and make it infinitely reusable.
 
 These kinds of automatic savestate contraptions for unpopulated chunks were invented by 0x in collaboration with members of the Prototech server: https://www.youtube.com/@xeeebee
+
 The specific design shown above is by PrgmTrouble: https://www.youtube.com/@prgmTrouble
+
+Litematic is [here](../../resources/itt_and_permaloader_safe_savestate.litematic)
 
 ## Atomic savestates for unpopulated chunks
 
