@@ -76,7 +76,7 @@ For example replacing one grass block visible from the sky by a stone block in t
 The best way to keep liquid pocket locations consistent is to make sure that the same blocks remain visible from the sky. Beyond that a bit of trial and error is inevitable.
 
 # Population Suppression
-One can cause an [update suppression](../update_suppression.md) in the middle of a terrain population to cause additional powerful exploits.
+One can cause an [update suppression](../update-suppression.md) in the middle of a terrain population to cause additional powerful exploits.
 A video explanation of this is in [Falling Block Episode 1](https://www.youtube.com/watch?v=KU3lN1IUhuE).
 
 ## Instant Tile Ticks
