@@ -59,8 +59,6 @@ This is also covered in [Falling Block Episode 1](https://www.youtube.com/watch?
 
 ## Instant Falling
 
-## Redstone Power Flag
-
 ## Invisible Chunks
 
 ## Igloo Barrier Block
@@ -72,6 +70,8 @@ Chunk loading can trigger terrain population.
 Terrain population triggers setBlockState() calls.
 
 So thanks to terrain population, it is possible for a getBlockState() call to trigger a setBlockState() call during its execution.
+
+## Redstone Power Flag
 
 ## Pulling immovable blocks
 https://www.youtube.com/watch?v=cVvB53sWETg
