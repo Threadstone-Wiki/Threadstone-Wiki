@@ -1,6 +1,21 @@
-This page is about Chunk Savestates.
+# Chunk Savestates
 
-# Introduction
+## Table of Contents
+- [Introduction](#introduction)
+  * [Data compression](#data-compression)
+  * [Creating savestate books](#creating-savestate-books)
+  * [Simplest savestate contraption](#simplest-savestate-contraption)
+- [Unpopulated chunks](#unpopulated-chunks)
+  * [Book bans](#book-bans)
+  * [Automatic savestate contraption for unpopulated chunks](#automatic-savestate-contraption-for-unpopulated-chunks)
+  * [Atomic savestates for unpopulated chunks](#atomic-savestates-for-unpopulated-chunks)
+- [Miscellaneous](#miscellaneous)
+  * [Duplicated entity UUIDs](#duplicated-entity-uuids)
+  * [Quick reloads break savestates](#quick-reloads-break-savestates)
+  * [Virus flying machine](#virus-flying-machine)
+
+
+# Introduction <a name="introduction"></a>
 
 1. **If the game tries to save a chunk to disk while the chunk contains more than 1 Mega-Byte of data, the game will not save the chunk at all**.
 
