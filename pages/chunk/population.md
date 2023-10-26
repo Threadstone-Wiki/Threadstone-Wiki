@@ -1,4 +1,6 @@
-This page is about terrain population
+This page is about terrain population.
+
+A video explanation of terrain population is in [Panda's Survival #22: End Crystal Generation; 7:00](https://www.youtube.com/watch?v=EeobLrHkfYI&t=420s)
 
 # Introduction
 
