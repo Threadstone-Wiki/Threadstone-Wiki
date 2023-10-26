@@ -1,6 +1,7 @@
 # Terrain Population
 
 - [Introduction](#introduction)
+- [Manipulating Population](#manipulating-population)
   * [Flying machines](#flying-machines)
   * [Savestates](#savestates)
   * [Invisible Chunks](#invisible-chunks)
@@ -36,6 +37,8 @@ then the chunk on the bottom left of the 2x2 grid will become populated, and new
 ![Population image](/images/Population.PNG)
 
 This system allows the game to easily place trees and dungeons on chunk borders without cutting them off.
+
+# Manipulating Population
 
 The player can interact with chunks that have been generated but not yet populated, and this can change what blocks get placed during population.
 The following methods allow changing unpopulated chunks
