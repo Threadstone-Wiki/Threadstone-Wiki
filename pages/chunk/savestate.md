@@ -15,7 +15,7 @@
   * [Virus flying machine](#virus-flying-machine)
 
 
-# Introduction <a name="introduction"></a>
+# Introduction
 
 1. **If the game tries to save a chunk to disk while the chunk contains more than 1 Mega-Byte of data, the game will not save the chunk at all**.
 
