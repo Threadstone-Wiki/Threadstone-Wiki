@@ -49,10 +49,10 @@ The player can interact with chunks that have been generated but not yet populat
 The following methods allow changing unpopulated chunks.
 
 ## Flying machines
-One can build flying machines that place blocks near ungenerated chunks, and change the population of those chunks.
+One can build flying machines that fly to unpopulated chunks and put blocks there to manipulate population.
 
-For example, Panda4994, KaboPC and DanielKotes used flying-machine-like Kobra contraptions in 1.7, a version before slimeblocks existed,
-to generate a quadruple skeleton spawner in a player-built structure: https://www.youtube.com/watch?v=9iaU1TvIQqM
+Before flying machines were invented, Panda4994, KaboPC and DanielKotes used flying-machine-like Kobra contraptions
+to generate a quadruple skeleton spawner in a player-built structure, in the video [Panda's survival #20: Quadruple Skeleton Spawner](https://www.youtube.com/watch?v=9iaU1TvIQqM).
 
 ## Savestates
 [Savestates](savestate.md#unpopulated-chunks) are the most important method for building contraptions next to unpopulated chunks.
