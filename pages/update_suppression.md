@@ -3,9 +3,9 @@ To understand update suppression one should first know about tick phases.
 
 # Introduction
 
-1. ** If an exception is thrown in the player phase of a tick, the game just ignores the exception and continues running instead of shutting down the server. **
+1. **If an exception is thrown in the player phase of a tick, the game just ignores the exception and continues running instead of shutting down the server.**
 
-2. ** One can easily cause StackOverflow exceptions using long chains of immediate block updates. **
+2. **One can easily cause StackOverflow exceptions using long chains of immediate block updates.**
 
 An *update suppressor* is a contraption that immediately causes a StackOverflow exception when its input block receives a block update.
 
