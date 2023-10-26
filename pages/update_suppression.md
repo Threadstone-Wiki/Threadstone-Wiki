@@ -17,7 +17,7 @@ An update suppressor can be used during the player phase to create blocks in inv
 # Applications
 
 ## Population Suppression
-See [Terrain Population][chunk/population.md]
+See [Terrain Population](chunk/population.md)
 
 ## Tile Entity Swap
 https://www.youtube.com/watch?v=EpTaffAuVz4
