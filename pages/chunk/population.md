@@ -15,6 +15,9 @@
   * [Redstone Power Flag Suppression](#redstone-power-flag-suppression)
   * [Pulling immovable blocks](#pulling-immovable-blocks)
   * [Beacon threads causing async updates](#beacon-threads-causing-async-updates)
+- [Version 1.8](#version-1.8)
+  * [End Crystal Generation](#end-crystal-generation)
+  * [Bedrock Item](#bedrock-item)
 
 # Introduction
 
@@ -41,7 +44,7 @@ This system allows the game to easily place trees and dungeons on chunk borders 
 # Manipulating Population
 
 The player can interact with chunks that have been generated but not yet populated, and this can change what blocks get placed during population.
-The following methods allow changing unpopulated chunks
+The following methods allow changing unpopulated chunks.
 
 ## Flying machines
 One can build flying machines that place blocks near ungenerated chunks, and change the population of those chunks.
@@ -54,8 +57,6 @@ to generate a quadruple skeleton spawner in a player-built structure: https://ww
 
 ## Invisible Chunks
 [Invisible Chunks](#invisible-chunks) allow you to place immovable blocks inside unpopulated chunks at the chunk border. This makes invisible chunks the most powerful method for building contraptions around unpopulated chunks, but this method is not completely self-sufficient, because to create an invisible chunk you need to manipulate terrain population, using flying machines or savestates.
-
-An explanation of what exactly invisible chunks are and how to create them is below in the section on Population Suppression.
 
 # Population RNG
 To effectively exploit terrain population one needs to predict where it will place blocks.
@@ -73,7 +74,7 @@ The best way to keep liquid pocket locations consistent is to make sure that the
 
 # Population Suppression
 One can cause an [update suppression](../update_suppression.md) in the middle of a terrain population to cause additional powerful exploits.
-This is also covered in [Falling Block Episode 1](https://www.youtube.com/watch?v=KU3lN1IUhuE).
+A video explanation of this is in [Falling Block Episode 1](https://www.youtube.com/watch?v=KU3lN1IUhuE).
 
 ## Instant Tile Ticks
 
@@ -94,6 +95,13 @@ So thanks to terrain population, it is possible for a getBlockState() call to tr
 ## Redstone Power Flag Suppression
 
 ## Pulling immovable blocks
-https://www.youtube.com/watch?v=cVvB53sWETg
+A video explanation of pulling immovable blocks is in [Panda's Generating a Pig Spawner in 1.11](https://www.youtube.com/watch?v=cVvB53sWETg).
+The most important application of this technique is pulling end gateways to create dataless gateways.
 
 ## Beacon threads causing async updates
+
+# Version 1.8
+
+## End Crystal Generation
+
+## Bedrock Item
