@@ -16,7 +16,7 @@
 - [getBlockState() to setBlockState() exploits](#get-to-set)
   * [Redstone Power Flag Suppression](#redstone-power-flag-suppression)
   * [Pulling immovable blocks](#pulling-immovable-blocks)
-  * [Beacon threads causing async updates](#glass-threads-causing-async-updates)
+  * [Glass threads causing async updates](#glass-threads-causing-async-updates)
 - [Miscellaneous](#miscellaneous)
   * [1.12 Bedrock Item from Gateways](#112-bedrock-item-from-gateways)
   * [1.8 Bedrock Item from End Crystal Towers](#18-bedrock-item-from-end-crystal-towers)
@@ -98,11 +98,14 @@ This can be used to get fully loaded unpopulated chunks.
 These unpopulated chunks are invisible.
 
 ## Igloo Barrier Block
+Suppressing the population of an igloo can create barrier blocks.
+
+This was done by Earthcomputer, Kerbaras and Cheater Codes on Prototech in the video [\[1.12\] Getting the Barrier Block](https://www.youtube.com/watch?v=zQUBR8dSUlA).
+
 When an igloo gets placed during population it uses structure block code to place the igloo.
 Whenever a structure block has to replace a block with a tile entity by another tile entity block, it first replaces the block by a barrier, and then replaces the barrier by the new tile entity block.
 Igloos contain a furnace which is a tile entity block. If there is already a tile entity at the position where the furnace gets placed, the igloo population will replace it by a barrier block before replacing it by a furnace.
 If one causes an update suppression right after the barrier is placed, one can permanently create a barrier block.
-This was done by Earthcomputer, Kerbaras and Cheater Codes on Prototech in the video [\[1.12\] Getting the Barrier Block](https://www.youtube.com/watch?v=zQUBR8dSUlA).
 
 # getBlockState() to setBlockState() exploits <a name="get-to-set"/>
 A getBlockState() call can trigger chunk loading.
@@ -123,7 +126,19 @@ The redstone power flag will turn back off again if a piece of redstone dust get
 
 ## Pulling immovable blocks
 A video explanation of pulling immovable blocks is in [Panda's Generating a Pig Spawner in 1.11](https://www.youtube.com/watch?v=cVvB53sWETg).
-The most important application of this technique is pulling end gateways to create dataless gateways.
+
+If a population occurs while a piston is starting to move blocks, the piston can sometimes move the newly placed blocks even if they are immovable.
+If this is done to tile entity blocks like spawners or end gateways, the tile entity data gets deleted and one obtains pig spawners or dataless gateways.
+
+When a piston processes a block event and wants to start moving blocks, it first creates a list toMove of all the block positions it wants to move and a list toDestroy of all the block positions it wants to destroy.
+Whenever it tries to enter a position into the toMove list it first checks whether the block at that position is movable before entering the position into the list.
+Once the two lists have been completed, the piston then creates an additional list containing all the blockstates of the blocks it wants to move.
+It iterates through all positions it wants to move, and adds the blockstate at that position to its blockstate list, without checking whether that block is still movable.
+
+During the creation of the list no block updates get send out, however a lot of getBlockState() calls are made. If one of the getBlockState() calls triggers a terrain population,
+the blocks that the piston wants to move can be changed, and this makes it possible for the piston to then move immovable blocks.
+
+The [history of this bug](history.md#tnt-vs-pig) is quite involved.
 
 ## Glass threads causing async updates
 Whenever you place a stained glass block, it starts a new async thread which does getBlockState() calls below itself to check for beacons which need to change their beacon beam color.
