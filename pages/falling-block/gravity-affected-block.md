@@ -16,7 +16,7 @@ If it is in an entity-processing chunk and the [instant falling flag](global-fla
 If it is in a lazy chunk or if instant falling is on, then it will do instantfalling behavior.
 
 # Normal falling behavior
-When a gravity-affected block does normal falling it will do a getBlockState() call at its position and create a falling block entity of the blockstate it finds.
+When a gravity-affected block does normal falling it will do a getBlockState() call at its position and create a [falling block entity](#falling-block-entity) of the blockstate it finds.
 Usually the blockstate will be the gravity-affected block itself. The rare exceptions are called [falling block swaps](falling-block-swaps.md).
 
 When the falling block entity gets processed for the first time, it will check whether the block at its position matches its own block id.
