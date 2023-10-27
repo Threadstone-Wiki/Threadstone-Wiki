@@ -52,8 +52,11 @@ Making the getBlockState() call of the above code load chunks is quite difficult
 because the chunk in which all of these calls happen is already loaded when the thread is started.
 To load a chunk with these getBlockState() calls one either needs to unload the chunk containing the stained glass, while the async thread is running,
 or load the chunk even though it is already loaded.
+
 If the chunk gets loaded even though it is already loaded, then this is called a *chunk swap*.
+
 If the chunk gets unloaded while the async thread is running, then the resulting async chunk load this is called a *regular load*.
+
 Unloading the chunk while async threads are running is difficult, because if the chunk is scheduled to unload in the next [unload phase],(../tick-phases.md) and the async thread does a getBlockState() call before the chunk is actually unloaded, then the scheduled unloading gets cancelled, and the chunk does not get unloaded in the next unload phase.
 
 # Chunk swap
