@@ -109,7 +109,7 @@ This could lead to a population based setup for creating falling end gateways, w
 
 In 1.13 mojang fixed double tile tick scheduling by complete accident.
 They made the NextTickListEntry class into a generic type class.
-So it's now NextTickListEntry<T> instead of just NextTickListEntry.
+So it's now NextTickListEntry\<T\> instead of just NextTickListEntry.
 There is a java bug that makes it so the comparable class doesn't work properly for generic type classes, and this bug makes it so the game never ever uses the equals() method of the NextTickListEntry class, but instead just uses equality of objects.
 This fixed double tile tick scheduling.
 So mojang didn't even know about double tile tick scheduling,
