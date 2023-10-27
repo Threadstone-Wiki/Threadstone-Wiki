@@ -11,7 +11,7 @@ It it is not floating, it will do nothing. Otherwise it continues as follows:
 
 The gravity-affected block will check whether it is in an [entity-processing chunk](chunk/chunk.md#entity-processing).
 
-If it is in an entity-processing chunk and the [instant falling flag](global-flags#instant-falling) is off, then it will do normal falling behavior.
+If it is in an entity-processing chunk and the [instant falling flag](global-flags.md#instant-falling) is off, then it will do normal falling behavior.
 
 If it is in a lazy chunk or if instant falling is on, then it will do instantfalling behavior.
 
@@ -26,7 +26,7 @@ If it does not match, the falling block entity will delete itself.
 Here the falling block entity only checks the block id, and does not check the damage value.
 This makes it possible to make sand converters that [convert white sand into red sand, and repair anvils](double-tile-tick-scheduling.md#anvil-repairing).
 
-When [instant-tile-ticks](global-flags#gravity-affected-blocks) are on, one can create hundreds of falling block entities by updating a gravity-affected block hundreds of times in one gametick.
+When [instant-tile-ticks](global-flags.md#gravity-affected-blocks) are on, one can create hundreds of falling block entities by updating a gravity-affected block hundreds of times in one gametick.
 But under normal circumstances, all except one of those falling block entities will delete themselves the first time they get processed.
 
 # Instantfalling behavior
@@ -35,7 +35,7 @@ The damage value of the gravity-affected block will be reset to 0. So red sand b
 
 Dragon eggs have a bug in their code which makes it so that after instantfalling they land one block lower than they are supposed to, and delete whatever block was previously in that position.
 This can be used to break bedrock.
-If [instant-tile-ticks](global-flags#instant-tile-ticks) are on, instantfalling dragon eggs are one of the most powerful ways to immediately delete a block.
+If [instant-tile-ticks](global-flags.md#instant-tile-ticks) are on, instantfalling dragon eggs are one of the most powerful ways to immediately delete a block.
 
 
 # Falling Block Swaps
