@@ -1,4 +1,16 @@
+# Global Flags
+
 This page is about global boolean flags that can be turned on or off.
+
+## Table of Contents
+
+- [Instant Tile Ticks](#instant-tile-ticks)
+  * [Observers](#observers)
+  * [Dispensers](#dispensers)
+  * [Gravity affected blocks](#gravity-affected-blocks)
+- [Instant Falling](#instant-falling)
+- [Redstone Power Flag](#redstone-power-flag)
+
 
 ![global flags](../images/GlobalFlags.png)
 
@@ -54,12 +66,12 @@ In this loop the durability of the flint and steel never gets decreased.
 ## Gravity affected blocks
 If ITT is on and instant falling is off, updating a floating gravity-affected block n times in an [entity-processing chunk](chunk/chunk.md#entity-processing) will create n falling block entities.
 Usually the first of those falling block entities will delete the gravity-affected block and all other falling block entities will delete themselves.
-For more information see [gravity affected blocks](falling-block.md).
+For more information see [gravity affected blocks](falling-block/gravity-affected-block.md).
 
 # Instant Falling
 Instant Falling is turned on whenever a [population is update suppressed](chunk/population.md#instant-falling).
 
-If a falling block processes a tile tick while instant falling is on, or is updated while instant falling and ITT is on, then it will do the [instantfalling behavior](falling-block.md#instantfalling-behavior).
+If a falling block processes a tile tick while instant falling is on, or is updated while instant falling and ITT is on, then it will do the [instantfalling behavior](falling-block/gravity-affected-block.md#instantfalling-behavior).
 
 Instant Falling is dimension-independent: Turning it on in one dimension turns it on in all dimensions.
 In singleplayer Instant Falling is world-independent: If you turn on Instant Falling in one world, then leave the world and open another world, then Instant Falling will still be on as long as you didn't populate any chunks when opening the new world.
