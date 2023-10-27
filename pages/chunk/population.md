@@ -16,7 +16,7 @@
 - [getBlockState() to setBlockState() exploits](#get-to-set)
   * [Redstone Power Flag Suppression](#redstone-power-flag-suppression)
   * [Pulling immovable blocks](#pulling-immovable-blocks)
-  * [Beacon threads causing async updates](#beacon-threads-causing-async-updates)
+  * [Beacon threads causing async updates](#glass-threads-causing-async-updates)
 - [Miscellaneous](#miscellaneous)
   * [1.12 Bedrock Item from Gateways](#112-bedrock-item-from-gateways)
   * [1.8 Bedrock Item from End Crystal Towers](#18-bedrock-item-from-end-crystal-towers)
@@ -91,9 +91,18 @@ If any update suppression occurs in any kind of population, the instant falling 
 The instant falling flag will turn back off again if another population successfully finishes.
 
 ## Invisible Chunks
+When a chunk gets loaded, it first tries to populate itself, and then tries to populate the chunks adjacent in the negative x and z direction.
+If you update supress the population of the chunk, it will not try to populate the adjacent chunks.
+This can be used to get fully loaded unpopulated chunks.
+
+These unpopulated chunks are invisible.
 
 ## Igloo Barrier Block
-https://www.youtube.com/watch?v=zQUBR8dSUlA
+When an igloo gets placed during population it uses structure block code to place the igloo.
+Whenever a structure block has to replace a block with a tile entity by another tile entity block, it first replaces the block by a barrier, and then replaces the barrier by the new tile entity block.
+Igloos contain a furnace which is a tile entity block. If there is already a tile entity at the position where the furnace gets placed, the igloo population will replace it by a barrier block before replacing it by a furnace.
+If one causes an update suppression right after the barrier is placed, one can permanently create a barrier block.
+This was done by Earthcomputer, Kerbaras and Cheater Codes on Prototech in the video [\[1.12\] Getting the Barrier Block](https://www.youtube.com/watch?v=zQUBR8dSUlA).
 
 # getBlockState() to setBlockState() exploits <a name="get-to-set"/>
 A getBlockState() call can trigger chunk loading.
@@ -116,7 +125,10 @@ The redstone power flag will turn back off again if a piece of redstone dust get
 A video explanation of pulling immovable blocks is in [Panda's Generating a Pig Spawner in 1.11](https://www.youtube.com/watch?v=cVvB53sWETg).
 The most important application of this technique is pulling end gateways to create dataless gateways.
 
-## Beacon threads causing async updates
+## Glass threads causing async updates
+Whenever you place a stained glass block, it starts a new async thread which does getBlockState() calls below itself to check for beacons which need to change their beacon beam color.
+If one of those getBlockState() calls triggers an [async chunk loading](chunk/async-chunk-loading.md), then this can trigger an async terrain population and cause async block updates.
+This is the basis for all threadstone exploits.
 
 # Miscellaneous
 
