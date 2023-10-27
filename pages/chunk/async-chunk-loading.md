@@ -57,7 +57,7 @@ If the chunk gets loaded even though it is already loaded, then this is called a
 
 If the chunk gets unloaded while the async thread is running, then the resulting async chunk load this is called a *regular load*.
 
-Unloading the chunk while async threads are running is difficult, because if the chunk is scheduled to unload in the next [unload phase],(../tick-phases.md) and the async thread does a getBlockState() call before the chunk is actually unloaded, then the scheduled unloading gets cancelled, and the chunk does not get unloaded in the next unload phase.
+Unloading the chunk while async threads are running is difficult, because if the chunk is scheduled to unload in the next [unload phase](../tick-phases.md), and the async thread does a getBlockState() call before the chunk is actually unloaded, then the scheduled unloading gets cancelled, and the chunk does not get unloaded in the next unload phase.
 
 # Chunk swap
 
