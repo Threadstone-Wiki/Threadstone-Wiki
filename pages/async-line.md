@@ -33,11 +33,11 @@ But there are also other async lines.
 When ITT is on, any chain of tile-tick based XOR gates, in which block updates from later XOR gates cannot travel back to earlier XOR gates, can be used as an async line.
 The following XOR gate chain works as an async line:
 
-![XOR Gates](images/XORChain.PNG)
+![XOR Gates](../images/XORChain.PNG)
 
 There is also a directional async line that uses only repeaters:
 
-![Repeater Chain](images/RepeaterAsyncLine.PNG)
+![Repeater Chain](../images/RepeaterAsyncLine.PNG)
 
 One can also keep an async thread alive for roughly one minute in a [tile-tick-less rail-based async line](https://www.youtube.com/watch?v=uVfT5w8RSyQ&list=PL8r-bvM9ltXNkjl7IhGQAHygIPfy2niuC&index=50), 
 provided another thread is toggling the [redstone power flag](global-flags.md#redstone-power-flag) very quickly. This kind of async line could in principle work without ITT, but in practice it is difficult to get it to work.
