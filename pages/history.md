@@ -1,6 +1,6 @@
 This contains various bits of technical minecraft history.
 
-#Table of Contents
+## Table of Contents
 
 - [Slimeblocks, tnt duping and pig spawner generation](#slimeblocks--tnt-duping-and-pig-spawner-generation)
 - [Falling Block History](#falling-block-history)
