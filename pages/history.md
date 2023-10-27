@@ -1,5 +1,14 @@
 This contains various bits of technical minecraft history.
 
+#Table of Contents
+
+- [Slimeblocks, tnt duping and pig spawner generation](#slimeblocks--tnt-duping-and-pig-spawner-generation)
+- [Falling Block History](#falling-block-history)
+  * [Early History](#early-history)
+  * [Backdoor Tearm](#backdoor-tearm)
+  * [Threadstone Discord](#threadstone-discord)
+
+
 # Slimeblocks, tnt duping and pig spawner generation
 
 When mojang initially added slimeblocks, they were bouncy, but they did not stick to other slimeblocks and did not allow for easy flying machines.
