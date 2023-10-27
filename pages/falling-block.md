@@ -34,7 +34,8 @@ When a gravity-affected block does instant falling, it will replace itself by ai
 The damage value of the gravity-affected block will be reset to 0. So red sand becomes sand and damaged anvils become repaired anvils.
 
 Dragon eggs have a bug in their code which makes it so that after instantfalling they land one block lower than they are supposed to, and delete whatever block was previously in that position.
-This can be used to break bedrock.
+This can be used to break bedrock, except at y=0. If a dragon egg reaches y=1 it will simply disappear and not delete the block at y=0.
+
 If [instant-tile-ticks](global-flags.md#instant-tile-ticks) are on, instantfalling dragon eggs are one of the most powerful ways to immediately delete a block.
 
 
