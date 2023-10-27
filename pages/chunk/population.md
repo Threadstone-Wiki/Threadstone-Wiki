@@ -13,13 +13,13 @@
   * [Instant Falling](#instant-falling)
   * [Invisible Chunks](#invisible-chunks-1)
   * [Igloo Barrier Block](#igloo-barrier-block)
-- [getBlockState() to setBlockState() exploits](#getblockstate---to-setblockstate---exploits)
+- [getBlockState() to setBlockState() exploits](#get-to-set)
   * [Redstone Power Flag Suppression](#redstone-power-flag-suppression)
   * [Pulling immovable blocks](#pulling-immovable-blocks)
   * [Beacon threads causing async updates](#beacon-threads-causing-async-updates)
-- [Version 1.8](#version-18)
-  * [End Crystal Generation](#end-crystal-generation)
-  * [Bedrock Item](#bedrock-item)
+- [Miscellaneous](#miscellaneous)
+  * [1.12 Bedrock Item from Gateways](#112-bedrock-item-from-gateways)
+  * [1.8 Bedrock Item from End Crystal Towers](#18-bedrock-item-from-end-crystal-towers)
 
 # Introduction
 
@@ -86,7 +86,7 @@ Since the instant tile tick flag is on while the liquid pocket gets updated, one
 The instant tile tick flag will turn back off again if another population successfully finishes placing a liquid pocket.
 
 ## Instant Falling
-Whenever any terrain population occurs, the game tursn on the [instant falling flag](../global-flags.md#instant-falling) right at the beginning of the population, and turns it back off at the end of the population.
+Whenever any terrain population occurs, the game turns on the [instant falling flag](../global-flags.md#instant-falling) right at the beginning of the population, and turns it back off at the end of the population.
 If any update suppression occurs in any kind of population, the instant falling flag stays on permanently.
 The instant falling flag will turn back off again if another population successfully finishes.
 
@@ -95,7 +95,7 @@ The instant falling flag will turn back off again if another population successf
 ## Igloo Barrier Block
 https://www.youtube.com/watch?v=zQUBR8dSUlA
 
-# getBlockState() to setBlockState() exploits
+# getBlockState() to setBlockState() exploits <a name="get-to-set"/>
 A getBlockState() call can trigger chunk loading.
 Chunk loading can trigger terrain population.
 Terrain population triggers setBlockState() calls.
@@ -118,8 +118,19 @@ The most important application of this technique is pulling end gateways to crea
 
 ## Beacon threads causing async updates
 
-# Version 1.8
+# Miscellaneous
 
-## End Crystal Generation
+## 1.12 Bedrock Item from Gateways
+The first method for obtaining bedrock items in 1.12 that was discovered works by silk touch instantmining a slimeblock, extinguishing a fire block while doing so,
+and then triggering a population that replaces the slimeblock by the bedrock block of an end gateway.
+Video explanations are in [Earthcomputer's \[1.12\] How to get the Bedrock Item](https://www.youtube.com/watch?v=YHdSpO-Gsvc) and [Xcom's How to get a bedrock item in survival 1.9 to 1.12](https://www.youtube.com/watch?v=ajUea-FnRrc).
 
-## Bedrock Item
+## 1.8 Bedrock Item from End Crystal Towers
+In 1.8 and earlier versions one can use terrain population to generate end crystal towers in the end.
+This is the only way to get additional end crystals in those versions.
+That idea started out on this [reddit thread](https://www.reddit.com/r/ZipKrowd/comments/1rwxj5/minecraft_qa_for_game_mechanics/cfhouft/),
+and was then done in survival in [ElRichMC's Survival 1.7 Ep103, Generador de EnderCrystals!](https://www.youtube.com/watch?v=Xx1AYgcl1eY).
+
+The top of the end crystal towers generate a bedrock block.
+Using [piston bugs](https://www.youtube.com/watch?v=wI7VMt3419M) one can destroy the bedrock block and obtain the bedrock item.
+Predicting the end crystal tower location is very difficult, but was successfully done by [Xcom and Matthew Bolan](https://www.youtube.com/watch?v=tC4YEm6-gmE).
