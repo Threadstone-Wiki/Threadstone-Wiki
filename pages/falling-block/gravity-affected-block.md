@@ -1,4 +1,4 @@
-This page is about gravity-affected blocks and falling block entities.
+This page is about gravity-affected blocks.
 
 # Introduction
 Sand, gravel, anvils and dragon eggs are gravity-affected blocks. Dragon eggs are an unusual gravity-affected block because they do not inherit from the FallingBlock class from which sand, gravel and anvils inherit. 
@@ -17,7 +17,7 @@ If it is in a lazy chunk or if instant falling is on, then it will do instantfal
 
 # Normal falling behavior
 When a gravity-affected block does normal falling it will do a getBlockState() call at its position and create a falling block entity of the blockstate it finds.
-Usually the blockstate will be the gravity-affected block itself. The rare exceptions are called [falling block swaps](#falling-block-swaps).
+Usually the blockstate will be the gravity-affected block itself. The rare exceptions are called [falling block swaps](falling-block-swaps.md).
 
 When the falling block entity gets processed for the first time, it will check whether the block at its position matches its own block id.
 If the block id does match, then the falling block entity will delete the block at its position.
@@ -39,5 +39,3 @@ This can be used to break bedrock, except at y=0. If a dragon egg reaches y=1 it
 If [instant-tile-ticks](global-flags.md#instant-tile-ticks) are on, instantfalling dragon eggs are one of the most powerful ways to immediately delete a block.
 
 
-# Falling Block Swaps
-TODO!
