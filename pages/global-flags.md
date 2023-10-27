@@ -2,6 +2,10 @@
 
 This page is about global boolean flags that can be turned on or off.
 
+A video showcase of Instant Tile Ticks and Instant Falling is in coolmann's [Instant Tile Tick Execution \[New Item Dupe\] \[Easy Bedrock Breaking\] \[Game Altering\] \[1.12\]](https://www.youtube.com/watch?v=hViDrnDCIwc)
+
+Another video explaining global flags is [Falling Block Episode 1](https://www.youtube.com/watch?v=KU3lN1IUhuE).
+
 ## Table of Contents
 
 - [Instant Tile Ticks](#instant-tile-ticks)
