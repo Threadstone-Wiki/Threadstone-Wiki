@@ -1,5 +1,7 @@
 This page is about async chunk loading.
 
+# Introduction
+
 Whenever you place or break a stained glass block, the game starts a new asynchronous thread which checks for beacons below the stained glass block.
 More precisely it runs the following code in the BlockBeacon class.
 
@@ -58,6 +60,14 @@ If the chunk gets loaded even though it is already loaded, then this is called a
 If the chunk gets unloaded while the async thread is running, then the resulting async chunk load this is called a *regular load*.
 
 Unloading the chunk while async threads are running is difficult, because if the chunk is scheduled to unload in the next [unload phase](../tick-phases.md), and the async thread does a getBlockState() call before the chunk is actually unloaded, then the scheduled unloading gets cancelled, and the chunk does not get unloaded in the next unload phase.
+
+Async chunk loading is important, because an async chunk load can trigger an [async terrain population](population.md#glass-threads-causing-async-updates), which then causes async block updates.
+The life of the async thread can then be extended using async lines to create many more async block updates.
+
+The async block updates can then be used for threadstone exploits like:
+- creating unobtainable blocks with word tearing
+- obtaining unobtainable items with [falling block swaps](../falling-block/falling-block-swaps)
+- creating player heads
 
 # Chunk swap
 
