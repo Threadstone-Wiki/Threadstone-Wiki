@@ -71,7 +71,7 @@ For more information see [gravity affected blocks](falling-block/gravity-affecte
 # Instant Falling
 Instant Falling is turned on whenever a [population is update suppressed](chunk/population.md#instant-falling).
 
-If a falling block processes a tile tick while instant falling is on, or is updated while instant falling and ITT is on, then it will do the [instantfalling behavior](falling-block/gravity-affected-block.md#instantfalling-behavior).
+If a floating [gravity affected block](falling-block/gravity-affected-block.md) processes a tile tick while instant falling is on, or if it is updated while instant falling and ITT is on, then it will do the [instantfalling behavior](falling-block/gravity-affected-block.md#instantfalling-behavior).
 
 Instant Falling is dimension-independent: Turning it on in one dimension turns it on in all dimensions.
 In singleplayer Instant Falling is world-independent: If you turn on Instant Falling in one world, then leave the world and open another world, then Instant Falling will still be on as long as you didn't populate any chunks when opening the new world.
