@@ -29,7 +29,7 @@ A book that is filled with unicode characters on every page is called a *savesta
 
 ![A screenshot showing page 1 of a 50 page book filled with random chinese characters](/images/SavestateBook.PNG)
 
-Chunk Savestates were discovered by Earthcomputer and Skyrising: https://www.youtube.com/watch?v=uw7vEGhKoH8
+Chunk Savestates were discovered by [Earthcomputer and Skyrising](https://www.youtube.com/watch?v=uw7vEGhKoH8).
 
 ## Data compression
 
@@ -147,9 +147,9 @@ Two of the white shulker boxes get destroyed by pistons, picked up by hoppers, t
 This savestates the adjacent chunk, without requiring any blocks to be in that chunk in the beginning.
 The other two white shulker boxes stay with the contraption to savestate the contraption itself and make it infinitely reusable.
 
-These kinds of automatic savestate contraptions for unpopulated chunks were invented by 0x in collaboration with members of the Prototech server: https://www.youtube.com/@xeeebee
+These kinds of automatic savestate contraptions for unpopulated chunks were invented by [0x](https://www.youtube.com/@xeeebee) in collaboration with members of the Prototech server.
 
-The specific design shown above is by PrgmTrouble: https://www.youtube.com/@prgmTrouble
+The specific design shown above is by [PrgmTrouble](https://www.youtube.com/@prgmTrouble)
 
 Litematic is [here](../../resources/itt_and_permaloader_safe_savestate.litematic)
 
@@ -175,4 +175,4 @@ Since savestated chunks contain a large amount of data, it takes a long time to 
 which means that it takes much longer for chunks to leave the cache if the cache contains savestated chunks.
 
 ## Virus flying machine
-Samnrad, Earthcomputer, Pingu and Xyor made a flying machine version of savestates called the virus flying machine: https://www.youtube.com/watch?v=ybr9WtJ-NeE
+Samnrad, Earthcomputer, Pingu and Xyor made a flying machine version of savestates called the [virus flying machine](https://www.youtube.com/watch?v=ybr9WtJ-NeE).
