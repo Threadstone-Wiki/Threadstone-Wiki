@@ -1,6 +1,6 @@
 This is a page about update suppression.
 
-An excellent video explanation is [Xcoms Update Suppression Explained](https://www.youtube.com/watch?v=IJhZpK-8p54)
+An excellent video explanation is [Xcom's Update Suppression Explained](https://www.youtube.com/watch?v=IJhZpK-8p54)
 
 # Introduction
 
@@ -14,6 +14,9 @@ Update suppressors that do not exploit instant tile ticks usually use several th
 ![Picture of Update Suppressor](/images/UpdateSuppressor.PNG)
 
 An update suppressor can be used during the player phase to create blocks in invalid states, e.g. nether portals without a valid obsidian frame around them.
+It can also be used to duplicate items, and convert wither skeleton skulls into normal skeleton skulls.
+
+Update suppression was discovered by Panda4994 and RedstoneSpire and published in the video [Update Suppression, Block Duplication, Skull Converter and More](https://www.youtube.com/watch?v=mzfLHNeqjuY).
 
 # Floating Comparator Trick
 
