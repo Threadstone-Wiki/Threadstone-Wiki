@@ -66,8 +66,6 @@ In singleplayer Instant Falling is world-independent: If you turn on Instant Fal
 
 Instantfalling dragon eggs can break bedrock except at y=0. Turning on the instant falling flag and using dragon eggs is one of the easiest and fastest ways to break bedrock above y=0.
 
-Instant Falling exists and can be [turned on in 1.13](https://www.youtube.com/watch?v=CfMSatbWyfo). Since dragon eggs no longer break bedrock in 1.13, it is not useful.
-
 # Redstone Power Flag
 The redstone power flag is turned off if an update suppression occurs while a redstone dust block is checking whether it is receiving power.
 Update suppressing this consistently requires the [getBlockState() to setBlockState() property of terrain population](chunk/population.md#redstone-power-suppression).
