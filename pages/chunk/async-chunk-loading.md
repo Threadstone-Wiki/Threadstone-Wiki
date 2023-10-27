@@ -66,7 +66,7 @@ The life of the async thread can then be extended using async lines to create ma
 
 The async block updates can then be used for threadstone exploits like:
 - creating unobtainable blocks with word tearing
-- obtaining unobtainable items with [falling block swaps](../falling-block/falling-block-swaps)
+- obtaining unobtainable items with [falling block swaps](../falling-block/falling-block-swaps.md)
 - creating player heads
 
 # Chunk swap
