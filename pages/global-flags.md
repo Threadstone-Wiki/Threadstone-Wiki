@@ -45,26 +45,16 @@ A similar loop and update suppression occurs if the dispenser has a flint and st
 The dispenser will create a fire block in front of itself. Since the fire block cannot survive, it will instantly delete itself, update the dispenser and create a loop.
 In this loop the durability of the flint and steel never gets decreased.
 
-## Falling Blocks
-If ITT is on and instant falling is off, updating a floating falling block in an [entity-processing chunk](chunk/chunk.md#entity-processing) will create a falling block entity.
-Updating the falling block multiple times in a single gametick will create multiple falling block entities.
-Once the falling block entities get processed, each will check whether it is in a falling block of the corresponding type.
-If it is, it deletes the falling block and survives.
-If it is not, the falling block entity will delete itself.
-
-So if multiple falling block entites get created, usually all but one of the falling block entities will delete themselves when they first get processed.
-
-A falling block which gets updated in a [lazy chunk](chunk/chunk.md#entity-processing) will do instantfalling behavior.
+## Gravity affected blocks
+If ITT is on and instant falling is off, updating a floating gravity-affected block n times in an [entity-processing chunk](chunk/chunk.md#entity-processing) will create n falling block entities.
+Usually the first of those falling block entities will delete the gravity-affected block and all other falling block entities will delete themselves.
+For more information see [gravity affected blocks](falling-block.md).
 
 # Instant Falling
 Instant Falling is turned on whenever a [population is update suppressed](chunk/population.md#instant-falling).
 
-If a falling block processes a tile tick while instant falling is on, or is updated while instant falling and ITT is on, then it will do the instantfalling behavior.
-It will replace itself by air, then check the blocks below itself one by one until it finds a block which is neitehr air, fire, water nor lava, and then places itself directly above that block.
+If a falling block processes a tile tick while instant falling is on, or is updated while instant falling and ITT is on, then it will do the [instantfalling behavior](falling-block.md#instantfalling-behavior).
 
-Dragon eggs that do instantfalling land one block to low and delete the block on which they were supposed to land. This can be used to delete bedrock.
-
-
-
+Instantfalling dragon eggs can break bedrock except at y=0. Turning on the instant falling flag and using dragon eggs is one of the easiest and fastest ways to break bedrock above y=0.
 
 # Redstone Power Flag
