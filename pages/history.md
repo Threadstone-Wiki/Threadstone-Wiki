@@ -43,18 +43,24 @@ Their idea was to cause an update suppression right after the spawner placement.
 But before they finished and published their contraption, Myren Eario found and published the pulling spawners technique, and became the first to generate pig spawners.
 Myren only found the technique because of the slimeblock code that Panda4994 made for 1.8.
 If Panda4994 had included TNT duping in the 1.8 code, then he would have been the first one to generate pig spawners. Since he did not include TNT duping in his code, he was not the first.
-After Myren's publication, Panda4994 and RedstoneSpire decided to not publish their update suppression contraption at all. The reasons for this only became clear much later.
+After Myren's publication, Panda4994 and RedstoneSpire decided to not publish their update suppression contraption at all. The reasons for this were connected with instant tile ticks.
 
-Since any update suppression during terrain population necessarily turns on the instant falling flag, Panda4994 and RedstoneSpire inevitably discovered the instant falling flag during their research,
-and also found the instant tile tick flag. They have one unlisted video about it: [Weird weird behaviour :D](https://www.youtube.com/watch?v=rjoaEOhIV6E).
+# Instant Tile Ticks
+
+As mentioned previously, Panda4994 and RedstoneSpire were trying to create pig spawners by causing an update suppression during dungeon population.
+
+Since any update suppression during terrain population necessarily turns on the instant falling flag, Panda4994 and RedstoneSpire inevitably discovered the instant falling flag during their research.
+
+They then also found the instant tile tick flag. They have one unlisted video about it: [Weird weird behaviour :D](https://www.youtube.com/watch?v=rjoaEOhIV6E).
 The rest of the community only learned about instant tile ticks in 2019 when [cool mann discovered and published it](https://www.youtube.com/watch?v=hViDrnDCIwc).
+
 Panda4994 and RedstoneSpire not only discovered instant tile ticks, but also realized that there was a way of turning it on that was independent of the stacksize of the server.
 This means you do not need 10000 rails to turn it on, but only need a small tile tick clock to cause the update suppression.
 This insight was only re-discovered by punchster2 in late 2021 during falling block research, and was published in [Falling Block Episode 1](https://www.youtube.com/watch?v=KU3lN1IUhuE).
 Before that multiple servers build instant tile tick switches in survival using 10000 rails. for example [this server](https://www.youtube.com/watch?v=6VKNOyuqFnQ&t=510s) and [this server](https://www.youtube.com/watch?v=T7YRu9Yohec).
 
 Since a stack-independent method for turning on instant tile ticks allows you to crash a server without too much effort, Panda4994 decided that the topic required responsible disclosure.
-He probably intended to inform mojang about it, and get instant tile ticks fixed in some 1.11 version before publishing his contraption.
+He probably intended to inform mojang about it, and get instant tile ticks fixed in some 1.11 version before publishing his contraption. After Myren published his pig spawner generation method that did not involve any global flags, Panda4994 decided to not disclose his findings at all, but just keep them secret.
 
 So if Myren had not published his pig spawner generation technique in early 2017, then the community would have found out about instant tile ticks in 2017 instead of 2019,
 they would have found out about stack-independent methods for turning it on in 2017 instead of 2022, and instant tile ticks would probably have been fixed in 2017 in some 1.11 version. 
