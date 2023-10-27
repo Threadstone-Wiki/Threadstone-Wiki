@@ -9,6 +9,12 @@ Instant Tile Ticks are sometimes abbreviated as ITT.
 
 When ITT is on all tile tick blocks perform their actions [immediately](tick-phases.md#immediate-updates) when they get updated, instead of scheduling their action for the [tile tick phase](tickphases.md#tile-ticks).
 
+ITT is dimension-dependent: Changing it in the overworld will not change it in the nether, and changing it in the nether will not change it in the overworld.
+
+It is impossible to turn on ITT in the end (without some kind of serious hardware failure), because no liquid pockets get generated in the end.
+
+While ITT is on, tile tick blocks will only work if they are more than 8 blocks away from unloaded chunks. Within 8 blocks of unloaded chunks they ignore all updates and just do nothing.
+
 There are many ways for the game to crash while ITT is on. The following things cause crashes:
 
 - Non-player entities stepping on non-floating pressure plates
@@ -55,6 +61,18 @@ Instant Falling is turned on whenever a [population is update suppressed](chunk/
 
 If a falling block processes a tile tick while instant falling is on, or is updated while instant falling and ITT is on, then it will do the [instantfalling behavior](falling-block.md#instantfalling-behavior).
 
+Instant Falling is dimension-independent: Turning it on in one dimension turns it on in all dimensions.
+In singleplayer Instant Falling is world-independent: If you turn on Instant Falling in one world, then leave the world and open another world, then Instant Falling will still be on as long as you didn't populate any chunks when opening the new world.
+
 Instantfalling dragon eggs can break bedrock except at y=0. Turning on the instant falling flag and using dragon eggs is one of the easiest and fastest ways to break bedrock above y=0.
 
+Instant Falling exists and can be [turned on in 1.13](https://www.youtube.com/watch?v=CfMSatbWyfo). Since dragon eggs no longer break bedrock in 1.13, it is not useful.
+
 # Redstone Power Flag
+The redstone power flag is turned off if an update suppression occurs while a redstone dust block is checking whether it is receiving power.
+Update suppressing this consistently requires the [getBlockState() to setBlockState() property of terrain population](chunk/population.md#redstone-power-suppression).
+
+When the redstone power flag is off, blocks no longer receive any power from redstone dust blocks.
+
+The redstone power flag is dimension-independent: Turning it off in one dimension turns it off in all dimension.
+But in singleplayer it is world-dependent: Leaving a world and opening a world will reset the redstone power flag, so that it is on again.
