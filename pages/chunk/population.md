@@ -138,7 +138,7 @@ It iterates through all positions it wants to move, and adds the blockstate at t
 During the creation of the list no block updates get send out, however a lot of getBlockState() calls are made. If one of the getBlockState() calls triggers a terrain population,
 the blocks that the piston wants to move can be changed, and this makes it possible for the piston to then move immovable blocks.
 
-The [history of this bug](history.md#tnt-vs-pig) is quite involved.
+The [history of this bug](../history.md#tnt-vs-pig) is quite involved.
 
 ## Glass threads causing async updates
 Whenever you place a stained glass block, it starts a new async thread which does getBlockState() calls below itself to check for beacons which need to change their beacon beam color.
