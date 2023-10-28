@@ -1,6 +1,26 @@
-This is a page about update suppression.
+# Update Suppression
 
-An excellent video explanation is [Xcom's Update Suppression Explained](https://www.youtube.com/watch?v=IJhZpK-8p54)
+An excellent video explanation is [Update Suppression Explained](https://www.youtube.com/watch?v=IJhZpK-8p54) by Xcom.
+
+Update suppression was discovered by Panda4994 and RedstoneSpire and shown in the video [Update Suppression, Block Duplication, Skull Converter and More](https://www.youtube.com/watch?v=mzfLHNeqjuY).
+
+## Table of Contents
+
+- [Introduction](#introduction)
+- [Basic Applications](#basic-applications)
+  * [Blocks in invalid states](#blocks-in-invalid-states)
+  * [Item Duplication](#item-duplication)
+  * [Skeleton Skulls](#skeleton-skulls)
+- [Population Suppression](#population-suppression)
+- [Suppressing comparator updates](#suppressing-comparator-updates)
+  * [Tile Entity Swap](#tile-entity-swap)
+  * [Item Shadowing](#item-shadowing)
+  * [Igloo Barrier](#igloo-barrier)
+  * [1.13 Threadstone](#113-threadstone)
+- [Miscellaneous](#miscellaneous)
+  * [Multiply by 8 teleportation](#multiply-by-8-teleportation)
+
+
 
 # Introduction
 
@@ -17,7 +37,6 @@ This is a picture of an update suppressor.
 
 If [instant tile ticks](global-flags.md#instant-tile-ticks) are on, then any tile tick based clock is an update suppressor.
 
-Update suppression was discovered by Panda4994 and RedstoneSpire and published in the video [Update Suppression, Block Duplication, Skull Converter and More](https://www.youtube.com/watch?v=mzfLHNeqjuY).
 
 # Basic Applications
 
@@ -57,7 +76,9 @@ If one of the block updates of the skull causes an update suppression, then the 
 Just like above we also get an item duplication here and the wither skeleton skull item will stay in the players inventory.
 
 # Population Suppression
-See [Terrain Population](chunk/population.md#population-suppression)
+Update suppression during [Terrain Population](chunk/population.md) can be used to manipulate [global-flags](global-flags.md), create invisible chunks and create barrier blocks.
+
+See [Terrain Population - Population Suppression](chunk/population.md#population-suppression).
 
 # Suppressing comparator updates
 
@@ -88,7 +109,8 @@ In this case one item stack instance will simultaneously be both in the players 
 This enables a very versatile form of wireless item transfer.
 
 ## Igloo Barrier
-See [Terrain Population](chunk/igloo-barrier-block.md).
+The floating comparator trick can be used to update suppress an igloo population in such a way that it creates a barrier block.
+See [Terrain Population - Igloo Barrier Block](chunk/igloo-barrier-block.md).
 
 ## 1.13 Threadstone
 The floating comparator trick is of crucial importance to 1.13 threadstone.
