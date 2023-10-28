@@ -144,7 +144,7 @@ The [history of this bug](../history.md#slimeblocks--tnt-duping-and-pig-spawner-
 
 ## Glass threads causing async updates
 Whenever you place a stained glass block, it starts a new async thread which does getBlockState() calls below itself to check for beacons which need to change their beacon beam color.
-If one of those getBlockState() calls triggers an [async chunk loading](async-chunk-loading.md), then this can trigger an async terrain population and cause async block updates.
+If one of those getBlockState() calls triggers an [async chunk loading](async-chunk-loading.md), then this can trigger an async terrain population and cause async block updates. These async block updates can then activate an [async line](../async-line.md).
 This is the basis for all threadstone exploits.
 
 # Miscellaneous
