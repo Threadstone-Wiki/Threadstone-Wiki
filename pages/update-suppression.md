@@ -15,6 +15,8 @@ This is a picture of an update suppressor.
 
 ![Picture of Update Suppressor](/images/UpdateSuppressor.PNG)
 
+If [instant tile ticks](global-flags.md#instant-tile-ticks) are on, then any tile tick based clock is an update suppressor.
+
 Update suppression was discovered by Panda4994 and RedstoneSpire and published in the video [Update Suppression, Block Duplication, Skull Converter and More](https://www.youtube.com/watch?v=mzfLHNeqjuY).
 
 # Basic Applications
