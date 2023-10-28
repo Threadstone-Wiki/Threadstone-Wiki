@@ -107,6 +107,8 @@ Whenever a structure block has to replace a block with a tile entity by another 
 Igloos contain a furnace which is a tile entity block. If there is already a tile entity at the position where the furnace gets placed, the igloo population will replace it by a barrier block before replacing it by a furnace.
 If one causes an update suppression right after the barrier is placed, one can permanently create a barrier block.
 
+The barrier block placement does not send out normal block updates, so to update suppress it one either needs to use an observer with [instant tile ticks](../global-flags.md#instant-tile-ticks), or [suppress the comparator updates](../update-suppression.md#suppressing-comparator-updates) when the previous tile entity gets removed.
+
 # getBlockState() to setBlockState() exploits <a name="get-to-set"/>
 A getBlockState() call can trigger chunk loading.
 Chunk loading can trigger terrain population.
