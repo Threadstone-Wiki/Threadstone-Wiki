@@ -97,7 +97,7 @@ When a tile entity block gets destroyed, it will first delete the block, then se
 If the comparator updates get suppressed, then the tile entity of the block will stay, even though the block is already gone.
 
 Tile Entity Swaps are applied in:
-- [Class Cast Suppressors](https://www.youtube.com/watch?v=f4ty-PZcvrI)-
+- [Class Cast Suppressors](https://www.youtube.com/watch?v=f4ty-PZcvrI)
 - Population method for Falling Barrier
 
 ## Item Shadowing
