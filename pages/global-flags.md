@@ -1,6 +1,6 @@
 # Global Flags
 
-This page is about global boolean flags that can be turned on or off.
+This page is about global boolean flags that can be turned on or off by using [update suppression](update-suppression.md) during [terrain population](chunk/population.md).
 
 A video showcase of Instant Tile Ticks and Instant Falling is in coolmann's [Instant Tile Tick Execution \[New Item Dupe\] \[Easy Bedrock Breaking\] \[Game Altering\] \[1.12\]](https://www.youtube.com/watch?v=hViDrnDCIwc)
 
