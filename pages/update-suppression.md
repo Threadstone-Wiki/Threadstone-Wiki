@@ -1,4 +1,4 @@
-# Update Suppression
+# Update Suppression ☆
 
 An excellent video explanation is [Update Suppression Explained](https://www.youtube.com/watch?v=IJhZpK-8p54) by Xcom.
 
