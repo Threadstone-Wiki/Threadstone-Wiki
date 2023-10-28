@@ -1,4 +1,4 @@
-# Terrain Population
+# Terrain Population ☆
 
 - [Introduction](#introduction)
 - [Manipulating Population](#manipulating-population)
