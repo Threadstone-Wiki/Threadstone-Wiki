@@ -1,5 +1,7 @@
 # Double Tile Tick Scheduling
 
+Double Tile Tick Scheduling is a complicated bug discovered by [Earthcomputer](https://www.youtube.com/@Earthcomputer). The bug has no important applications and full explanation of it has never been published on youtube.
+
 ## Table of Contents
 
 - [Introduction](#introduction)
@@ -45,7 +47,7 @@ but it will never compare it with T1. So in the end T2 gets entered into the tre
 To get this to work in practice the main thing you need to do is treeify one of the buckets of the tile tick hashset.
 For this you need to schedule a lot of tile ticks with the same hash value.
 
-The contraption you can see at 1:25 of the vieo [wireless redstone again i guess xd](https://www.youtube.com/watch?v=9KZ8i7fVbr4) is a double tile tick scheduler.
+The contraption you can see at 1:25 of Earthcomputer's video [wireless redstone again i guess xd](https://www.youtube.com/watch?v=9KZ8i7fVbr4) is a double tile tick scheduler.
 It goes a few hundred blocks into the distance, and every 32 blocks  or so it activates an observer which schedules a tile tick.
 All the tile ticks from the observers have the same hash value and go into the same hash bucket.
 The contraption schedules enough tile ticks to treeify that hash bucket.
