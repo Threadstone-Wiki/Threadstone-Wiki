@@ -76,7 +76,11 @@ If one of the block updates of the skull causes an update suppression, then the 
 Just like above we also get an item duplication here and the wither skeleton skull item will stay in the players inventory.
 
 # Population Suppression
-Update suppression during [Terrain Population](chunk/population.md) can be used to manipulate [global-flags](global-flags.md), create invisible chunks and create barrier blocks.
+Update suppression during [Terrain Population](chunk/population.md) can be used for:
+
+- Manipulating [global-flags](global-flags.md), like instant tile ticks, instant falling and redstone power flag.
+- Creating invisible chunks
+- Creating barrier blocks.
 
 See [Terrain Population - Population Suppression](chunk/population.md#population-suppression).
 
