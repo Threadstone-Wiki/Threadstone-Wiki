@@ -50,7 +50,8 @@ If a chain of n observers is updated, then the last observer of the chain sends 
 The stacksize required for this is proportional to n.
 This makes it possible to create exponential lag without running into a stack overflow.
 The block updates at the end of the observer chain are send out at a very high frequency.
-This makes observer chains very useful async lines.
+
+This makes observer chains very useful [async lines](async-line.md).
 
 ## Dispensers
 When an unpowered dispenser receives power and is updated it will do the following things:
