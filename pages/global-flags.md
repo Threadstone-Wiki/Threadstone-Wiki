@@ -46,9 +46,13 @@ Some interesting behaviors of blocks on ITT include the following.
 ## Observers
 If an observer is updated it turns on and off and then sends out block updates.
 
-If a chain of n observers is updated, then the last observer of the chain sends out 2^n block updates.
+If a chain of n observers is updated, then the last observer of the chain sends out 2^n block updates, for the following reason: Whenever an observer in the chain observes a state change in a preivous observer, it will turn on and off, and thereby activate the observer chain behind itself twice. So adding one observer to the chain doubles the amount of state changes of the last observer. 
+
 The stacksize required for this is proportional to n.
 This makes it possible to create exponential lag without running into a stack overflow.
+
+A chain of 40 observers requires weeks to complete on most hardware.
+
 The block updates at the end of the observer chain are send out at a very high frequency.
 
 This makes observer chains very useful [async lines](async-line.md).
