@@ -58,7 +58,7 @@ Block event packets are not disabled, so piston actions will always be visible.
 
 ### Running Out
 
-An async line that is over 40 blocks long theoretically takes centuries to run out.
+An async line that is over 40 blocks long theoretically takes weeks to run out.
 However it can run out much faster if:
 - Blocks from the async lines are broken
 - Observers get stuck in a permanently powered state, due to word tearing or [random palette corruptions](#random-palette-corruptions)
