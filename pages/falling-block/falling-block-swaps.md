@@ -43,7 +43,7 @@ This method was performed on KiwiTech, as shown in rpm's video [Getting Falling 
 ### Barrier
 This method was performed on KiwiTech, as shown in rpm's video [Getting Falling Blocks on KiwiTech, at 13:15](https://www.youtube.com/watch?v=wiCrgOcSKSE&t=795s).
 
-As explained in [Terrain Population - Igloo Barrier Block], when an igloo has to replace a block with a tile entity by a furnace, it will first replace that block by a barrier block before placing the furnace.
+As explained in [Terrain Population - Igloo Barrier Block](../chunk/population.md#igloo-barrier-block), when an igloo has to replace a block with a tile entity by a furnace, it will first replace that block by a barrier block before placing the furnace.
 If this barrier block replaces a gravity-affected block like sand, one can use this for a falling block swap.
 
 There is one difficulty with this idea: No gravity-affected block has tile entity data, and the igloo population would replace a block without tile entity data directly by the furnace instead of placing the barrier.
