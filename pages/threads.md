@@ -79,3 +79,7 @@ In Spigot Paper the patch that removes this code is called the ["Shame on you mo
 
 # Chunk Saving Thread
 Whenever an autosave occurs, all loaded chunks get saved to disk, and whenever chunk is unloaded, it gets saved to disk. These chunk saving operations happen on a separate thread called the *chunk saving thread*.
+
+If a chunk gets unloaded, and gets reloaded before the chunk saving thread finished saving it, then the chunk will not be loaded from disk, but it will be returned from a cache in exactly the state it was before unloading.
+This can cause [savestates to fail](chunk/savestates.md#quick-reloads-break-savestates). This failure is especially likely, since it takes a long time for the chunk saving thread to (fail to) save a savestated chunk because savestated chunks contains so much data.
+
