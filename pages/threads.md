@@ -101,8 +101,9 @@ There are uninteresting threads with the following names:
 - Server console handler
 - Realms-connect-task
 - User Authenticator
-- Texture Download
+- Texture Downloader
 - LanServerDetector
 - Server connector
 - Sound Library Loader
 - LanServerPinger
+- Downloader
