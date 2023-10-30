@@ -109,20 +109,20 @@ If one causes an update suppression right after the barrier is placed, one can p
 
 The barrier block placement does not send out normal block updates, so to update suppress it one either needs to use an observer with [instant tile ticks](../global-flags.md#instant-tile-ticks), or [suppress the comparator updates](../update-suppression.md#suppressing-comparator-updates) when the previous tile entity gets removed.
 
-# getBlockState() to setBlockState() exploits <a name="get-to-set"/>
-A getBlockState() call can trigger chunk loading.
-Chunk loading can trigger terrain population.
-Terrain population triggers setBlockState() calls.
+# `getBlockState` to `setBlockState` exploits <a name="get-to-set"/>
+A `getBlockState` call can immediately trigger chunk loading.
+Chunk loading can immediately trigger terrain population.
+Terrain population immediately triggers `setBlockState` calls.
 
-So thanks to terrain population, it is possible for a getBlockState() call to trigger a setBlockState() call during its execution.
+So thanks to terrain population, it is possible for a `getBlockState` call to trigger a `setBlockState` call during its execution.
 
 ## Redstone Power Flag Suppression
 There is a [global redstone power flag](../global-flags.md#redstone-power-flag). Whenever redstone dust is updated, it turns off the redstone power flag, then checks whether it is receiving power from adjacent blocks, and then turns the redstone power flag back on again.
 This system is necessary to prevent redstone dust from powering itself.
 If an update suppression occurs while the redstone checks whether it is receiving power, then the redstone power flag stays on permanently.
-While the redstone dust checks whether it is receiving power it is only doing getBlockState() calls and does not send out any block updates, unless one of the getBlockState() calls triggers a terrain population.
+While the redstone dust checks whether it is receiving power it is only doing `getBlockState` calls and does not send out any block updates, unless one of the `getBlockState` calls triggers a terrain population.
 Without terrain population it is thus very difficult to cause an update suppression while redstone dust is checking whether it is receiving power.
-With terrain population however the getBlockState() call can trigger a setBlockState() call which can send block updates which can be easily update suppressed and permanently turn on the redstone power flag.
+With terrain population however the `getBlockState` call can trigger a `setBlockState` call which can send block updates which can be easily update suppressed and permanently turn on the redstone power flag.
 
 The redstone power flag will turn back off again if a piece of redstone dust gets successfully updated.
 
@@ -137,15 +137,22 @@ Whenever it tries to enter a position into the toMove list it first checks wheth
 Once the two lists have been completed, the piston then creates an additional list containing all the blockstates of the blocks it wants to move.
 It iterates through all positions it wants to move, and adds the blockstate at that position to its blockstate list, without checking whether that block is still movable.
 
-During the creation of the list no block updates get send out, however a lot of getBlockState() calls are made. If one of the getBlockState() calls triggers a terrain population,
+During the creation of the list no block updates get send out, however a lot of `getBlockState` calls are made. If one of the `getBlockState` calls triggers a terrain population,
 the blocks that the piston wants to move can be changed, and this makes it possible for the piston to then move immovable blocks.
 
 The [history of this bug](../history.md#slimeblocks--tnt-duping-and-pig-spawner-generation) is quite involved.
 
 ## Glass threads causing async updates
-Whenever you place a stained glass block, it starts a new async thread which does getBlockState() calls below itself to check for beacons which need to change their beacon beam color.
-If one of those getBlockState() calls triggers an [async chunk loading](async-chunk-loading.md), then this can trigger an async terrain population and cause async block updates. These async block updates can then activate an [async line](../async-line.md).
+Whenever you place a stained glass block, it starts a new async thread which does `getBlockState` calls below itself to check for beacons which need to change their beacon beam color.
+If one of those `getBlockState` calls triggers an [async chunk loading](async-chunk-loading.md), then this can trigger an async terrain population and cause async block updates. These async block updates can then activate an [async line](../async-line.md).
 This is the basis for all threadstone exploits.
+
+To make the async chunk load trigger a terrain population there are two possible methods:
+
+- One can use an invisible chunk next to the asyncly loaded chunk, in such a way that the asyncly loaded chunk is in the population 2x2 grid of the invisible chunk.
+The async chunk load can then populate the invisible chunk on the async thread.
+
+- The asyncly loaded chunk can itself be unpopulated on disk. Then loading the chunk on the async thread can populate the chunk on the async thread.
 
 # Miscellaneous
 
