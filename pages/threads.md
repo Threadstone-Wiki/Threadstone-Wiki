@@ -31,14 +31,14 @@ and under lag-free circumstances waits 0.05 seconds between game ticks.
 All threads which are not the main thread are called *async threads*.
 
 # Client Threads
-The *client thread* is responsible for rendering the game and playing sounds.
+There is a *client*, consisting of several *client threads*, responsible for rendering the game and playing sounds.
 So everything you see and hear in minecraft is done by the client.
 
-In singleplayer there is a single client thread. In multiplayer there is one client thread for every player on the server.
-In singleplayer the client thread is part of the same JVM as all the other threads.
-In multiplayer the client thread is part of a separate JVM and might even be on a different computer.
+In singleplayer there is a single client. In multiplayer there is one client for every player on the server.
+In singleplayer the client is part of the same JVM as all the other threads.
+In multiplayer the client is part of a separate JVM and might even be on a different computer.
 
-All threads which are not client threads are called *server threads*.
+All threads which are not part of a client are called *server threads*.
 
 # Stained Glass Threads
 Every time you place or break a stained glass block in minecraft, the game starts a new thread, called the *stained glass thread*.
@@ -117,13 +117,11 @@ The `initTimerHackThread` method is called early in the `startGame` method.
 I have no clue what the point of this is.
 
 ## Miscellaneous
-- The "Server console handler"
-- The "Realms-connect-task"
-- Multiple "User Authenticator" threads
-- The "Texture Download" threads, for downloading skins
-- An entire list of clientside "Chunk Batcher" Threads, used for rendering.
-- A list of "LanServerDetector" threads
-- The "Server connector"
-- The clientside "Client Shutdown Thread"
-- The "Sound Library Loader"
-- The "LanServerPinger"
+- "Server console handler"
+- "Realms-connect-task"
+- "User Authenticator"
+- "Texture Download"
+- "LanServerDetector"
+- "Server connector"
+- "Sound Library Loader"
+- "LanServerPinger"
