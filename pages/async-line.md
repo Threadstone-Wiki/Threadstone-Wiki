@@ -2,13 +2,23 @@ This page is about async lines.
 
 # Introduction
 
-An async line is a redstone contraption that is
-- activated on an async glass thread
-- keeps the async glass thread alive for a long time
-- sends out async block updates at a high frequency
+An *update multiplier* is a redstone contraption that detects updates or redstone power changes at its input,
+and [immediately](tick-phases.md#immediate-updates) sends out multiple updates or redstone power changes at its output, in such a way that the output could be used to activate a copy of that same update multiplier multiple times.
 
-Async lines usually require [instant tile ticks](global-flags.md#instant-tile-ticks) to work.
-If ITT is on, then a long chain of observers makes for an excellent async line.
+Update multipliers usually require [instant tile ticks](global-flags.md#instant-tile-ticks) to work.
+If ITT is on, then an observer block is an update multiplier, and it is by far the most important kind of update multiplier.
+
+An *update multiplier chain* is a chain of identical update multipliers, where the output of each update multplier is connected to the input of the next update multiplier in the chain.
+The number of update multipliers in the chain is called the *length* of the chain.
+The number of block updates that get send out at the end of an update multiplier chain increases exponentially with the length of the chain.
+This makes long update multiplier chains very laggy, and and activating them causes lag spikes that can last hours, weeks or centuries, during which millions of block updates get send out.
+For example a chain of ITT observers of length n, sends out 2^n block updates at the end of the chain, and a chain of 40 observers usually requires several weeks to finish.
+
+An *async line* is a long update multiplier chain that has been activated on an async thread.
+The async line keeps the async thread alive for a long time, while the main thread continues running as normal.
+While the async line is running it constantly sends out async block updates which can be used for [threadstone exploits](#applications).
+
+Long observer chains make for excellent async lines, especially since they send out the block updates at the end at a very rapid frequency.
 
 To activate an async line on the async glass thread in survival one needs to perform an [async chunk load](chunk/async-chunk-loading.md).
 This async chunk load needs to trigger a [terrain population](chunk/population.md#glass-threads-causing-async-updates).
@@ -53,6 +63,8 @@ Block event packets are not disabled, so piston actions will always be visible.
 ### ConcurrentModificationException in the PlayerChunkMap
 
 ### TickNextTickList ouf of synch crash
+
+### Updating Block 36 while modifying Tile Entities
 
 ## Async Line Death
 
