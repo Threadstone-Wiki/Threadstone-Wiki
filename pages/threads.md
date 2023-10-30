@@ -92,7 +92,7 @@ This can cause [savestates to fail](chunk/savestates.md#quick-reloads-break-save
 The *Server Watchdog* is thread that shuts down the server, if a tick takes longer than the `max-tick-time` specified in the `server.properties`
 
 # Timer Hack Thread
-There is a *Timer Hack Thread* which gets started at the beginning of the game, and which then just sleeps forever doing nothing.
+There is a *timer hack thread* which gets started at the beginning of the game, and which then just sleeps forever doing nothing.
 On Windows having such a completely inactive thread in the background improves the accuracy of `Thread.sleep` calls.
 For details see [this stackoverflow answer](https://stackoverflow.com/questions/824110/accurate-sleep-for-java-on-windows/824472#824472).
 
