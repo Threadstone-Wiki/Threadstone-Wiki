@@ -89,7 +89,7 @@ If a chunk gets unloaded, and gets reloaded before the chunk saving thread finis
 This can cause [savestates to fail](chunk/savestates.md#quick-reloads-break-savestates). This failure is especially likely, since it takes a long time for the chunk saving thread to (fail to) save a savestated chunk because savestated chunks contains so much data.
 
 # Server Watchdog 
-The *Server Watchdog* is thread that shuts down the server, if a tick takes longer than the `MAX_TICK_TIME` specified in the `server.properties`
+The *Server Watchdog* is thread that shuts down the server, if a tick takes longer than the `max-tick-time` specified in the `server.properties`
 
 # Timer Hack Thread
 In the `Minecraft` class there is the following code:
@@ -110,7 +110,7 @@ private void initTimerHackThread() {
 		thread.start();
 	}
 ```
-The `initTimerHackThread` method is called early in the `startGame` method.
+This `initTimerHackThread` method is called early in the `startGame` method.
 I have no clue what the point of this is.
 
 # Miscellaneous
