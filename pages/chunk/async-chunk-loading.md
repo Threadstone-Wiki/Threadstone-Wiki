@@ -2,72 +2,25 @@ This page is about async chunk loading.
 
 # Introduction
 
-Whenever you place or break a stained glass block, the game starts a new asynchronous thread which checks for beacons below the stained glass block.
-More precisely it runs the following code in the BlockBeacon class.
+When a [chunk](chunk.md) is loaded on an [async thread](../threads.md), this is called an *async chunk load*.
 
-```
-public static void updateColorAsync(final World worldIn, final BlockPos glassPos)
-    {
-        HttpUtil.DOWNLOADER_EXECUTOR.submit(new Runnable()
-        {
-            public void run()
-            {
-                Chunk chunk = worldIn.getChunkFromBlockCoords(glassPos);
+Async chunk loading is important, because an async chunk load can trigger an [async terrain population](population.md#glass-threads-causing-async-updates), which then causes async block updates,
+which can be used for [threadstone exploits](../async-line.md#applications).
 
-                for (int i = glassPos.getY() - 1; i >= 0; --i)
-                {
-                    final BlockPos blockpos = new BlockPos(glassPos.getX(), i, glassPos.getZ());
+The only async threads on which chunks can possibly be loaded are the [stained glass threads](../threads.md#stained-glass-threads).
 
-                    if (!chunk.canSeeSky(blockpos))
-                    {
-                        break;
-                    }
+Loading a chunk on a stained glass thread is quite difficult, because the `getBlockState` calls of the thread all happen below the stained glass block that started the thread,
+so these calls all happen in a chunk that was already loaded when the stained glass block got placed or broken.
 
-                    IBlockState iblockstate = worldIn.getBlockState(blockpos);
-
-                    if (iblockstate.getBlock() == Blocks.BEACON)
-                    {
-                        ((WorldServer)worldIn).addScheduledTask(new Runnable()
-                        {
-                            public void run()
-                            {
-                                TileEntity tileentity = worldIn.getTileEntity(blockpos);
-
-                                if (tileentity instanceof TileEntityBeacon)
-                                {
-                                    ((TileEntityBeacon)tileentity).updateBeacon();
-                                    worldIn.addBlockEvent(blockpos, Blocks.BEACON, 1, 0);
-                                }
-                            }
-                        });
-                    }
-                }
-            }
-        });
-    }
-```
-In the middle of that code block there is a getBlockState() call, which is run on the async thread.
-This getBlockState() call can load chunks on the async thread.
-When a chunk is loaded on an async thread, this is called an *async chunk load*.
-
-Making the getBlockState() call of the above code load chunks is quite difficult,
-because the chunk in which all of these calls happen is already loaded when the thread is started.
-To load a chunk with these getBlockState() calls one either needs to unload the chunk containing the stained glass, while the async thread is running,
-or load the chunk even though it is already loaded.
+To load a chunk with the `getBlockState` calls of a stained glass thread, one either needs to unload the chunk containing the stained glass block, while the async thread is running,
+or load the chunk, even though it is already loaded.
 
 If the chunk gets loaded even though it is already loaded, then this is called a *chunk swap*.
 
 If the chunk gets unloaded while the async thread is running, then the resulting async chunk load this is called a *regular load*.
 
-Unloading the chunk while async threads are running is difficult, because if the chunk is scheduled to unload in the next [unload phase](../tick-phases.md), and the async thread does a getBlockState() call before the chunk is actually unloaded, then the scheduled unloading gets cancelled, and the chunk does not get unloaded in the next unload phase.
-
-Async chunk loading is important, because an async chunk load can trigger an [async terrain population](population.md#glass-threads-causing-async-updates), which then causes async block updates.
-The life of the async thread can then be extended using async lines to create many more async block updates.
-
-The async block updates can then be used for threadstone exploits like:
-- creating unobtainable blocks with word tearing
-- obtaining unobtainable items with [falling block swaps](../falling-block/falling-block-swaps.md)
-- creating player heads
+Unloading the chunk while async threads are running in it is difficult, because if one schedules a chunk to be unloaded in the next [unload phase](../tick-phases.md#chunk-unloading), but the async thread does a `getBlockState` call before the chunk is actually unloaded, then the scheduled unloading gets cancelled, and the chunk does not get unloaded in the next unload phase. The last tick phase before the unload phase in which chunk unloading could possibly be scheduled is the [player phase](../tick-phases.md#player-phase).
+So to unload a chunk in which a stained glass thread is running, the main thread needs to get from the player phase, through the mob spawning phase, to the unload phase, all while the async thread does not do a single `getBlockState` call.
 
 # Chunk swap
 
