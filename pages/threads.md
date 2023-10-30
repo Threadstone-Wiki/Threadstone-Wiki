@@ -85,3 +85,41 @@ Whenever an autosave occurs, all loaded chunks get saved to disk, and whenever c
 If a chunk gets unloaded, and gets reloaded before the chunk saving thread finished saving it, then the chunk will not be loaded from disk, but it will be returned from a cache in exactly the state it was before unloading.
 This can cause [savestates to fail](chunk/savestates.md#quick-reloads-break-savestates). This failure is especially likely, since it takes a long time for the chunk saving thread to (fail to) save a savestated chunk because savestated chunks contains so much data.
 
+# Uninteresting Threads
+
+## Server Watchdog 
+The "Server Watchdog" is thread that shuts down the server, if a tick takes longer than the `MAX_TICK_TIME` specified in the `server.properties`
+
+## Timer Hack Thread
+In the `Minecraft` class there is the following code:
+```
+private void initTimerHackThread() {
+		Thread thread = new Thread("Timer hack thread") {
+			@Override
+			public void run() {
+				while (Minecraft.this.running) {
+					try {
+						Thread.sleep(2147483647L);
+					} catch (InterruptedException var2) {
+					}
+				}
+			}
+		};
+		thread.setDaemon(true);
+		thread.start();
+	}
+```
+The `initTimerHackThread` method is called early in the `startGame` method.
+I have no clue what the point of this is.
+
+## Completely Uninteresting Threads
+- The "Server console handler"
+- The "Realms-connect-task"
+- Multiple "User Authenticator" threads
+- The "Texture Download" threads, for downloading skins
+- An entire list of clientside "Chunk Batcher" Threads, used for rendering.
+- A list of "LanServerDetector" threads
+- The "Server connector"
+- The clientside "Client Shutdown Thread"
+- The "Sound Library Loader"
+- The "LanServerPinger"
