@@ -7,10 +7,9 @@
 - [Client Threads](#client-threads)
 - [Stained Glass Threads](#stained-glass-threads)
 - [Chunk Saving Thread](#chunk-saving-thread)
-- [Uninteresting Threads](#uninteresting-threads)
-  * [Server Watchdog](#server-watchdog)
-  * [Timer Hack Thread](#timer-hack-thread)
-  * [Miscellaneous](#miscellaneous)
+- [Server Watchdog](#server-watchdog)
+- [Timer Hack Thread](#timer-hack-thread)
+- [Miscellaneous](#miscellaneous)
 
 
 # Introduction
@@ -89,12 +88,10 @@ Whenever an autosave occurs, all loaded chunks get saved to disk, and whenever c
 If a chunk gets unloaded, and gets reloaded before the chunk saving thread finished saving it, then the chunk will not be loaded from disk, but it will be returned from a cache in exactly the state it was before unloading.
 This can cause [savestates to fail](chunk/savestates.md#quick-reloads-break-savestates). This failure is especially likely, since it takes a long time for the chunk saving thread to (fail to) save a savestated chunk because savestated chunks contains so much data.
 
-# Uninteresting Threads
+# Server Watchdog 
+The *Server Watchdog* is thread that shuts down the server, if a tick takes longer than the `MAX_TICK_TIME` specified in the `server.properties`
 
-## Server Watchdog 
-The "Server Watchdog" is thread that shuts down the server, if a tick takes longer than the `MAX_TICK_TIME` specified in the `server.properties`
-
-## Timer Hack Thread
+# Timer Hack Thread
 In the `Minecraft` class there is the following code:
 ```
 private void initTimerHackThread() {
@@ -116,12 +113,13 @@ private void initTimerHackThread() {
 The `initTimerHackThread` method is called early in the `startGame` method.
 I have no clue what the point of this is.
 
-## Miscellaneous
-- "Server console handler"
-- "Realms-connect-task"
-- "User Authenticator"
-- "Texture Download"
-- "LanServerDetector"
-- "Server connector"
-- "Sound Library Loader"
-- "LanServerPinger"
+# Miscellaneous
+There are uninteresting threads with the following names:
+- Server console handler
+- Realms-connect-task
+- User Authenticator
+- Texture Download
+- LanServerDetector
+- Server connector
+- Sound Library Loader
+- LanServerPinger
