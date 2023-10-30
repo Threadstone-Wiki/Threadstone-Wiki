@@ -1,4 +1,4 @@
-Time in minecraft is separated into gameticks.
+Time in minecraft's [main thread](threads.md#main-thread) is separated into gameticks.
 
 # Introduction
 
