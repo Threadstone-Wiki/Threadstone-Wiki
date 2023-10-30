@@ -20,9 +20,14 @@ For example a chain of ITT observers of length n, sends out 2^n block updates at
 ## Async Lines
 When a long update multiplier chain is activated on an async thread it becomes an [async line](async-line.md).
 
+## Lag Spikes
+Sometimes one can positively influence race conditions by creating lag spikes on the main thread.
+Update multiplier chains are a good way to create such lag spikes.
+
+## Spamming Block Updates
 
 
-# Non-observer async lines
+# Non-observer update multipliers
 In the vast majority of circumstances observer chains are the best update multipliers.
 But there are also other update multipliers.
 
