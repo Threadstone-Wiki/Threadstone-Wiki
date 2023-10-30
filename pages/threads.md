@@ -24,6 +24,8 @@ In minecraft the following threads exist.
 The *main thread* is a thread that repeatedly executes [game ticks](tick-phases.md),
 and under lag-free circumstances waits 0.05 seconds between game ticks.
 
+All threads which are not the main thread are called *async threads*.
+
 # Client Threads
 The *client thread* is responsible for rendering the game and playing sounds.
 So everything you see and hear in minecraft is done by the client.
