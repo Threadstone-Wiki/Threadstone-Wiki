@@ -7,6 +7,10 @@
 - [Client Threads](#client-threads)
 - [Stained Glass Threads](#stained-glass-threads)
 - [Chunk Saving Thread](#chunk-saving-thread)
+- [Uninteresting Threads](#uninteresting-threads)
+  * [Server Watchdog](#server-watchdog)
+  * [Timer Hack Thread](#timer-hack-thread)
+  * [Miscellaneous](#miscellaneous)
 
 
 # Introduction
@@ -112,7 +116,7 @@ private void initTimerHackThread() {
 The `initTimerHackThread` method is called early in the `startGame` method.
 I have no clue what the point of this is.
 
-## Completely Uninteresting Threads
+## Miscellaneous
 - The "Server console handler"
 - The "Realms-connect-task"
 - Multiple "User Authenticator" threads
