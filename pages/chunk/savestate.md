@@ -169,7 +169,7 @@ When you unload a savestate chunk, you need to wait for a second or two before r
 or the savestates will not work and you simply get the savestated chunk with the activated savestates back.
 This happens for the following reason:
 When a chunk is unloaded, before it gets saved, it gets put into a cache in the AnvilChunkLoader.
-A [separate thread](Threads.md#chunk-saving-thread) in the ThreadedFileIOBase one by one takes chunks from that cache and saves them to disk.
+A [separate thread](../threads.md#chunk-saving-thread) in the ThreadedFileIOBase one by one takes chunks from that cache and saves them to disk.
 If a chunk is unloaded and then reloaded while it is still in the cache, then the chunk does not get loaded from disk, but simply gets returned from the cache.
 Since savestated chunks contain a large amount of data, it takes a long time to (fail to) save them,
 which means that it takes much longer for chunks to leave the cache if the cache contains savestated chunks.
