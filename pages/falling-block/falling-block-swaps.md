@@ -192,6 +192,23 @@ and BUD the rails by turning off the [redstone dust power flag](../global-flags.
 
 ### Spawner
 This method was performed on KiwiTech, as shown in rpm's video [Getting Falling Blocks on KiwiTech, at 8:30](https://www.youtube.com/watch?v=wiCrgOcSKSE&t=510s).
+An unlisted video during the development of this method is JKM's video [Are you sure about that?](https://www.youtube.com/watch?v=LgRDEetBtNI).
+
+At the beginning of dungeon population, the game fills the whole dungeon room with air, then places the ceiling and the floor, and then places the spawner. If we insert a sand block after the room has been cleared with air but before the spawner is placed, then the spawner replaces the sand.
+
+In the contraption we have a block below the position where the spawner will be generated, and below that block we have an ascending powered rail that gets powered and depowered by an async observer line. We have a sand block in the center of where the ceiling of the dungeon will be generated.
+
+At the beginning of any population the [instant falling flag](../global-flags.md#instant-falling) is turned on.
+When the dungeon room gets filled with air, it will update the sand (before the ceiling has any chance to get generated and delete the sand), and since instantfalling is on, the sand will fall right into the position where the spawner will be generated, on top of the block below the spawner position.
+When the dungeon floor starts generating, we detect block updates from that, and then load a chunk somewhere else that populates and turns off the instant falling flag.
+Dungeon floors can generate with holes. If a block below the dungeon floor is non-solid then the game will place no floor block above that block, and if there was already a block there it will even be deleted.
+Since the ascending powered rail below the block below the sand is not a solid block, the block below the sand will be deleted as part of dungeon floor generation. After this the sand block will be floating and it will receive async block updates from the ascending powered rail below while instant falling is off. When the main thread then replaces the sand by a spawner a falling block swap can occur.
+
+Updating a sand block through an ascending powered rail at the end of an observer line is much slower than directly updating a sand block with an observer line.
+So the falling block swap chances of this contraption are worse than the 5-10% chances that one usually has in falling block swap contraptions without cluster chunks.
+On Prototech it took the contraption over 100 attempts to produce one falling spawner.
+But due to spatial constraints it is not possible to avoid this problem when the spawner `setBlockState` happens on the main thread, because without something like an ascending powered rail, the block updates from an async line cannot reach the spawner position of a dungeon from outside.
+If the [spawner `setBlockState` happens on the async thread](#spawner-1), this problem can be avoided and 5-10% chances can be reached without cluster chunks.
 
 ### Barrier
 This method was performed on KiwiTech, as shown in rpm's video [Getting Falling Blocks on KiwiTech, at 13:15](https://www.youtube.com/watch?v=wiCrgOcSKSE&t=795s).
@@ -204,6 +221,9 @@ To overcome this difficult one needs to use a [tile entity swap](../update-suppr
 
 With the tile entity swap one can create air with tile entity data at the position where the furnace will be generated. One can then start the igloo population and let a sand block instantfall into the position of where the furnace will be generated.
 Since the air at that position had tile entity data, we then get a sand block with tile entity data. The igloo population will then replace that sand block by a barrier block, and this can be used to perform a falling block swap for the barrier.
+
+After the barrier has been placed, the main thread does an update suppression to terminate the igloo population and make the barrier block survive.
+If a successful falling block swap occurs, a falling barrier gets created, and once the falling barrier gets processed for the first time it will delete the barrier block and survive itself.
 
 ## setBlockState() on async thread
 
