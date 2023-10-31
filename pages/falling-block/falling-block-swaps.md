@@ -28,7 +28,7 @@ To replace the gravity-affected block by another block, there is a very large va
 There are [specific methods](#specific-methods) for falling block swaps, which can only create one particular type of falling block,
 and there are [generic methods](#generic-methods) for falling block swaps, which can create a wide variety of different falling blocks.
 
-The most useful methods for survival are the [generic method using hashmap word tearing](#hashmap-word-tearing),
+The most useful methods for survival are the [generic method using hashmap word tearing](generic-method.md),
 and the [specific method for nether portals using async portal lighting](#nether-portal-1).
 
 ## Falling Block Swaps with `setBlock` commands
@@ -230,6 +230,9 @@ If a successful falling block swap occurs, a falling barrier gets created, and o
 ### Nether Portal
 A video explanation for this method is in [Falling Block Episode 2 at 27:22](https://www.youtube.com/watch?v=rNcFv5tccrg&t=1642s).
 
+
+
+
 ### End Portal Frame
 A video explanation for this method is in [Falling Block Episode 2 at 50:45](https://www.youtube.com/watch?v=rNcFv5tccrg&t=3045s).
 This one is very difficult, because strongholds are a structure, and structure population is synchronized.
@@ -243,9 +246,29 @@ Since dungeons are not a structure, dungeon population is not synchronized. This
 ## Hashmap Word Tearing
 A video explanation for this method is in [Falling Block Episode 6](https://www.youtube.com/watch?v=N1TuhgjUkc4).
 
+The Generic Method using Hashmap Word Tearing is the most important falling block swap method. It is often just called "The Generic Method".
+
+It can be used to create falling blocks of any block that can survive getting block updates while having air underneath itself.
+
+See [Generic Method using Hashmap Word Tearing](generic-method.md).
+
 ## JKM's True Generic Method
 JKM shows in the unlisted video [Yay large fern](https://www.youtube.com/watch?v=4fT3S6vRxSM) a fully general falling block swap method that can be used on every block of the game.
 This makes it possible to obtain large fern items, which is the only block item that exists in 1.12 that cannot be obtained using the hashmap word tearing based generic method.
+Obtaining large fern items is often considered to not be worth the effort, because the method is difficult, and in 1.14+ versions large fern items generate naturally in village chests.
 
-In 1.14+ versions large fern items generate naturally in village chests.
+JKM's true generic method works by doing an [unload chunk swap](../chunk/async-chunk-loading.md#unload-chunk-swap), except instead of doing it with the async `getBlockState` calls that every stained glass thread sends out,
+we create an async observer line in advance, let the observer line update a non-floating sand block, and use the async `getBlockState` calls in the code of the sand block for the chunk swap.
+The chunk in which we do this is unpopulated on disk, so if the unload chunk swap succeeds, it will trigger an async population, and this async population will trigger an async line that slows down the async thread for a very long time, while it is still in the middle of the falling block code.
+If the `getBlockState` call that triggered the unload chunk swap was the first `getBlockState` call in the `tryFall` method of the falling block code,
+then this entire population will happen in the part of the code in which falling block swaps can happen. If one then replaces the sand by a different block, simply by mining it and placing a different block there as a player,
+one has successfully performed a falling block swap. After breaking the async line that slows down the async population, the async thread will continue the falling block code, and create a falling block of the new block the player placed at the position.
+
+If the unload chunk swap is triggered by a different `getBlockState` call than the first one of the `tryFall` method, the falling block swap fails.
+Whenever a unload chunk swap is successful, the chance that the correct `getBlockState` call triggered it seems to be roughly 1/3.
+If one uses floating sand blocks instead of non-floating sand blocks the chances appear to be worse.
+
+
+
+
 
