@@ -18,7 +18,7 @@
 
 # Introduction
 
-An *async line* is a long [update multiplier chain](update-multiplier.md), that has been activated on an async thread.
+An *async line* is a long [update multiplier chain](update-multiplier.md), that has been activated on an [async thread](threads.md#stained-glass-threads).
 Usually the update multiplier chain is an observer line.
 
 In an async line one can keep an async thread alive for a long time, while the main thread continues running as normal.
@@ -30,7 +30,7 @@ The terrain population then sends out async block updates which are used to acti
 
 In [carpet mod](https://github.com/gnembon/carpetmod112/releases) one can for testing purposes create an async line using commands.
 The command `/carpet asyncBeaconUpdates true` makes it so that beacons that receive redstone power send out async block updates around them every time they get updated.
-The command `/carpet instantScheduling true` turn on ITT.
+The command `/carpet instantScheduling true` turn on [instant tile ticks](global-flags.md#instant-tile-ticks).
 One can then create an async line by having a beacon leading into a long chain of observers, and then powering the beacon.
 Such an async line looks like this
 
