@@ -1,1 +1,1 @@
-This page is about the generic method for [falling block swaps](#falling block swaps) that uses [hashmap word tearing](../word-tearing.md#hashmap-word-tearing) to replace the gravity affected blocks by the interesting blocks.
+This page is about the generic method for [falling block swaps](falling-block-swaps.md) that uses [hashmap word tearing](../word-tearing.md#hashmap-word-tearing) to replace the gravity affected blocks by the interesting blocks.
