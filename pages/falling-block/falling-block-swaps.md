@@ -110,6 +110,7 @@ A falling block swap occurs if the sand block is replaced by another block, afte
 but before the `getBlockState` call in the falling block entity creation line of the `tryFall` method has been executed.
 
 ## Optimizing Chances with Cluster Chunks
+A video explanation of improving falling block swap chances with cluster chunks is in [Falling Block Episode 5](https://www.youtube.com/watch?v=DhohUJiJ1E8).
 
 The `world.isAreaLoaded(pos.add(-32, -32, -32), pos.add(32, 32, 32)))` call in the `tryFall` method can be slowed down using [cluster chunks](../chunk/cluster-chunks.md) by slowing down chunk accesses to chunks that are less than 32 blocks away from the sand.
 Slowing down that call increases the amount of time that passes between the sand check in the `scheduleTick` method and the crucial `getBlockState` call in the `tryFall` method.
