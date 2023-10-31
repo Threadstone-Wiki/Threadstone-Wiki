@@ -41,7 +41,7 @@ The left command block contains a `/setblock` command that replaces the end port
 
 The right command block contains a `/setblock` command that replaces that sand block by an end portal frame again.
 
-On the left side of the picture we have a powered beacon and an observer line with which we can create an [async line using carpet commands](async-lines-using-carpet-commands).
+On the left side of the picture we have a powered beacon and an observer line with which we can create an [async line using carpet commands](../async-line.md#async-lines-using-carpet-commands).
 
 To use the contraption, first create an async observer line by using `/carpet asyncBeaconUpdates true`, `/carpet instantScheduling true` and powering the beacon.
 Then repeatedly flick the lever on the left command block.
