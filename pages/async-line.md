@@ -8,7 +8,7 @@
   * [Disabled Packets](#disabled-packets)
   * [Random Palette Corruptions](#random-palette-corruptions)
   * [Server Crashes](#server-crashes)
-    + [`ConcurrentModificationException` in the PlayerChunkMap](#CME-PCM)
+    + [`ConcurrentModificationException` in the PlayerChunkMap](#cme-pcm)
     + [TickNextTick list ouf of synch crash](#ticknexttick-list-ouf-of-synch-crash)
 - [Async Line Death](#async-line-death)
   * [Running Out](#running-out)
@@ -61,7 +61,7 @@ If one wants to see what happens in a subchunk in which an async line is or was 
 Block event packets are not disabled, so piston actions will always be visible.
 
 One can use the carpet rule `/carpet asyncPacketUpdateFix true` to prevent async lines from disabling packets.
-However this is a terrible idea, because it greatly increases the chances of [`ConcurrentModificationExceptions` in the PlayerChunkMap](#CME-PCM),
+However this is a terrible idea, because it greatly increases the chances of [`ConcurrentModificationExceptions` in the PlayerChunkMap](#cme-pcm),
 so one should just never ever use that rule.
 
 ## Random Palette Corruptions
@@ -82,7 +82,7 @@ There are many different ways in which an async line can crash the server, depen
 
 The following crashes one can run easily into even if one is careful about what one is updating at the end of the async line.
 
-### `ConcurrentModificationException` in the PlayerChunkMap <a name="CME-PCM"/>
+### `ConcurrentModificationException` in the PlayerChunkMap <a name="cme-pcm"/>
 
 ![CME PlayerChunkMap](../images/CMEPlayerChunkMap.png)
 
