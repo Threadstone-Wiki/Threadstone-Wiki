@@ -10,9 +10,9 @@
   * [Server Crashes](#server-crashes)
     + [`ConcurrentModificationException` in the PlayerChunkMap](#CME-PCM)
     + [TickNextTick list ouf of synch crash](#ticknexttick-list-ouf-of-synch-crash)
-  * [Async Line Death](#async-line-death)
-    + [Running Out](#running-out)
-    + [Async Thread Crashing](#async-thread-crashing)
+- [Async Line Death](#async-line-death)
+  * [Running Out](#running-out)
+  * [Async Thread Crashing](#async-thread-crashing)
 
 
 
@@ -112,9 +112,9 @@ So if one wants to use an async line in the nether without crashing the server, 
 A cheaty way to prevent this second cause of the crash is to use the carpet rule `/carpet calmNetherFires true`, which is an optimization rule invented before any threadstone eploits were discovered, and which
 stops fire on netherrack from scheduling tile ticks.
 
-## Async Line Death
+# Async Line Death
 
-### Running Out
+## Running Out
 
 An async line that is over 40 blocks long theoretically takes weeks to run out.
 However it can run out much faster if:
@@ -124,7 +124,7 @@ However it can run out much faster if:
 - ITT is turned off
 
 
-### Async Thread Crashing
+## Async Thread Crashing
 
 There are many different ways in which an async thread can crash, depending on what is being updated at the end of the async line.
 
