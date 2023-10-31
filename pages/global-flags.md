@@ -23,7 +23,7 @@ Another video explaining global flags is [Falling Block Episode 1](https://www.y
 Instant Tile Ticks can be turned on by [update suppressing the population of a liquid pocket](chunk/population.md#instant-tile-ticks).
 Instant Tile Ticks are sometimes abbreviated as ITT.
 
-When ITT is on, then all tile tick blocks perform their actions [immediately](tick-phases.md#immediate-updates) when they get updated, instead of scheduling their action for the [tile tick phase](tickphases.md#tile-ticks).
+When ITT is on, then all tile tick blocks, except for the fire block, perform their actions [immediately](tick-phases.md#immediate-updates) when they get updated, instead of scheduling their action for the [tile tick phase](tickphases.md#tile-ticks).
 
 ITT is dimension-dependent: Changing it in the overworld will not change it in the nether, and changing it in the nether will not change it in the overworld.
 
