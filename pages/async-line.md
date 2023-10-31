@@ -60,6 +60,10 @@ If one wants to see what happens in a subchunk in which an async line is or was 
 
 Block event packets are not disabled, so piston actions will always be visible.
 
+One can use the carpet rule `/carpet asyncPacketUpdateFix true` to prevent async lines from disabling packets.
+However this is a terrible idea, because it greatly increases the chances of [`ConcurrentModificationExceptions` in the PlayerChunkMap](#CME-PCM),
+so one should just never ever use that rule.
+
 ## Random Palette Corruptions
 In the subchunks in which an async line is running, blocks can be changed in unexpected ways. Blocks can change through [word tearing](word-tearing.md),
 or through random palette corruptions that happen when the palette of a subchunk is upsizing while an async line is running in the subchunk.
