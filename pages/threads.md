@@ -32,6 +32,16 @@ All threads which are not the main thread are called *async threads*.
 # Client Threads
 There is a *client*, consisting of several *client threads*, responsible for rendering the game and playing sounds.
 So everything you see and hear in minecraft is done by the client.
+In each client there are client threads with the following names:
+- Client Thread
+- Client Shutdown Thread
+- Chunk Batcher
+- Sound Library Loader
+- Texture Downloader
+- Downloader
+- LanServerDetector
+- Server connector
+- Realms-connect-task
 
 In singleplayer there is a single client. In multiplayer there is one client for every player on the server.
 In singleplayer the client is part of the same JVM as all the other threads.
@@ -97,13 +107,7 @@ On Windows having such a completely inactive thread in the background improves t
 For details see [this stackoverflow answer](https://stackoverflow.com/questions/824110/accurate-sleep-for-java-on-windows/824472#824472).
 
 # Miscellaneous
-There are uninteresting threads with the following names:
+There are server threads with the following names:
 - Server console handler
-- Realms-connect-task
 - User Authenticator
-- Texture Downloader
-- LanServerDetector
-- Server connector
-- Sound Library Loader
 - LanServerPinger
-- Downloader
