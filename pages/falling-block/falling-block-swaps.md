@@ -4,26 +4,59 @@ This page is about falling block swaps
 A video explanation of falling block swaps is in [Falling Block Episode 2](https://www.youtube.com/watch?v=rNcFv5tccrg).
 That video first covers pre-requisites for understanding falling block swaps, and starts explaining falling block swaps themselves at [13:50](https://www.youtube.com/watch?v=rNcFv5tccrg&t=830s).
 
-Falling block swaps are a method for creating [falling block entities](falling-block-entity.md) of blocks which are not [gravity-affected blocks](gravity-affected-block.md).
+When a [gravity-affected blocks](gravity-affected-block.md), that is not a dragon egg, does [normal falling behavior](gravity-affected-blocks.md#normal-falling-behavior) on one [thread](../threads.md),
+while simultaneously another thread replaces the gravity-affected block by a different block,
+then a race condition can occur that makes the first thread create a [falling block entity](falling-block-entity.md) of the block that the second thread places.
+This is called a *falling block swap*.
 
-When a falling block entity falls on a stone slab it will drop the item of its blocktype, even when that block would usually not drop as an item.
-This makes falling block swaps a method for obtaining items of blocks for which the item is otherwise unobtainable.
+Falling block swaps make it possible to create [falling block entities](falling-block-entity.md) of blocks which are not [gravity-affected blocks](gravity-affected-block.md).
+If such a falling block entity is dropped on a stone slab, it will often drop an item of its block, even when that block would not drop an item under other circumstances.
+For example a falling end portal frame will drop an end portal frame item, even though end portal frame blocks usually do not drop any item. Because of this falling block swaps are the most important method for obtaining unobtainable items.
+
+The following meme shows 5 interesting falling blocks that can be created with falling block swaps, the first 3 of which drop interesting unobtainable items. A complete list of interesting falling block is [here](falling-block-entity.md#interesting-falling-blocks).
+
+![meme](../../images/fallingblockmeme.gif)
+
+Most falling block swap methods use [instant tile ticks](../global-flags.md#instant-tile-ticks) and use observer chains as [update multipliers](../update-multipliers.md),
+to send a lot of block updates at a high frequency into a gravity affected block, and thereby create falling block entities at a high frequency.
+If one thread uses an observer chain to rapidly create falling block entities, while another thread replaces the gravity affected block by another block at a random point in time,
+then there is a usually a 5-10% chance that a falling block swap randomly occurs.
+The precise chance is hardware dependent and can be improved using [cluster chunks](../chunk/cluster-chunks.md).
+
+To replace the gravity-affected block by another block, there is a very large variety of methods, most of which are complicated.
+
+There are [specific methods](#specific-methods) for falling block swaps, which can only create one particular type of falling block,
+and there are [generic methods](#generic-methods) for falling block swaps, which can create a wide variety of different falling blocks.
+
+The most useful methods for survival are the [generic method using hashmap word tearing](#hashmap-word-tearing),
+and the [specific method for nether portals using async portal lighting](#nether-portal-1).
+
+## Falling Block Swaps with `setBlock` commands
+
+For testing purposes and for understanding falling block swaps it can be helpful to first look at a non-survival-friendly falling block swap contraption that uses `/setblock` commands.
+
+![meme](../../images/CommandFallingBlockSwap.png)
+
+The left command block contains a `/setblock` command that replaces the end portal frame block by sand.
+
+The right command block contains a `/setblock` command that replaces that sand block by an end portal frame again.
+
+On the left side of the picture we have a powered beacon and an observer line with which we can create an [async line using carpet commands](async-lines-using-carpet-commands).
+
+To use the contraption, first create an async observer line by using `/carpet asyncBeaconUpdates true`, `/carpet instantScheduling true` and powering the beacon.
+Then repeatedly flick the lever on the left command block.
+Whenever the lever is flicked on, there will be a 5-10% chance that a falling block swap occurs that creates a falling end portal frame, because of the following reason:
+
+Whenever the left command block replaces the end portal frame by sand, then we will have an async observer line updating the (gravity affected) sand block at a high frequency,
+so the async thread will create falling sand entities at a very high frequency. Then the main thread activates the repeater and the second command block, and replaces the sand block by an end portal frame block again.
+Since the main thread replaces the sand block by an end portal frame block, while the async thread quicly creates falling sand entities at the position,
+a falling block swap can occur that results in a falling end portal frame.
+
+The falling end portal frame will land on the nether brick fence and survive as a falling block entity. If the nether brick fence is replaced by a stone slab, the falling end portal frame will drop an end portal frame item.
 
 
+# Code
 
-
-TODO!
-
-There are *specific methods* for falling block swaps, which can only create one particular type of falling block,
-and there are *generic methods* for falling block swaps, which can create a wide variety of different falling blocks.
-
-
-
-
-
-
-The most useful methods are the [generic method using hashmap word tearing](#hashmap-word-tearing),
-and the [specific method for nether portals with async portal lighting](#nether-portal-1).
 
 # Specific Methods
 We distinguish the specific methods by whether the interesting block is placed on the main thread while the async thread creates sand entities,
