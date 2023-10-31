@@ -21,7 +21,7 @@ Most falling block swap methods use [instant tile ticks](../global-flags.md#inst
 to send a lot of block updates at a high frequency into a gravity affected block, and thereby create falling block entities at a high frequency.
 If one thread uses an observer chain to rapidly create falling block entities, while another thread replaces the gravity affected block by another block at a random point in time,
 then there is a usually a 5-10% chance that a falling block swap randomly occurs.
-The precise chance is hardware dependent and can be improved using [cluster chunks](../chunk/cluster-chunks.md).
+The precise chance is hardware dependent. The chance can be improved using [cluster chunks](../chunk/cluster-chunks.md), and this is explained in [Falling Block Episode 5](https://www.youtube.com/watch?v=DhohUJiJ1E8).
 
 To replace the gravity-affected block by another block, there is a very large variety of methods, most of which are complicated.
 
@@ -56,6 +56,64 @@ The falling end portal frame will land on the nether brick fence and survive as 
 
 
 # Code
+When a sand block receives a block update, it will call the `scheduleTick` method:
+```
+public void scheduleTick(BlockPos pos, Block block, int delay, int priority) {
+		Material material = block.defaultState().getMaterial();
+		if (this.doTicksImmediately && material != Material.AIR) {
+			if (block.acceptsImmediateTicks()) {
+				if (this.isAreaLoaded(pos.add(-8, -8, -8), pos.add(8, 8, 8))) {
+					BlockState blockState = this.getBlockState(pos);
+					if (blockState.getMaterial() != Material.AIR && blockState.getBlock() == block) {
+						blockState.getBlock().tick(this, pos, blockState, this.random);
+					}
+				}
+
+				return;
+			}
+
+			delay = 1;
+		}
+
+		[...]
+	}
+```
+The flag `doTicksImmediately` is the instant tile tick flag.
+If instant tile ticks are on, then this method will check whether the blockstate of the position is still sand.
+If the block is not sand, it will terminate the method.
+If the block at the position is still sand, it will call the `tick` method of the `FallingBlock` class.
+```
+public void tick(World world, BlockPos pos, BlockState state, Random random) {
+		if (!world.isClient) {
+			this.tryFall(world, pos);
+		}
+	}
+```
+This then immediately calls the `tryFall` method of the `FallingBlock` class.
+```
+private void tryFall(World world, BlockPos pos) {
+		if (canFallThrough(world.getBlockState(pos.down())) && pos.getY() >= 0) {
+			int i = 32;
+			if (fallImmediately || !world.isAreaLoaded(pos.add(-32, -32, -32), pos.add(32, 32, 32))) {
+				[...]
+			} else if (!world.isClient) {
+				FallingBlockEntity fallingBlockEntity = new FallingBlockEntity(world, (double)pos.getX() + 0.5, (double)pos.getY(), (double)pos.getZ() + 0.5, world.getBlockState(pos));
+				this.beforeStartFalling(fallingBlockEntity);
+				world.addEntity(fallingBlockEntity);
+			}
+		}
+	}
+```
+At the end of this method, it does a `getBlockState` call at its own position, and then creates a falling block entity of the blockstate it found.
+
+A falling block swap occurs if the sand block is replaced by another block, after the sand check in the `scheduleTick` method has already happened,
+but before the `getBlockState` call in the falling block entity creation line of the `tryFall` method has been executed.
+
+The `world.isAreaLoaded(pos.add(-32, -32, -32), pos.add(32, 32, 32)))` call can be slowed down using [cluster chunks](../chunk/cluster-chunks.md).
+Slowing down that call increases the amount of time that passes between the sand check in the `scheduleTick` method and the crucial `getBlockState` call in the `tryFall` method.
+This then increases the chances increases the chances that the falling block swap race condition succeeds.
+
+
 
 
 # Specific Methods
