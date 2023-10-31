@@ -3,6 +3,7 @@
 ## Table of Contents
 
 - [Introduction](#introduction)
+  * [Async Lines using carpet commands](#async-lines-using-carpet-commands)
 - [Applications](#applications)
 - [Side Effects](#side-effects)
   * [Disabled Packets](#disabled-packets)
@@ -27,6 +28,8 @@ While the async line is running it constantly sends out async block updates whic
 To activate an async line on the async glass thread in survival one needs to perform an [async chunk load](chunk/async-chunk-loading.md).
 This async chunk load needs to trigger a [terrain population](chunk/population.md#glass-threads-causing-async-updates).
 The terrain population then sends out async block updates which are used to activate the async line.
+
+## Async Lines using carpet commands
 
 In [carpet mod](https://github.com/gnembon/carpetmod112/releases) one can for testing purposes create an async line using commands.
 The command `/carpet asyncBeaconUpdates true` makes it so that beacons that receive redstone power send out async block updates around them every time they get updated.
