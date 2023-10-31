@@ -116,8 +116,10 @@ The process for manually savestating a chunk as unpopulated is as follows:
 -After the autosave, within 45 seconds, fly to the chunk and place two active savestate shulker boxes in the chunk.
 
 ## Book bans
-If one wants to manually savestate multiple unpopulated chunks that are close to each other, one has to additionally circumvent book bans:
-If a player carries around more than 3 activated savestate shulker boxes, they get kicked from the server. This behavior is called the book ban.
+In multiplayer if one wants to manually savestate multiple unpopulated chunks that are close to each other, one has to additionally circumvent book bans:
+If a player carries around more than 3 activated savestate shulker boxes, and then do something like opening a chest, then they get kicked from the server. This behavior is called the book ban.
+
+Book bans only happen in multiplayer. In singleplayer one can carry aruond arbitrarily many savestate shulker boxes without getting book banned.
 
 Book bans can be cheatily disabled by using the carpet command "/carpet disableBookBan true" and using a carpet client.
 
