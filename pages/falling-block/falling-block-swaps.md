@@ -109,12 +109,18 @@ At the end of this method, it does a `getBlockState` call at its own position, a
 A falling block swap occurs if the sand block is replaced by another block, after the sand check in the `scheduleTick` method has already happened,
 but before the `getBlockState` call in the falling block entity creation line of the `tryFall` method has been executed.
 
-The `world.isAreaLoaded(pos.add(-32, -32, -32), pos.add(32, 32, 32)))` call can be slowed down using [cluster chunks](../chunk/cluster-chunks.md).
+## Optimizing Chances with Cluster Chunks
+
+The `world.isAreaLoaded(pos.add(-32, -32, -32), pos.add(32, 32, 32)))` call in the `tryFall` method can be slowed down using [cluster chunks](../chunk/cluster-chunks.md) by slowing down chunk accesses to chunks that are less than 32 blocks away from the sand.
 Slowing down that call increases the amount of time that passes between the sand check in the `scheduleTick` method and the crucial `getBlockState` call in the `tryFall` method.
-This then increases the chances increases the chances that the falling block swap race condition succeeds.
+This then increases the chances that the falling block swap race condition succeeds.
 
+However one needs to be careful that one does not also slow down the `this.isAreaLoaded(pos.add(-8, -8, -8), pos.add(8, 8, 8))` check in the `scheduleTick` method,
+the `getBlockState` call before the sand check in the `scheduleTick` method, and the speed of the observer line updating the sand, because slowing down those things
+reduces the chance that the falling block swap race condition succeeds.
 
-
+For this reason chunks that are within 8 blocks of the sand block should not be clustered.
+To reach optimal falling block swap chances those chunks which are more than 8 but less than 32 blocks away from the sand should be clustered as much as possible.
 
 # Specific Methods
 We distinguish the specific methods by whether the interesting block is placed on the main thread while the async thread creates sand entities,
