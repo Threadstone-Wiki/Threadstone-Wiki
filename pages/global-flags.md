@@ -29,7 +29,7 @@ ITT is dimension-dependent: Changing it in the overworld will not change it in t
 
 It is impossible to turn on ITT in the end (without some kind of serious hardware failure), because no liquid pockets get generated in the end.
 
-While ITT is on, tile tick blocks will only work if they are more than 8 blocks away from unloaded chunks. Within 8 blocks of unloaded chunks they ignore all updates and just do nothing.
+While ITT is on, tile tick blocks will only work if they are more than 8 blocks away from unloaded chunks. Within 8 blocks of unloaded chunks they do nothing instead of their usual tile tick actions.
 
 There are many ways for the game to crash while ITT is on. The following things cause crashes:
 
