@@ -19,7 +19,7 @@
     + [Spawner](#spawner-1)
 - [Generic Methods](#generic-methods)
   * [Hashmap Word Tearing](#hashmap-word-tearing)
-  * [JKM's True Generic Method](#jkm-true-generic-method)
+  * [JKM True Generic Method](#jkm-true-generic-method)
 
 
 
@@ -400,7 +400,18 @@ If the unload chunk swap is triggered by a different `getBlockState` call than t
 Whenever a unload chunk swap is successful, the chance that the correct `getBlockState` call triggered it seems to be roughly 1/3.
 If one uses floating sand blocks instead of non-floating sand blocks the chances appear to be worse.
 
+## Old Coolmann Method
 
+Falling Block Swaps can be performed without [async-lines](../async-line.md), if one thread executes the tile tick code of a gravity affected block while another thread performs a [chunk swap](../chunk/async-chunk-loading#chunk-swap) in which the gravity affected block gets replaced by another block.
+This method was the subject of intensive research before async lines were discovered.
+
+A contraption that automatically does attempts for this is in coolmann's video [How to Get All* Unobtainable Blocks as Items in Minecraft Survival \[1.12\] pt. 1](https://www.youtube.com/watch?v=VTbpUjK-A74).
+
+The falling block swap chances of that particular contraption are abysmal compared to contraptions using async lines.
+
+The contraption is technically not survival friendly, because it uses instant tile ticks in the end. But it could easily be modified so that it does not use instant tile ticks and does all the falling block swaps in the tile tick phase with normal tile ticks.
+Modifying the contraption in such a way would probably even increase the chances, because the main thread would no longer execute so much piston code between the sand code.
+The chances could then be further improved by scheduling many tile ticks with [duplicate tile tick scheduling](../double-tile-tick-scheduling.md#falling-block-swaps-in-the-end), and by using cluster chunks.
 
 
 
