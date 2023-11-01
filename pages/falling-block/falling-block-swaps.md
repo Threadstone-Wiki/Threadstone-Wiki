@@ -243,8 +243,7 @@ If this barrier block replaces a gravity-affected block like sand, one can use t
 There is one difficulty with this idea: No gravity-affected block has tile entity data, and the igloo population would replace a block without tile entity data directly by the furnace instead of placing the barrier.
 To overcome this difficult one needs to use a [tile entity swap](../update-suppression.md#tile-entity-swap).
 
-With the tile entity swap one can create air with tile entity data at the position where the furnace will be generated. One can then start the igloo population and let a sand block instantfall into the position of where the furnace will be generated.
-Since the air at that position had tile entity data, we then get a sand block with tile entity data. The igloo population will then replace that sand block by a barrier block, and this can be used to perform a falling block swap for the barrier.
+With the tile entity swap one can create sand with tile entity data at the position where the furnace will be generated. The igloo population will then replace that sand block by a barrier block, and this can be used to perform a falling block swap for the barrier.
 
 After the barrier has been placed, the main thread does an update suppression to terminate the igloo population and make the barrier block survive.
 If a successful falling block swap occurs, a falling barrier gets created, and once the falling barrier gets processed for the first time it will delete the barrier block and survive itself.
