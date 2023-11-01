@@ -1,4 +1,27 @@
-This page is about falling block swaps
+# Falling Block Swaps ☆
+
+## Table of Contents
+
+- [Introduction](#introduction)
+  * [Falling Block Swaps with `setBlock` commands](#with-setblock-commands)
+- [Code](#code)
+  * [Optimizing Chances with Cluster Chunks](#optimizing-chances-with-cluster-chunks)
+- [Specific Methods](#specific-methods)
+  * [`setBlockState` on main thread](#set-on-main)
+    + [Nether Portal](#nether-portal)
+    + [End Portal Frame](#end-portal-frame)
+    + [Spawner](#spawner)
+    + [Barrier](#barrier)
+  * [`setBlockState` on async thread](#set-on-async)
+    + [Nether Portal](#nether-portal-1)
+      - [Adjusting Observer Lines](#adjusting-observer-lines)
+    + [End Portal Frame](#end-portal-frame-1)
+    + [Spawner](#spawner-1)
+- [Generic Methods](#generic-methods)
+  * [Hashmap Word Tearing](#hashmap-word-tearing)
+  * [JKM's True Generic Method](#jkm-true-generic-method)
+
+
 
 # Introduction
 A video explanation of falling block swaps is in [Falling Block Episode 2](https://www.youtube.com/watch?v=rNcFv5tccrg).
@@ -31,7 +54,7 @@ and there are [generic methods](#generic-methods) for falling block swaps, which
 The most useful methods for survival are the [generic method using hashmap word tearing](generic-method.md),
 and the [specific method for nether portals using async portal lighting](#nether-portal-1).
 
-## Falling Block Swaps with `setBlock` commands
+## Falling Block Swaps with `setBlock` commands <a name="with-setblock-commands"/>
 
 For testing purposes and for understanding falling block swaps it can be helpful to first look at a non-survival-friendly falling block swap contraption that uses `/setblock` commands.
 
@@ -127,7 +150,7 @@ To reach optimal falling block swap chances those chunks which are more than 8 b
 We distinguish the specific methods by whether the interesting block is placed on the main thread while the async thread creates sand entities,
 or whether the interesting block is placed on the async thread while the main thread creates sand entities.
 
-## setBlockState() on main thread
+## `setBlockState` on main thread <a name="set-on-main"/>
 
 ### Nether Portal
 A video explanation for this method is in [Falling Block Episode 2 at 18:50](https://www.youtube.com/watch?v=rNcFv5tccrg&t=1130s).
@@ -225,21 +248,130 @@ Since the air at that position had tile entity data, we then get a sand block wi
 After the barrier has been placed, the main thread does an update suppression to terminate the igloo population and make the barrier block survive.
 If a successful falling block swap occurs, a falling barrier gets created, and once the falling barrier gets processed for the first time it will delete the barrier block and survive itself.
 
-## setBlockState() on async thread
+## `setBlockState` on async thread <a name="set-on-async"/>
 
 ### Nether Portal
 A video explanation for this method is in [Falling Block Episode 2 at 27:22](https://www.youtube.com/watch?v=rNcFv5tccrg&t=1642s).
 
+This method is the best method for obtaining falling nether portals, although the length of observer lines in the contraption might need to be adjusted depending on the hardware.
 
+In the contraption we have an async line constantly updating an unpowered dispenser with flint and steel.
+When a sand block is inserted in the contraption, the main thread quasi-powers the dispenser.
+The async thread then triggers the ITT dispenser and starts lighting the nether portal. One of the nether portal block placements gets observed by an observer line of roughly 13 observers, that might need to be adjusted depending on the hardware.
+While the async thread is slowed down by these 13 observers, the main thread does several piston actions, with which the inserted sand block is 0-ticked into the obsidian frame,
+and then the main thread activates an observer chain of roughly 14 observers that updates the sand block and creates several hundred falling sand entities.
+While the main thread is creating these sand entities, the async thread finishes its 13 observers, and continues placing nether portal blocks.
+It then replaces the sand by a nether portal block, while the main thread is creating sand entities, and a falling block swap can occur.
 
+After the falling block swaps succeeds, the main thread will update the nether portal block that replaced the sand, causing the nether portal block to delete itself.
+To make the falling nether portal survive, the portal has to be re-lit before the the falling nether portal gets processed. This can easily be done on the main thread after it has finished its 14 observers.
+
+#### Adjusting Observer Lines
+
+To adjust the contraption to your hardware, there are 3 observers lines that you might need to modify,
+which I gave numbers in the picture below.
+
+![Falling Nether Portal Contraption](../../images/FallingNetherPortalDebugging.png)
+
+Line 1 is the line in the back. It creates some delay on the main thread so that the async dipenser has time to start lighting the portal.
+
+Line 2 is the line observing the nether portal. It creates some delay on the async thread, so the main thread can push in the sand.
+
+Line 3 creates sand entities on the main thread.
+
+We always want line 3 to be longer than line 2, and line 2 longer than line 1.
+Also, making line 3 longer makes everything much more laggy.
+
+When you put in sand we want things to happen in the following order:
+
+Main thread bud powers dipenser.
+
+Main thread enters line 1.
+
+Async thread updates dispenser and starts lighting nether portal
+
+Async thread enters line 2.
+
+Main thread finishes line 1
+
+and 0-ticks in the sand block into the portal.
+
+Main thread enters line 3 and starts creating sand entities.
+
+Async thread finishes line 2
+
+and replaces sand by nether portal. A falling block swap can occur.
+
+Async thread replace block 36 of a piston head in the lower left corner by nether portal,
+creating a headless piston. That piston will later get used to delete the nether portal again.
+
+The following failures can occur:
+
+Case 1: Main thread finishes line 1 before async thread starts lighting the nether portal.
+In this case the async thread will never light the portal. The sand doesn't get deleted,
+and gets pushed out of the nether portal.
+In this case line 1 needs to be made longer.
+
+Case 2: Async thread finishes line 2 before main thread has finished line 1 and 0-ticked the sand in.
+In this case either the sand does not get pushed into the nether portal,
+or the sand gets deleted while it's still block 36. In the latter case, everything looks correct, but there's no chance of getting the falling nether portal.
+In this case line 1 needs to be made shorter or line 2 needs to be made longer.
+This case can be completely prevented by making sure that line 1 is a lot shorter than line 2. 
+
+Case 3: Async thread finishes line 2 before main thread started line 3.
+So the sand gets deleted and everything looks correct, but there's no chance of getting the falling nether portal.
+In this case line 2 needs to be made longer.
+
+Case 4: Async thread finishes line 2 after main thread finishes line 3.
+In this case everything looks correct, but there's no chance of getting the falling nether portal.
+Line 2 needs to be shorter or line 3 needs to be longer.
+This case can be completely prevented by making sure that line 3 is at least one observer longer than line 2.
+
+If none of these 4 cases happen, then everything is correct, and you can get falling nether portals with the 1 in 20 chance.
+
+Conclusion:
+- We always want line 3 to be longer than line 2, and line 2 longer than line 1.
+- If the sand does not get deleted, we want to make line 1 longer, while still making sure that 3 is longer than 2 and 2 is longer than 1.
+- If everything looks correct, but you still don't get the falling nether portal,
+you want to make 2 longer, while still making sure that 3 is longer than 2
 
 ### End Portal Frame
 A video explanation for this method is in [Falling Block Episode 2 at 50:45](https://www.youtube.com/watch?v=rNcFv5tccrg&t=3045s).
-This one is very difficult, because strongholds are a structure, and structure population is synchronized.
+
+This method has also been called "the ninth circle of hell", firstly because it is a meme that [the ninth circle of hell is the place where observers belong](https://www.youtube.com/watch?v=TAT-f4z5aBY),
+and secondly because the method is difficult as hell.
+
+The idea behind this method is that you start a portal room stronghold population on an async thread, and after the async thread has cleared out the room with air but before the end portal frames are placed, slow down the async thread in a long observer line.
+Then you can walk into the partially generated portal room, place floating sand blocks in all the positions where end portal frames will generate, and build a contraption for doing falling block swaps on those sand blocks.
+Once you have finished building the contraption, you can break the observer line slowing down the async thread, and the stronghold population will continue. The sand blocks get replaced by end portal frames, and the contraptions we built perform falling block swaps.
+
+The reason this is difficult is that strongholds are a structure, and structure population is `synchronized`.
+In MCP naming conventions, structure generation is handled by the `MapGenStructure` class.
+This class has a `synchronized` method called `generateStructure` which is called whenever a structure is generated during terrain population.
+And it has another `synchronized` method called `recursiveGenerate` which in the overworld is called whenever a chunk is loaded.
+
+[Footnote: Ornithe's feather mappings gives these completely different functions the same name `place`, which is insane. The MCP name `recursiveGenerate` is a great name, because it immediately tells you that you have no clue what it does, and if you think it does something intuitive you are wrong. It definitely does not `place` any blocks.]
+
+This means that if the async thread starts populating a stronghold, and the main thread loads a chunk, the main thread has to wait for the async thread to finish populating the stronghold.
+If the stronghold population is slowed down by a long observer line this can take centuries, and in any case causes the falling block swap to fail.
+
+Accidentally loading a chunk on the main thread is extremely easy, because any accidental chunk access anywhere in the world can load a chunk.
+
+If a permaloader is active, then chunks will be reloaded in that permaloader at every autosave. So permaloaders have to be disabled when the async stronghold population starts.
+
+If one furthermore has cluster chunks, and disables the permaloader, then at every autosave 100 cluster chunks will unload. This eventually downsizes the chunk hashmap, which [kills the async line](https://github.com/Threadstone-Wiki/Threadstone-Wiki/blob/main/pages/async-line.md#async-thread-crashing).
+
+So if you want a real challenge, try this method with a [classical unload chunk swap](../chunk/async-chunk-loading.md#unload-chunk-swap) as your source of async lines.
 
 ### Spawner
 A video showing a falling block swap for spawners using carpet commands is in Myren's unlisted video [Async Population Spawner](https://www.youtube.com/watch?v=CVAoZLED3V4&list=PL8r-bvM9ltXNkjl7IhGQAHygIPfy2niuC&index=44).
 Since dungeons are not a structure, dungeon population is not synchronized. This makes this method much easier to pull off without crashing the game than the async stronghold population method for end portal frames.
+
+Also unlike the [spawner method where the `setBlockState` happens on the main thread](#spawner), one can reach the usual 5-10% falling block swap chances without cluster chunks,
+because one can place or push in observers into the dungeon after it has already been cleared with air.
+
+Even though a good setup for this method has not been developed by anyone, it is probably the best method for obtaining falling spawners without [word tearing](../word-tearing.md). 
+The fact that nobody considers word tearing to be cheating is honestly a bit regrettable.
 
 # Generic Methods
 
@@ -252,12 +384,12 @@ It can be used to create falling blocks of any block that can survive getting bl
 
 See [Generic Method using Hashmap Word Tearing](generic-method.md).
 
-## JKM's True Generic Method
+## JKM True Generic Method
 JKM shows in the unlisted video [Yay large fern](https://www.youtube.com/watch?v=4fT3S6vRxSM) a fully general falling block swap method that can be used on every block of the game.
 This makes it possible to obtain large fern items, which is the only block item that exists in 1.12 that cannot be obtained using the hashmap word tearing based generic method.
 Obtaining large fern items is often considered to not be worth the effort, because the method is difficult, and in 1.14+ versions large fern items generate naturally in village chests.
 
-JKM's true generic method works by doing an [unload chunk swap](../chunk/async-chunk-loading.md#unload-chunk-swap), except instead of doing it with the async `getBlockState` calls that every stained glass thread sends out,
+The JKM true generic method works by doing an [unload chunk swap](../chunk/async-chunk-loading.md#unload-chunk-swap), except instead of doing it with the async `getBlockState` calls that every stained glass thread sends out,
 we create an async observer line in advance, let the observer line update a non-floating sand block, and use the async `getBlockState` calls in the code of the sand block for the chunk swap.
 The chunk in which we do this is unpopulated on disk, so if the unload chunk swap succeeds, it will trigger an async population, and this async population will trigger an async line that slows down the async thread for a very long time, while it is still in the middle of the falling block code.
 If the `getBlockState` call that triggered the unload chunk swap was the first `getBlockState` call in the `tryFall` method of the falling block code,
