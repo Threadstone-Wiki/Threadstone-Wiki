@@ -20,6 +20,7 @@
 - [Generic Methods](#generic-methods)
   * [Hashmap Word Tearing](#hashmap-word-tearing)
   * [JKM True Generic Method](#jkm-true-generic-method)
+  * [Old coolmann Method](#old-coolmann-method)
 
 
 
