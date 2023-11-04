@@ -1,5 +1,22 @@
-This page is about the chunk hashmap.
+# Chunk Hashmap ☆
 
+## Table of Contents
+
+- [Introduction](#introduction)
+  * [`put` - Loading Chunks <a name="put"/>](#put)
+  * [`get` - Getting Chunks <a name="get"/>](#get)
+  * [`remove` - Unloading Chunks <a name="remove"/>](#remove)
+  * [`rehash` - Resizing Chunk Hashmap <a name="rehash"/>](#rehash)
+- [Race Conditions](#race-conditions)
+  * [`get` + `remove` - Unload Chunk Swap <a name="get-remove"/>](#get-remove)
+  * [`get` + `rehash` - Rehash Chunk Swap <a name="get-rehash"/>](#get-rehash)
+  * [`remove` + `rehash` - Wormhole Chunk](#remove-rehash)
+- [Cluster Chunks](#cluster-chunks)
+  * [Applications](#applications)
+  * [Cluster Finder Programs](#cluster-finder-programs)
+    + [Earthcomputer](#earthcomputer)
+    + [Vastech](#vastech)
+    + [Cheater Codes](#cheater-codes)
 
 # Introduction
 
@@ -293,7 +310,7 @@ This results in an [unload chunk swap](async-chunk-loading.md#unload-chunk-swap)
 If one thread calls the `rehash` method while another thread calls the `get` method, then it can happen that the `get` method fails to find a chunk, even when the chunk is in the chunk hashmap.
 This results in a [rehash chunk swap](async-chunk-loading.md#rehash-chunk-swap).
 
-## `remove` + `rehash` <a name="remove-rehash"/> - Wormhole Chunk
+## `remove` + `rehash` - Wormhole Chunk <a name="remove-rehash"/> 
 
 If the async thread upsizes the chunk hashmap while the main thread unloads a chunk, then it can happen that a single chunk instance has two keys in the chunk hashmap, so that this single chunk instance appears at two different positions in the game.
 This creates a *wormhole* chunk. In the game this chunk is at two different positions at once, corresponding to the two different keys at the two different indices of the chunk.
