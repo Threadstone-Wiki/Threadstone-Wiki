@@ -212,7 +212,7 @@ The second spatial contraint can be completely circumvented using the Rubal wate
 
 The first spatial constraint cannot be circumvented without severely reducing the falling block swap success chances.
 
-The following picture shows what kind of positions are usable and un-usable.
+The following picture shows what kind of positions in a chunk are usable and un-usable. The 16x16 square is supposed to be a chunk.
 
 ![Portal Positions](../../images/StrongholdPositionsWithWaterTrick.png)
 
