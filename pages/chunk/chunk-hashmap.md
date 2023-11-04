@@ -11,7 +11,7 @@ In carpet mod one can print out the chunk hashmap using the command `/loadedChun
 
 Every entry in this excel file is a loaded chunk.
 
-The length of the excel file is the *hashsize* of the chunk hashmap. The hashsize is always a power of 2, and can increase or decrease if many chunks are loaded or unloaded. See [resizing](#upsizing).
+The length of the excel file is the *hashsize* of the chunk hashmap. The hashsize is always a power of 2, and can increase or decrease if many chunks are loaded or unloaded. See [resizing](#resizing).
 
 Every loaded chunk has *x and z coordinates*, a *key*, a *hash value*, and an *index* that it occupies in the chunk hashmap.
 
@@ -74,13 +74,13 @@ For example in the picture in the introduction the chunk at position -145 -8 has
 but it entered index 6, because when it was added index 5 was already occupied by the chunk at position -139 -9,
 so the chunk at -145 -8 had to take the next index.
 
-After every `put` operation the chunk hashmap will check whether it should [upsize](#upsizing).
+After every `put` operation the chunk hashmap will check whether it should [upsize](#resizing).
 
 ## Getting Chunks
 If the game wants to do anything with a chunk at a certain position, it first needs to get that chunk from the chunk hashmap.
 This happens for example every time the game does a `getBlockState` call or `setBlockState` call in the chunk.
 
-When the game tries to get a chunk from the chunk hashmap it calls the following code, where `k` is the key of the chunk.
+When the game tries to get a chunk from the chunk hashmap it calls the following `get` function, where `k` is the key of the chunk.
 ```
  public V get( final long k ) {
   // The starting point.
@@ -102,10 +102,59 @@ If it finds an empty spot, it will return `defRetValue`, and the game will assum
 This `get` method can be slowed down using [cluster chunks](#cluster-chunks).
 
 ## Removing Chunks
+When a chunk gets unloaded, the game calls the following `remove` function, where `k` is the key of the chunk.
+```
+ public V remove( final long k ) {
+  // The starting point.
+  int pos = (int)it.unimi.dsi.fastutil.HashCommon.murmurHash3(k) & mask;
+  // There's always an unused entry.
+  while( used[ pos ] ) {
+   if ( ( (key[ pos ]) == (k) ) ) {
+    size--;
+    final V v = value[ pos ];
+    shiftKeys( pos );
+    return v;
+   }
+   pos = ( pos + 1 ) & mask;
+  }
+  return defRetValue;
+ }
+```
 
-## Upsizing
+The game first tries to find the chunk, similar to the `get` function.
+Once it finds the chunk in the chunk hashmap, it calls the `shiftKeys` function, where `pos` is the index of the chunk.
+```
+protected final int shiftKeys( int pos ) {
+   // Shift entries with the same hash.
+   int last, slot;
+   for(;;) {
+    pos = ( ( last = pos ) + 1 ) & mask;
+    while( used[ pos ] ) {
+     slot = (int)it.unimi.dsi.fastutil.HashCommon.murmurHash3(key[ pos ]) & mask;
+     if ( last <= pos ? last >= slot || slot > pos : last >= slot && slot > pos ) break;
+     pos = ( pos + 1 ) & mask;
+    }
+    if ( ! used[ pos ] ) break;
+    if ( pos < last ) {
+     // Wrapped entry.
+     if ( wrapped == null ) wrapped = new LongArrayList ();
+     wrapped.add( key[ pos ] );
+    }
+    key[ last ] = key[ pos ];
+    value[ last ] = value[ pos ];
+   }
+   used[ last ] = false;
+   value[ last ] = null;
+   return last;
+  }
+```
+The `shiftKeys` method removes the chunk from the chunk hashmap. It then checks whether moving any other chunk in the hashmap to the index of the removed chunk can reduce the difference between index and hash value of those chunks.
+It repeatedly moves chunks from one index to the index of the previously moved chunk, until it is no longer possible to reduce the difference between index and hash value of a chunk without increasing that of another chunk.
 
-## Downsizing
+
+
+
+## Resizing
 
 # Race Conditions
 The `Long2ObjectOpenhashmap` is a data structure that does not support asynchronous operations. If multiple threads access the `Long2ObjectOpenhashmap` at the same time, it can fail to work as intended.
