@@ -278,10 +278,12 @@ The race conditions occur when pairs of the functions `get`, `put`, `remove` and
 - The combination `remove`+`remove` is not possible to in minecraft, because the `remove` function can only be called on the main thread, and not on stained glass threads.
 All other pairs of the above four functions are possible in minecraft.
 
+- The combination `put`+`remove` makes it possible to place a chunk in an inaccessible part of the chunk hashmap. This is not very interesting, and has no visible effect on the game.
+
 - The combinations `put`+`put`, `put`+`rehash`, `rehash`+`rehash` can cause chunks to end up at wrong positions. More precisely, these race conditions can make it so that there are indices in the chunk hashmap in which the key at the index does not come from the chunk at that index.
 The `key` determines the position at which the chunk can be found in game, so the chunk at that index can then be found at a wrong position. Beyond changing chunk positions these race conditions cause no visible effects in game.
 
-The other possible race conditions will now be described in more detail.
+The other possible race conditions are more interesting and will now be described in detail.
 
 ## `get` + `remove` - Unload Chunk Swap <a name="get-remove"/>
 If one thread calls the `remove` method while another thread calls the `get` method, then it can happen that the `get` method fails to find a chunk, even when the chunk is in the chunk hashmap.
@@ -290,8 +292,6 @@ This results in an [unload chunk swap](async-chunk-loading.md#unload-chunk-swap)
 ## `get` + `rehash` - Rehash Chunk Swap <a name="get-rehash"/>
 If one thread calls the `rehash` method while another thread calls the `get` method, then it can happen that the `get` method fails to find a chunk, even when the chunk is in the chunk hashmap.
 This results in a [rehash chunk swap](async-chunk-loading.md#rehash-chunk-swap).
-
-## `put` + `remove` <a name="put-remove"/>
 
 ## `remove` + `rehash` <a name="remove-rehash"/> - Wormhole Chunk
 
