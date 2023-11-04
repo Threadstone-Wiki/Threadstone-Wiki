@@ -1,4 +1,4 @@
-# Update Multiplier / ITT Observer Chains ☆
+# Update Multipliers / ITT Observer Chains ☆
 
 - [Introduction](#introduction)
 - [Applications](#applications)
