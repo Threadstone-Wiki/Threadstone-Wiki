@@ -345,6 +345,12 @@ A superficial tutorial for this cluster finder is in [Falling Block Episode 3, a
 
 The cluster finder is primarily intended for [unload chunk swaps](async-chunk-loading.md#unload-chunk-swap), but can also be used for other purposes.
 
+The cluster finder takes the chunk coordinates of a *glass chunk* as input.
+It then calculates an *unload chunk* which has the same hash value as the glass chunk, and it calculates a claster whose hash values start directly after the hash value of the glass and unload chunk.
+
+If one loads the unload chunk and the cluster chunks, then the glass chunk will be clustered.
+Unloading the unload chunk will shift the glass chunk from the end of the cluster to the beginning of the cluster, and this can be used for an unload chunk swap.
+
 ### Vastech
 The [vastech edition of carpet mod](https://github.com/Void-Skeleton/Carpet-Vastech-Addition).
 contains a cluster finder for improving [falling block swap success rates](../falling-block/falling-block-swaps.md#optimizing-chances-with-cluster-chunks).
