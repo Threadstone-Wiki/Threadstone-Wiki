@@ -111,7 +111,7 @@ The process for manually savestating a chunk as unpopulated is as follows:
 
 -Start right out of view distance of that chunk. Put two activated savestate shulker boxes in your inventory.
 
--Wait for an autosave. Autosaves can be detected either by using the carpet command "/log autosave", or by building an autosave detector.
+-Wait for an autosave. Autosaves can be detected either by using the carpet command `/log autosave`, or by building an autosave detector.
 
 -After the autosave, within 45 seconds, fly to the chunk and place two active savestate shulker boxes in the chunk.
 
@@ -121,7 +121,7 @@ If a player carries around more than 3 activated savestate shulker boxes, and th
 
 Book bans only happen in multiplayer. In singleplayer one can carry aruond arbitrarily many savestate shulker boxes without getting book banned.
 
-Book bans can be cheatily disabled by using the carpet command "/carpet disableBookBan true" and using a carpet client.
+Book bans can be cheatily disabled by using the carpet command `/carpet disableBookBan true` and using a carpet client.
 
 In vanilla book bans can be circumvented by using multiple players, each of whom only carries around at most 3 activated savestate shulker boxes.
 
@@ -133,7 +133,7 @@ The hoppers will then transfer type 2 savestate books into the unactivated type 
 
 Since the hoppers take a few seconds to transfer the items, and one only has 45 seconds for the whole operation, this needs to be done quickly.
 
-This process can be seen at the beginning of this video: https://www.youtube.com/watch?v=z7-Fw51WFOc
+This process can for example be seen at the beginning of JKM's video [Obtaining End Portal Frame In Vanilla Survival](https://www.youtube.com/watch?v=z7-Fw51WFOc).
 
 ## Automatic savestate contraption for unpopulated chunks
 
@@ -158,13 +158,13 @@ Litematic is [here](../../resources/itt_and_permaloader_safe_savestate.litematic
 ## Atomic savestates for unpopulated chunks
 
 The above savestate contraption can fail, if one reloads the unpopulated chunk without reloading the chunk containing the savestate contraption.
-Using invisible chunks, it is also possible to build a savestate contraption direclty in the unpopulated chunk and save it to disk.
+Using [invisible chunks](population.md#invisible-chunks), it is also possible to build a savestate contraption direclty in the unpopulated chunk and save it to disk.
 
 # Miscellaneous
 
 ## Duplicated entity UUIDs
 If you use savestates to duplicate an entity, then the two resulting entities will have the exact same UUID.
-When multiple entities with the same UUID are loaded in the same dimension, all but one of them will be invisbile and hard to interact with.
+When multiple entities with the same UUID are loaded in the same dimension, all but one of them will be invisible and hard to interact with.
 
 ## Quick reloads break savestates
 When you unload a savestate chunk, you need to wait for a second or two before reloading it,
