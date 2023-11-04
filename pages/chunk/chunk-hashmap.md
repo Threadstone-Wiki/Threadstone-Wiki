@@ -9,20 +9,112 @@ In carpet mod one can print out the chunk hashmap using the command `/loadedChun
 
 ![hashmap dump](../../images/chunkHashmap.PNG)
 
+Every entry in this excel file is a loaded chunk.
+
+The length of the excel file is the *hashsize* of the chunk hashmap. The hashsize is always a power of 2, and can increase or decrease if many chunks are loaded or unloaded. See [resizing](#upsizing).
+
+Every loaded chunk has *x and z coordinates*, a *key*, a *hash value*, and an *index* that it occupies in the chunk hashmap.
+
+- The x and z coordinates are chunk coordinates, which means they are 16 times the block coordinates of the chunk.
+For example the chunk with the chunk coordinates -152 -15 has block coordinates x=-2432, z=-240.
+
+- The key of a chunk depends solely on the x and z coordinates of the chunk, and is calculated by the formula
+`(long)x & 4294967295L | ((long)z & 4294967295L) << 32`.
+
+- The hash value of a chunk depends on the key of the chunk and the hashsize of the chunk hashmap.
+Using the key one first calculates the [`murmurHash3` function](https://github.com/vigna/fastutil/blob/master/src/it/unimi/dsi/fastutil/HashCommon.java).
+```
+public static long murmurHash3(long key) {
+		key ^= key >>> 33;
+		key *= 0xff51afd7ed558ccdL;
+		key ^= key >>> 33;
+		key *= 0xc4ceb9fe1a85ec53L;
+		key ^= key >>> 33;
+		return key;
+	}
+```
+The hash value of the chunk is then calculated by the formula `(int)it.unimi.dsi.fastutil.HashCommon.murmurHash3(k) & mask`
+where `mask` is an integer that depends on the hashsize of the chunk hashmap.
+The hash value that a chunk has in the chunk hashmap has nothing to do with the hash value the chunk has in the [chunk unload order](chunk.md#unloading).
+
+- The index of a chunk depends on when exactly the chunk is entered into the hashmap. See [adding chunks](#adding-chunks).
+
 ## Adding Chunks
+When a chunk gets loaded, the game adds it to the chunk hashmap,
+which happens using the following `put` function, 
+where `v` is the chunk and `k` is the key of the chunk.
+
+```
+public V put(final long k, final V v) {
+  int pos = (int)it.unimi.dsi.fastutil.HashCommon.murmurHash3(k) & mask;
+  while( used[ pos ] ) {
+   if ( ( (key[ pos ]) == (k) ) ) {
+    final V oldValue = value[ pos ];
+    value[ pos ] = v;
+    return oldValue;
+   }
+   pos = ( pos + 1 ) & mask;
+  }
+  used[ pos ] = true;
+  key[ pos ] = k;
+  value[ pos ] = v;
+  if ( ++size >= maxFill ) rehash( arraySize( size + 1, f ) );
+  if ( ASSERTS ) checkTable();
+  return defRetValue;
+ }
+```
+
+The game will calculate the hash value of the chunk,
+and then check whether the index equal to the hash value is unoccupied in the chunk hashmap.
+If it is unoccupied, the chunk will be entered into that index.
+Otherwise the chunk will try to enter the next index.
+It will repeatedly increase the index by 1 until it finds an empty spot, and then enters that spot in the chunk hashmap.
+
+For example in the picture in the introduction the chunk at position -145 -8 has hash value 5,
+but it entered index 6, because when it was added index 5 was already occupied by the chunk at position -139 -9,
+so the chunk at -145 -8 had to take the next index.
+
+After every `put` operation the chunk hashmap will check whether it should [upsize](#upsizing).
 
 ## Getting Chunks
+If the game wants to do anything with a chunk at a certain position, it first needs to get that chunk from the chunk hashmap.
+This happens for example every time the game does a `getBlockState` call or `setBlockState` call in the chunk.
+
+When the game tries to get a chunk from the chunk hashmap it calls the following code, where `k` is the key of the chunk.
+```
+ public V get( final long k ) {
+  // The starting point.
+  int pos = (int)it.unimi.dsi.fastutil.HashCommon.murmurHash3(k) & mask;
+  // There's always an unused entry.
+  while( used[ pos ] ) {
+   if ( ( (key[ pos ]) == (k) ) ) return value[ pos ];
+   pos = ( pos + 1 ) & mask;
+  }
+  return defRetValue;
+ }
+```
+It calculates the hash value of the chunk, and then tries to see whether a chunk with the correct key is at the index corresponding to the hash value.
+If it finds such a chunk it returns it. Otherwise it will look for the chunk at the next index.
+It will continually increase the index where it looks for the chunk by 1, until it has either found a chunk with the correct key and returns it,
+or it has found an empty spot in the chunk hashmap.
+If it finds an empty spot, it will return `defRetValue`, and the game will assume that the chunk in question is not loaded.
+
+This `get` method can be slowed down using [cluster chunks](#cluster-chunks).
 
 ## Removing Chunks
 
-## Resizing
+## Upsizing
+
+## Downsizing
 
 # Race Conditions
 The `Long2ObjectOpenhashmap` is a data structure that does not support asynchronous operations. If multiple threads access the `Long2ObjectOpenhashmap` at the same time, it can fail to work as intended.
 In minecraft, the chunk hashmap can be accessed simultaneously by both the [main thread](../threads.md#main-thread) and the [stained glass threads](../threads.md#stained-glass-threads).
 This makes many race conditions with the chunk hashmap possible in minecraft.
 
-## Chunk Swaps
+## Rehash Chunk Swap
+
+## Unload Chunk Swap
 
 ## Chunk Linking
 
