@@ -28,7 +28,7 @@ The hash value of the chunk is then calculated by the formula `(int)HashCommon.m
 where `mask` is an integer that depends on the hashsize of the chunk hashmap.
 The hash value that a chunk has in the chunk hashmap has nothing to do with the hash value the chunk has in the [chunk unload order](chunk.md#unloading).
 
-- The index of a chunk depends on when exactly the chunk is entered into the hashmap. See [adding chunks](#adding-chunks).
+- The index of a chunk depends on when exactly the chunk is entered into the hashmap.
 
 ## `insert` - Loading Chunks <a name="insert"/>
 When a chunk gets loaded, the game adds it to the chunk hashmap,
