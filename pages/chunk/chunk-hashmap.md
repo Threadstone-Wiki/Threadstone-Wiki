@@ -11,7 +11,7 @@ In carpet mod one can print out the chunk hashmap using the command `/loadedChun
 
 Every entry in this excel file is a loaded chunk.
 
-The length of the excel file is the *hashsize* of the chunk hashmap. The hashsize is always a power of 2, and can increase or decrease if many chunks are loaded or unloaded. See [resizing](#resizing).
+The length of the excel file is the *hashsize* of the chunk hashmap. The hashsize is always a power of 2, and can increase or decrease if many chunks are loaded or unloaded. See [resizing](#rehash).
 
 Every loaded chunk has *x and z coordinates*, a *key*, a *hash value*, and an *index* that it occupies in the chunk hashmap.
 
@@ -30,7 +30,7 @@ The hash value that a chunk has in the chunk hashmap has nothing to do with the 
 
 - The index of a chunk depends on when exactly the chunk is entered into the hashmap. See [adding chunks](#adding-chunks).
 
-## Adding Chunks
+## `insert` - Loading Chunks <a name="insert"/>
 When a chunk gets loaded, the game adds it to the chunk hashmap,
 which happens using the following `insert` function, 
 where `v` is the chunk and `k` is the key of the chunk.
@@ -77,9 +77,9 @@ For example in the picture in the introduction the chunk at position -145 -8 has
 but it entered index 6, because when it was added index 5 was already occupied by the chunk at position -139 -9,
 so the chunk at -145 -8 had to take the next index.
 
-After every `insert` operation the chunk hashmap will check whether it should [upsize](#resizing).
+After every `insert` operation the chunk hashmap will check whether it should [upsize](#rehash).
 
-## Getting Chunks
+## `get` - Getting Chunks <a name="get"/>
 If the game wants to do anything with a chunk at a certain position, it first needs to get that chunk from the chunk hashmap.
 This happens for example every time the game does a `getBlockState` call or `setBlockState` call in the chunk.
 
@@ -115,7 +115,7 @@ If it finds an empty spot, it will return `defRetValue`, and the game will assum
 
 This `get` method can be slowed down using [cluster chunks](#cluster-chunks).
 
-## Removing Chunks
+## `remove` - Unloading Chunks <a name="remove"/>
 When a chunk gets unloaded, the game calls the following `remove` function, where `k` is the key of the chunk.
 ```
   public V remove(long k) {
@@ -189,10 +189,10 @@ In that function it calls the `shiftKeys` function, where `pos` is the index of 
 The `shiftKeys` method removes the chunk from the chunk hashmap. It then checks whether moving any other chunk in the hashmap to the index of the removed chunk can reduce the difference between index and hash value of those chunks.
 It repeatedly moves chunks from one index to the index of the previously moved chunk, until it is no longer possible to reduce the difference between index and hash value of a chunk without increasing that of another chunk.
 
-After it has completed the `shiftKeys` function, the chunk hashmap will check whether it should [downsize](#resizing).
+After it has completed the `shiftKeys` function, the chunk hashmap will check whether it should [downsize](#rehash).
 
 
-## Resizing
+## `rehash` - Resizing Chunk Hashmap <a name="rehash"/>
 
 # Race Conditions
 The `Long2ObjectOpenhashmap` is a data structure that does not support asynchronous operations. If multiple threads access the `Long2ObjectOpenhashmap` at the same time, it can fail to work as intended.
@@ -206,36 +206,40 @@ Out of all possible pairs of these four functions, only the the combinations `ge
 The combination `remove`+`remove` is not possible to in minecraft, because the `remove` function can only be called on the main thread, and not on stained glass threads.
 All other pairs of the above four functions are possible in minecraft.
 
-## `get` + `remove`
+## `get` + `remove` - Unload Chunk Swap
 If one thread calls the `remove` method while another thread calls the `get` method, then it can happen that the `get` method fails to find a chunk, even when the chunk is in the chunk hashmap.
 This is the basis for [unload chunk swaps](async-chunk-loading.md#unload-chunk-swap).
 
-## `get` + `rehash`
+## `get` + `rehash` - Rehash Chunk Swap
 If one thread calls the `rehash` method while another thread calls the `get` method, then it can happen that the `get` method fails to find a chunk, even when the chunk is in the chunk hashmap.
 This is the basis for [rehash chunk swaps](async-chunk-loading.md#rehash-chunk-swap).
 
-## `insert` + `insert`
+## `insert` + `insert` - Changing Chunk Positions
+
+In the `insert` code we have the code lines
+```
+        this.key[pos] = k;
+        this.value[pos] = v;
+```
+If two threads simultaneously load chunks that would get assigned the same index in the chunk hashmap, then these two lines of code can be executed by both threads simultaneously.
+
+If the first thread does `this.key[pos] = k;`, and then the second thread does `this.key[pos] = k;` and `this.value[pos] = v;`,
+and then the first thread does `this.value[pos] = v;`, then at the index in which both chunks tried to enter, we have the key of the chunk from the second thread, but the value at this index is the chunk from the first thread.
+
+This means that the chunk that the first thread loaded will be at the position where the second thread tried to load its chunk.
+
+This race condition is very rare.
 
 ## `insert` + `remove`
 
 ## `insert` + `rehash`
 
-## `remove` + `rehash`
+## `remove` + `rehash` - Wormhole Chunk
+
+If the async thread upsizes the chunk hashmap while the main thread unloads a chunk, then it can happen that a single chunk instance has two keys in the chunk hashmap, so that this single chunk instance appears at two different positions in the game.
 
 ## `rehash` + `rehash`
 
-
-
-
-
-
-## Rehash Chunk Swap
-
-## Unload Chunk Swap
-
-## Chunk Linking
-
-Punchster has theorized, that if the async thread upsizes the chunk hashmap, while the main thread unloads a chunk, then additional race conditions can occur that can change the positions of chunks, or link two chunk positions to a single chunk instance.
 
 # Cluster Chunks
 An explanation of cluster chunks is in [Falling Block Episode 5, at 3:45](https://www.youtube.com/watch?v=DhohUJiJ1E8&t=225s).
