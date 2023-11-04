@@ -3,7 +3,7 @@ This page is about the chunk hashmap.
 
 # Introduction
 
-In each dimension the loaded chunks are stored in a [`Long2ObjectOpenHashmap`](https://github.com/karussell/fastutil/blob/master/src/it/unimi/dsi/fastutil/longs/Long2ObjectOpenHashMap.java).
+In each dimension the loaded chunks are stored in a [`Long2ObjectOpenHashmap`, from fast-utils version 7.1.0](../../resources/Long2ObjectOpenHashmap.java).
 
 In carpet mod one can print out the chunk hashmap using the command `/loadedChunks dump`. The command creates an excel file in the server folder, which looks like this
 
@@ -22,18 +22,9 @@ For example the chunk with the chunk coordinates -152 -15 has block coordinates 
 `(long)x & 4294967295L | ((long)z & 4294967295L) << 32`.
 
 - The hash value of a chunk depends on the key of the chunk and the hashsize of the chunk hashmap.
-Using the key one first calculates the [`murmurHash3` function](https://github.com/vigna/fastutil/blob/master/src/it/unimi/dsi/fastutil/HashCommon.java).
-```
-public static long murmurHash3(long key) {
-		key ^= key >>> 33;
-		key *= 0xff51afd7ed558ccdL;
-		key ^= key >>> 33;
-		key *= 0xc4ceb9fe1a85ec53L;
-		key ^= key >>> 33;
-		return key;
-	}
-```
-The hash value of the chunk is then calculated by the formula `(int)it.unimi.dsi.fastutil.HashCommon.murmurHash3(k) & mask`
+Using the key one first calculates the `HashCommon.mix` function. TODO: Find source code for that function.
+
+The hash value of the chunk is then calculated by the formula `(int)HashCommon.mix(k) & this.mask`
 where `mask` is an integer that depends on the hashsize of the chunk hashmap.
 The hash value that a chunk has in the chunk hashmap has nothing to do with the hash value the chunk has in the [chunk unload order](chunk.md#unloading).
 
@@ -41,27 +32,39 @@ The hash value that a chunk has in the chunk hashmap has nothing to do with the 
 
 ## Adding Chunks
 When a chunk gets loaded, the game adds it to the chunk hashmap,
-which happens using the following `put` function, 
+which happens using the following `insert` function, 
 where `v` is the chunk and `k` is the key of the chunk.
 
 ```
-public V put(final long k, final V v) {
-  int pos = (int)it.unimi.dsi.fastutil.HashCommon.murmurHash3(k) & mask;
-  while( used[ pos ] ) {
-   if ( ( (key[ pos ]) == (k) ) ) {
-    final V oldValue = value[ pos ];
-    value[ pos ] = v;
-    return oldValue;
-   }
-   pos = ( pos + 1 ) & mask;
-  }
-  used[ pos ] = true;
-  key[ pos ] = k;
-  value[ pos ] = v;
-  if ( ++size >= maxFill ) rehash( arraySize( size + 1, f ) );
-  if ( ASSERTS ) checkTable();
-  return defRetValue;
- }
+ private int insert(long k, V v) {
+        int pos;
+        if (k == 0L) {
+            if (this.containsNullKey) {
+                return this.n;
+            }
+            this.containsNullKey = true;
+            pos = this.n;
+        } else {
+            long[] key = this.key;
+            long curr;
+            if ((curr = key[pos = (int)HashCommon.mix(k) & this.mask]) != 0L) {
+                if (curr == k) {
+                    return pos;
+                }
+                while((curr = key[pos = pos + 1 & this.mask]) != 0L) {
+                    if (curr == k) {
+                        return pos;
+                    }
+                }
+            }
+        }
+        this.key[pos] = k;
+        this.value[pos] = v;
+        if (this.size++ >= this.maxFill) {
+            this.rehash(HashCommon.arraySize(this.size + 1, this.f));
+        }
+        return -1;
+    }
 ```
 
 The game will calculate the hash value of the chunk,
@@ -74,7 +77,7 @@ For example in the picture in the introduction the chunk at position -145 -8 has
 but it entered index 6, because when it was added index 5 was already occupied by the chunk at position -139 -9,
 so the chunk at -145 -8 had to take the next index.
 
-After every `put` operation the chunk hashmap will check whether it should [upsize](#resizing).
+After every `insert` operation the chunk hashmap will check whether it should [upsize](#resizing).
 
 ## Getting Chunks
 If the game wants to do anything with a chunk at a certain position, it first needs to get that chunk from the chunk hashmap.
@@ -82,16 +85,27 @@ This happens for example every time the game does a `getBlockState` call or `set
 
 When the game tries to get a chunk from the chunk hashmap it calls the following `get` function, where `k` is the key of the chunk.
 ```
- public V get( final long k ) {
-  // The starting point.
-  int pos = (int)it.unimi.dsi.fastutil.HashCommon.murmurHash3(k) & mask;
-  // There's always an unused entry.
-  while( used[ pos ] ) {
-   if ( ( (key[ pos ]) == (k) ) ) return value[ pos ];
-   pos = ( pos + 1 ) & mask;
-  }
-  return defRetValue;
- }
+public V get(long k) {
+        if (k == 0L) {
+            return this.containsNullKey ? this.value[this.n] : this.defRetValue;
+        } else {
+            long[] key = this.key;
+            long curr;
+            int pos;
+            if ((curr = key[pos = (int)HashCommon.mix(k) & this.mask]) == 0L) {
+                return this.defRetValue;
+            } else if (k == curr) {
+                return this.value[pos];
+            } else {
+                while((curr = key[pos = pos + 1 & this.mask]) != 0L) {
+                    if (k == curr) {
+                        return this.value[pos];
+                    }
+                }
+                return this.defRetValue;
+            }
+        }
+    }
 ```
 It calculates the hash value of the chunk, and then tries to see whether a chunk with the correct key is at the index corresponding to the hash value.
 If it finds such a chunk it returns it. Otherwise it will look for the chunk at the next index.
@@ -104,54 +118,78 @@ This `get` method can be slowed down using [cluster chunks](#cluster-chunks).
 ## Removing Chunks
 When a chunk gets unloaded, the game calls the following `remove` function, where `k` is the key of the chunk.
 ```
- public V remove( final long k ) {
-  // The starting point.
-  int pos = (int)it.unimi.dsi.fastutil.HashCommon.murmurHash3(k) & mask;
-  // There's always an unused entry.
-  while( used[ pos ] ) {
-   if ( ( (key[ pos ]) == (k) ) ) {
-    size--;
-    final V v = value[ pos ];
-    shiftKeys( pos );
-    return v;
-   }
-   pos = ( pos + 1 ) & mask;
-  }
-  return defRetValue;
- }
+  public V remove(long k) {
+        if (k == 0L) {
+            return this.containsNullKey ? this.removeNullEntry() : this.defRetValue;
+        } else {
+            long[] key = this.key;
+            long curr;
+            int pos;
+            if ((curr = key[pos = (int)HashCommon.mix(k) & this.mask]) == 0L) {
+                return this.defRetValue;
+            } else if (k == curr) {
+                return this.removeEntry(pos);
+            } else {
+                while((curr = key[pos = pos + 1 & this.mask]) != 0L) {
+                    if (k == curr) {
+                        return this.removeEntry(pos);
+                    }
+                }
+                return this.defRetValue;
+            }
+        }
+    }
 ```
 
 The game first tries to find the chunk, similar to the `get` function.
-Once it finds the chunk in the chunk hashmap, it calls the `shiftKeys` function, where `pos` is the index of the chunk.
+Once it finds the chunk in the chunk hashmap, it calls the `removeEntry` function, where `pos` is the index of the chunk.
+
 ```
-protected final int shiftKeys( int pos ) {
-   // Shift entries with the same hash.
-   int last, slot;
-   for(;;) {
-    pos = ( ( last = pos ) + 1 ) & mask;
-    while( used[ pos ] ) {
-     slot = (int)it.unimi.dsi.fastutil.HashCommon.murmurHash3(key[ pos ]) & mask;
-     if ( last <= pos ? last >= slot || slot > pos : last >= slot && slot > pos ) break;
-     pos = ( pos + 1 ) & mask;
+   private V removeEntry(int pos) {
+        V oldValue = this.value[pos];
+        this.value[pos] = null;
+        --this.size;
+        this.shiftKeys(pos);
+        if (this.size < this.maxFill / 4 && this.n > 16) {
+            this.rehash(this.n / 2);
+        }
+
+        return oldValue;
     }
-    if ( ! used[ pos ] ) break;
-    if ( pos < last ) {
-     // Wrapped entry.
-     if ( wrapped == null ) wrapped = new LongArrayList ();
-     wrapped.add( key[ pos ] );
+```
+In that function it calls the `shiftKeys` function, where `pos` is the index of the chunk.
+```
+  protected final void shiftKeys(int pos) {
+        long[] key = this.key;
+        while(true) {
+            int last = pos;
+            pos = pos + 1 & this.mask;
+            long curr;
+            while(true) {
+                if ((curr = key[pos]) == 0L) {
+                    key[last] = 0L;
+                    this.value[last] = null;
+                    return;
+                }
+                int slot = (int)HashCommon.mix(curr) & this.mask;
+                if (last <= pos) {
+                    if (last >= slot || slot > pos) {
+                        break;
+                    }
+                } else if (last >= slot && slot > pos) {
+                    break;
+                }
+                pos = pos + 1 & this.mask;
+            }
+            key[last] = curr;
+            this.value[last] = this.value[pos];
+        }
     }
-    key[ last ] = key[ pos ];
-    value[ last ] = value[ pos ];
-   }
-   used[ last ] = false;
-   value[ last ] = null;
-   return last;
-  }
 ```
 The `shiftKeys` method removes the chunk from the chunk hashmap. It then checks whether moving any other chunk in the hashmap to the index of the removed chunk can reduce the difference between index and hash value of those chunks.
 It repeatedly moves chunks from one index to the index of the previously moved chunk, until it is no longer possible to reduce the difference between index and hash value of a chunk without increasing that of another chunk.
 
-
+After it has completed the `shiftKeys` function, the chunk hashmap will check whether it should [downsize](#resizing).
 
 
 ## Resizing
@@ -160,6 +198,36 @@ It repeatedly moves chunks from one index to the index of the previously moved c
 The `Long2ObjectOpenhashmap` is a data structure that does not support asynchronous operations. If multiple threads access the `Long2ObjectOpenhashmap` at the same time, it can fail to work as intended.
 In minecraft, the chunk hashmap can be accessed simultaneously by both the [main thread](../threads.md#main-thread) and the [stained glass threads](../threads.md#stained-glass-threads).
 This makes many race conditions with the chunk hashmap possible in minecraft.
+
+The race conditions occur when pairs of the functions `get`, `insert`, `remove` and `rehash` are called on two different threads at the same time.
+
+Out of all possible pairs of these four functions, only the the combinations `get`+`get` and `insert`+`get` cause no race conditions. All other combinations do lead to some kind of race condition.
+
+The combination `remove`+`remove` is not possible to in minecraft, because the `remove` function can only be called on the main thread, and not on stained glass threads.
+All other pairs of the above four functions are possible in minecraft.
+
+## `get` + `remove`
+If one thread calls the `remove` method while another thread calls the `get` method, then it can happen that the `get` method fails to find a chunk, even when the chunk is in the chunk hashmap.
+This is the basis for [unload chunk swaps](async-chunk-loading.md#unload-chunk-swap).
+
+## `get` + `rehash`
+If one thread calls the `rehash` method while another thread calls the `get` method, then it can happen that the `get` method fails to find a chunk, even when the chunk is in the chunk hashmap.
+This is the basis for [rehash chunk swaps](async-chunk-loading.md#rehash-chunk-swap).
+
+## `insert` + `insert`
+
+## `insert` + `remove`
+
+## `insert` + `rehash`
+
+## `remove` + `rehash`
+
+## `rehash` + `rehash`
+
+
+
+
+
 
 ## Rehash Chunk Swap
 
