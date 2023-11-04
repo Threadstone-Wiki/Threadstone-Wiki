@@ -264,15 +264,15 @@ Out of all possible pairs of these four functions, only the the combinations `ge
 The combination `remove`+`remove` is not possible to in minecraft, because the `remove` function can only be called on the main thread, and not on stained glass threads.
 All other pairs of the above four functions are possible in minecraft.
 
-## `get` + `remove` - Unload Chunk Swap
+## `get` + `remove` - Unload Chunk Swap <a name="get-remove"/>
 If one thread calls the `remove` method while another thread calls the `get` method, then it can happen that the `get` method fails to find a chunk, even when the chunk is in the chunk hashmap.
-This is the basis for [unload chunk swaps](async-chunk-loading.md#unload-chunk-swap).
+This results in a [chunk swap](#chunk-swaps), more specifically an [unload chunk swap](async-chunk-loading.md#unload-chunk-swap).
 
-## `get` + `rehash` - Rehash Chunk Swap
+## `get` + `rehash` - Rehash Chunk Swap <a name="get-rehash"/>
 If one thread calls the `rehash` method while another thread calls the `get` method, then it can happen that the `get` method fails to find a chunk, even when the chunk is in the chunk hashmap.
-This is the basis for [rehash chunk swaps](async-chunk-loading.md#rehash-chunk-swap).
+This results in a [chunk swap](#chunk-swaps), more specifically a [rehash chunk swap](async-chunk-loading.md#rehash-chunk-swap).
 
-## `insert` + `insert` - Changing Chunk Positions <a name="insert-insert"/>
+## `insert` + `insert` <a name="insert-insert"/>
 
 In the `insert` code we have the code lines
 ```
@@ -284,19 +284,19 @@ If two threads simultaneously load chunks that would get assigned the same index
 If the first thread does `this.key[pos] = k;`, and then the second thread does `this.key[pos] = k;` and `this.value[pos] = v;`,
 and then the first thread does `this.value[pos] = v;`, then at the index in which both chunks tried to enter, we have the key of the chunk from the second thread, but the value at this index is the chunk from the first thread.
 
-This means that the chunk that the first thread loaded will be at the position where the second thread tried to load its chunk.
+This means that we have a [chunk at a wrong position](#chunks-at-wrong-positions).
 
 This race condition is very rare.
 
-## `insert` + `remove`
+## `insert` + `remove` <a name="insert-remove"/>
 
-## `insert` + `rehash`
+## `insert` + `rehash` <a name="insert-rehash"/>
 
-## `remove` + `rehash` - Wormhole Chunk
+## `remove` + `rehash` <a name="remove-rehash"/>
 
 If the async thread upsizes the chunk hashmap while the main thread unloads a chunk, then it can happen that a single chunk instance has two keys in the chunk hashmap, so that this single chunk instance appears at two different positions in the game.
 
-## `rehash` + `rehash` - Permanently Unloaded Chunks
+## `rehash` + `rehash` <a name="rehash-rehash"/>
 The only version of this race condition that seems possible is when both threads upsize the chunk hashmap. Downsizing the hashmap on multiple threads is impossible, because the async thread cannot unload chunks so it cannot downsize the chunk hashmap. Downsizing the hashmap on the main thread while upsizing on the async thread is not provably impossible, but it would require the async thread to think that the chunk hashmap is more than 3/4 filled while the main thread has to think it's less than 3/16 filled, which seems not doable in minecraft.
 
 When upsizing the chunk hashmap on two threads at once we can get a race condition with the following code lines in the 
@@ -308,14 +308,34 @@ the `rehash` code:
 If the first thread does `this.key = newKey;`, and then the second thread does `this.key = newKey;` and `this.value = newValue;`,
 and then the first thread does `this.value = newValue;`, then the chunk hashmap will have all the keys from the upsize of the second thread, but it will have all the values from the upsize of the first thread.
 
-This means that several chunks might appear at different positions than they are supposed to, just like in the [`insert`+`insert` race condition](#insert-insert).
-But on top of that, several indices of the chunk hashmap might have keys without values.
+This means that we might have [chunks at wrong positions](#chunks-at-wrong-positions),
+and we might have [permanently unloaded chunks](#permanently-unloaded-chunks).
+
+This race condition is very rare.
+
+# Effects of Race Conditions
+
+## Chunk Swaps - Loading already loaded chunks <a name="chunk-swaps"/>
+Using the race conditions [`get`+`remove`](#get-remove) and [`get`+`rehash`](#get-rehash) it is possible for a `get` call to return `null` even though the chunk it is looking for is actually in the chunk hashmap.
+
+If the chunk access that called the `get` function forces chunk loading, then it will load a chunk which is already loaded. This is called a *chunk swap* and is an important method for [async chunk loading](async-chunk-loading.md#chunk-swap).
+
+## Chunks at wrong positions
+Using the race conditions [`insert`+`insert`](#insert-insert), [`insert`+`rehash`](#insert-rehash) or [`rehash`+`rehash`](#rehash-rehash) it is possible to have an index in the chunk hashmap in which the key at the index does not come from the chunk at the index.
+In this case the chunk appears in a different position than it should appear in, because the key determines at what position the chunk is found in the world.
+
+## Permanently Unloaded Chunks
+Using the race condition [`rehash`+`rehash`](#rehash-rehash) it is possible to create indices in the chunk hashmap that have a key, but where the value at that index is `null`.
 
 Keys without values create *permanently unloaded chunks*. Every time a chunk access in a permanently unloaded chunk is done, the game will calculate the key of the chunk, and find a value of `null` at the index of that key.
 So the game will treat the chunk as unloaded. If the chunk access forces the chunk to be loaded, then the game will load the chunk from disk, use the chunk for that single chunk access,
 and then forget the chunk again. The game will not be able to put the chunk into the chunk hashmap, since its key is already there.
 
-This race condition is very rare.
+## Wormhole Chunks
+
+
+
+
 
 # Cluster Chunks
 An explanation of cluster chunks is in [Falling Block Episode 5, at 3:45](https://www.youtube.com/watch?v=DhohUJiJ1E8&t=225s).
