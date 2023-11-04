@@ -74,7 +74,7 @@ The cluster finder is primarily intended for [unload chunk swaps](async-chunk-lo
 
 ### Vastech
 The [vastech edition of carpet mod](https://github.com/Void-Skeleton/Carpet-Vastech-Addition).
-contains a cluster finder for improving [falling block swap success rates]([falling block swaps](../falling-block/falling-block-swaps.md#optimizing-chances-with-cluster-chunks)).
+contains a cluster finder for improving [falling block swap success rates](../falling-block/falling-block-swaps.md#optimizing-chances-with-cluster-chunks).
 
 To use it you need to set a few values first:
 
@@ -105,7 +105,7 @@ The cluster finder assumes that you pre-load the 2x2 area of chunks that are wit
 The cluster finder does not ensure that such a pre-loaded 2x2 remains unclustered when downsizing the chunk hashmap from a larger hashsize. Sometimes one has to manually remove a few of the calculated cluster chunks to ensure this.
 
 ### Cheater Codes
-A cluster chunk finder intended for [rehash chunk swaps](async-chunk-loading.md#rehash-chunk-swap) coded by Cheater Codes can be found [here](https://github.com/CheaterCodes/easy-cluster/tree/main).
+A cluster chunk finder by Cheater Codes intended for [rehash chunk swaps](async-chunk-loading.md#rehash-chunk-swap) can be found [here](https://github.com/CheaterCodes/easy-cluster/tree/main).
 
 The cluster finder calculates a [rectilinear minimum spanning tree](https://en.wikipedia.org/wiki/Rectilinear_minimum_spanning_tree) containing the cluster chunks, in order to minimize the number of non-cluster chunks that are loaded whenever one loads the cluster chunks. This is necessary to prevent the chunk hashmap from upsizing too early.
 
