@@ -22,9 +22,15 @@ For example the chunk with the chunk coordinates -152 -15 has block coordinates 
 `(long)x & 4294967295L | ((long)z & 4294967295L) << 32`.
 
 - The hash value of a chunk depends on the key of the chunk and the hashsize of the chunk hashmap.
-Using the key one first calculates the `HashCommon.mix` function. TODO: Find source code for that function.
-
-The hash value of the chunk is then calculated by the formula `(int)HashCommon.mix(k) & this.mask`
+Using the key one first calculates the `HashCommon.mix` function.
+```
+public static final long mix(long key) {
+        long h = key * -7046029254386353131L;
+        h ^= h >>> 32;
+        return h ^ h >>> 16;
+    }
+```
+The hash value of the chunk is then calculated by the formula `(int)HashCommon.mix(key) & this.mask`
 where `mask` is one less than the hashsize of the chunk hashmap.
 The hash value that a chunk has in the chunk hashmap has nothing to do with the hash value the chunk has in the [chunk unload order](chunk.md#unloading).
 
