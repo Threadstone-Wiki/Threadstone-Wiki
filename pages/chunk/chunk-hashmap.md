@@ -329,7 +329,7 @@ This slowdown makes cluster chunks a quite subtle but incredibly versatile metho
 ## Applications
 Cluster Chunks are used for:
 - Increasing the lifetime of stained glass threads in various [async chunk load setups](async-chunk-loading.md).
-- Increasing the number of positions in which [rehash chunk swaps](async-chunk-loading.md#rehash-chunk-swap) can be done without crashing the asnyc thread.
+- Increasing the success chances of [rehash chunk swaps](async-chunk-loading.md#rehash-chunk-swap), and increasing the number of positions in which rehash chunk swaps can be done without crashing the asnyc thread.
 - Increasing the success chances of [unload chunk swaps](async-chunk-loading.md#unload-chunk-swap).
 - Increasing the success chances of [falling block swaps](../falling-block/falling-block-swaps.md#optimizing-chances-with-cluster-chunks).
 - Increasing the success chances of player head creation.
