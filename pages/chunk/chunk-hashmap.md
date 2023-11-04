@@ -25,7 +25,7 @@ For example the chunk with the chunk coordinates -152 -15 has block coordinates 
 Using the key one first calculates the `HashCommon.mix` function. TODO: Find source code for that function.
 
 The hash value of the chunk is then calculated by the formula `(int)HashCommon.mix(k) & this.mask`
-where `mask` is an integer that depends on the hashsize of the chunk hashmap.
+where `mask` is one less than the hashsize of the chunk hashmap.
 The hash value that a chunk has in the chunk hashmap has nothing to do with the hash value the chunk has in the [chunk unload order](chunk.md#unloading).
 
 - The index of a chunk depends on when exactly the chunk is entered into the hashmap.
@@ -193,6 +193,58 @@ After it has completed the `shiftKeys` function, the chunk hashmap will check wh
 
 
 ## `rehash` - Resizing Chunk Hashmap <a name="rehash"/>
+
+The `rehash` function changes the hashsize of the chunk hashmap to a given number `newN`.
+This `newN` is always a power of 2.
+
+```
+protected void rehash(int newN) {
+        long[] key = this.key;
+        V[] value = this.value;
+        int mask = newN - 1;
+        long[] newKey = new long[newN + 1];
+        V[] newValue = (Object[])(new Object[newN + 1]);
+        int i = this.n;
+
+        int pos;
+        for(int j = this.realSize(); j-- != 0; newValue[pos] = value[i]) {
+            do {
+                --i;
+            } while(key[i] == 0L);
+
+            if (newKey[pos = (int)HashCommon.mix(key[i]) & mask] != 0L) {
+                while(newKey[pos = pos + 1 & mask] != 0L) {
+                }
+            }
+
+            newKey[pos] = key[i];
+        }
+
+        newValue[newN] = value[this.n];
+        this.n = newN;
+        this.mask = mask;
+        this.maxFill = HashCommon.maxFill(this.n, this.f);
+        this.key = newKey;
+        this.value = newValue;
+}
+```
+
+The `rehash` function is called in one of two situations:
+- After an `insert` call the amount of chunks in the chunk hashmap is more than 3/4 of the current hashsize.
+- After a `remove` call the amount of chunks in the chunk hashmap is less than 3/16 of the current hashsize.
+
+In the first case, the chunk hashmap will *upsize*, and double its hashsize, by calling the `rehash` function with `newN` equal to double its current hashsize.
+
+In the second case, the chunk hashmap will *downsize*, and halve its hashsize, by calling the `rehash` function with `newN` equal to half its current hashsize.
+
+Here are some values of 3/4 * 2^n for various n.
+These numbers are the amount of chunks at which upsizes or downsizes can occur:
+
+96, 192, 384, 768, 1536, 3072, 6144, 12,288
+
+So for example, if we have hashsize 256, and have 192 chunks loaded, then loading one additional chunk will upsize the chunk hashmap to hashsize 512.
+
+And if we have hashsize 512 and have 96 chunks loaded, then unloading a chunk will downsize the chunk hashmap to hashsize 256.
 
 # Race Conditions
 The `Long2ObjectOpenhashmap` is a data structure that does not support asynchronous operations. If multiple threads access the `Long2ObjectOpenhashmap` at the same time, it can fail to work as intended.
