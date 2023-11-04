@@ -204,12 +204,17 @@ After this the top sand block gets updated, but since instantfalling is off, it 
 After this we let an async observer line update that sand block, while the main thread replaces it by an end portal frame.
 
 Due to spatial constraints this method cannot be used with every stronghold, but only with strongholds in which an end portal frame is in a suitable relative position in the chunk.
+There are two spatial constraints:
+- The updates from the async line that is outside the portal room part need to be able to reach the position where the end portal frame gets placed
+- When the sand block below the top sand block falls away and sends out block updates, we need to use the +x or -x update to activate something outside the portal room part and turn off instantfalling.
+
+The second spatial contraint can be completely circumvented using the Rubal water trick: After the sand blocks have fallen into the portal room part, one also lets water instantly flow into the portal room part, in such a way that the sand block below the top sand block is next to water in +x or -x direction and this sand block blocks off the water from flowing to a budded rail outside the portal room part. As soon as that sand block starts instantfalling, it updates the water. The water can then flow out of the portal room and activate a rail, which can then be used to turn off instant falling.
+
+The first spatial constraint cannot be circumvented without severely reducing the falling block swap success chances.
+
 The following picture shows what kind of positions are usable and un-usable.
 
-![Portal Positions](../../images/StrongholdPositions.png)
-
-The spatial constraints arise mainly, because to be able to turn off instantfalling at the right time, we need to place rails or some other block update detector in +x or -x direction adjacent to the block below the location where the end portal frame gets generated.
-Also the whole +x,+z quarter of the chunk has been marked as bad, because it would require you to build the contraption in an unpopulated chunk.
+![Portal Positions](../../images/StrongholdPositionsWithWaterTrick.png)
 
 Although it is not strictly necessary, in practice it is convenient to build the contraption out of powered rails that are powered by redstone dust,
 and BUD the rails by turning off the [redstone dust power flag](../global-flags.md#redstone-power-flag) right at the start of the population.
