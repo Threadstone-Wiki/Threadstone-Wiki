@@ -31,9 +31,6 @@ In particular it is possible to load chunks that are already loaded. For this th
 A detailed explanation of rehash chunk swaps is in [cool mann's homework](https://docs.google.com/document/d/1rTKfmVLAtmvBMWW1QSgnetSG8Fuit5CaUvV77T9SgXk/edit)
 
 
-
-
-
 ## Unload chunk swap
 
 # Regular load
@@ -44,3 +41,12 @@ So to perform an async regular load, one needs to first schedule the chunk in wh
 If the async thread does do a single `getBlockState` call in this time, then the scheduled chunk unloading will be cancelled, and the chunk will not get unloaded in the unload phase.
 
 ## Void synchronized method
+
+# Preventing crashes during async chunk load
+
+When a chunk is loaded on an async thread, then the async thread will load in all the entities and tile entities that exist in that chunk.
+If the main thread starts processing entities or tile entities while the async thread is loading in entities or tile entities, then this can crash the game in a `ConcurrentModificationException`.
+
+For this reason it is customary to create a lag spike on the main thread in the [block event phase](../tick-phases.md#block-event-phase) right after one has performed an async chunk load, to prevent the main thread from processing entities or tile entities too early.
+One can create a lag spike during the block event phase, by activating a piston, and letting the piston activate an [update multiplier chain](../update-multiplier.md#lag-spikes).
+
