@@ -295,6 +295,7 @@ This race condition is very rare.
 ## `remove` + `rehash` <a name="remove-rehash"/>
 
 If the async thread upsizes the chunk hashmap while the main thread unloads a chunk, then it can happen that a single chunk instance has two keys in the chunk hashmap, so that this single chunk instance appears at two different positions in the game.
+This creates a [wormhole chunk](#wormhole-chunk).
 
 ## `rehash` + `rehash` <a name="rehash-rehash"/>
 The only version of this race condition that seems possible is when both threads upsize the chunk hashmap. Downsizing the hashmap on multiple threads is impossible, because the async thread cannot unload chunks so it cannot downsize the chunk hashmap. Downsizing the hashmap on the main thread while upsizing on the async thread is not provably impossible, but it would require the async thread to think that the chunk hashmap is more than 3/4 filled while the main thread has to think it's less than 3/16 filled, which seems not doable in minecraft.
@@ -331,9 +332,12 @@ Keys without values create *permanently unloaded chunks*. Every time a chunk acc
 So the game will treat the chunk as unloaded. If the chunk access forces the chunk to be loaded, then the game will load the chunk from disk, use the chunk for that single chunk access,
 and then forget the chunk again. The game will not be able to put the chunk into the chunk hashmap, since its key is already there.
 
-## Wormhole Chunks
+## Wormhole Chunk
 
+Using the race condition [`remove`+`rehash`](#remove-rehash) it is possible to create a single chunk instances which is twice in the value array of the hashmap and has two different keys at each index in which it is in the value array.
 
+Such a chunk is called a *wormhole* chunk. In the game this chunk is at two different positions at once, corresponding to the two different keys at the two different indices of the chunk.
+Placing or breaking a block at one of the positions of the chunk also places or breaks the block at the other position of that chunk.
 
 
 
