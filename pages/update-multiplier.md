@@ -16,7 +16,7 @@ Update multipliers usually require [instant tile ticks](global-flags.md#instant-
 
 If ITT is on, then an observer block is an update multiplier, and it is by far the most important kind of update multiplier.
 
-![Observer Chain](../images/ObserverChain.png)
+![Observer Chain](../images/ExponentialGrowth.png)
 
 An *update multiplier chain* is a chain of identical update multipliers, where the output of each update multplier is connected to the input of the next update multiplier in the chain.
 
