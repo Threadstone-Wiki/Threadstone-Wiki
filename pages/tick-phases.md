@@ -9,7 +9,7 @@ In every gametick the following phases happen in the following order:
 3. [Chunk Unloading](#chunk-unloading)
 4. [Tile Ticks](#tile-ticks)
 5. [Random Ticks](#random-ticks)
-6. [PlayerChunkMap](#playerchunkmap)
+6. [Update Chunk Map](#update-chunk-map)
 7. [Block Events](#block-events)
 8. [Entities](#entities)
 9. [Tile Entities](#tile-entities)
@@ -47,7 +47,9 @@ Blocks using Tile Ticks include: Repeaters, comparators, observers, redstone tor
 ## Random Ticks
 Wheat grows.
 
-## PlayerChunkMap
+## Update Chunk Map
+The `ChunkMap`, also known in MCP as the `PlayerChunkMap`, gets updated.
+
 - Block modification packets are send.
 This means, your client gets informed about all block changes that happened since the last PlayerChunkMap update.
 If less than 64 block changes happened in a chunk since the last time these packets were send, these block changes will be send in `BlockUpdateS2CPacket` or `BlocksUpdateS2CPacket` packets.
