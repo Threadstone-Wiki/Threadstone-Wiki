@@ -27,6 +27,8 @@ Otherwise the chunk is called *unloaded* with respect to that minecraft instance
 When a chunk gets unloaded and then loaded again, it usually is associated to a different `Chunk` instance. But it is still the same chunk.
 Similarly, if you close your minecraft game, and re-open it again, all `Chunk` instances will be different, but all chunks stay the same chunks they were before.
 
+In minecraft all blocks and entities have x, y, z coordinates, with which they can be mapped into 3-dimensional space.
+So if we have a block or entity in minecraft and we have a chunk, we can talk about whether the block or entity is in the chunk or not.
 
 
 # Loading
