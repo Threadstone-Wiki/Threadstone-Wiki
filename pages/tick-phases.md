@@ -4,16 +4,16 @@ Time in minecraft's [main thread](threads.md#main-thread) is separated into game
 
 In every gametick the following phases happen in the following order:
 
-1. Player Inputs
-2. Mob Spawning
-3. Chunk Unloading
-4. Tile Ticks
-5. Random Updates
-6. Block Modification Packets
-7. Block Events
-8. Entities
-9. Tile Entities
-10. Networking Phase
+1. [Player Inputs](#player-inputs)
+2. [Mob Spawning](#mob-spawning)
+3. [Chunk Unloading](#chunk-unloading)
+4. [Tile Ticks](#tile-ticks)
+5. [Random Ticks](#random-ticks)
+6. [PlayerChunkMap](#playerchunkmap)
+7. [Block Events](#block-events)
+8. [Entities](#entities)
+9. [Tile Entities](#tile-entities)
+10. [Networking Phase](#networking-phase)
 
 This is not a complete list, but includes the most important phases.
 
@@ -21,7 +21,7 @@ If multiple dimensions are loaded,
 then in each tick the game first does the following things:
 
 1. Player Inputs in all dimensions
-2. Tick-Phases 2-9 in the Overowlrd
+2. Tick-Phases 2-9 in the Overworld
 3. Tick-Phases 2-9 in the Nether
 4. Tick-Phases 2-9 in the End
 5. Networking Phase in all dimensions
@@ -44,11 +44,16 @@ All chunks which have previously been scheduled to unload get unloaded.
 All scheduled tile ticks get processed.
 Blocks using Tile Ticks include: Repeaters, comparators, observers, redstone torches, gravity-affected blocks, liquids, and many more.
 
-## Random Updates
+## Random Ticks
 Wheat grows.
 
-## Block Modification Packets
-Your client is informed about all block changes that happened since the last block modification packet phase.
+## PlayerChunkMap
+- Block modification packets are send.
+This means, your client gets informed about all block changes that happened since the last PlayerChunkMap update.
+If less than 64 block changes happened in a chunk since the last time these packets were send, these block changes will be send in `BlockUpdateS2CPacket` or `BlocksUpdateS2CPacket` packets.
+If more than 64 block changes happened, it will send a `WorldChunkS2CPacket` which sends the whole chunk again.
+
+- Up to 49 ungenerated chunks in view distance of players get generated and loaded. This operation stops as soon as it takes more than 50 milliseconds.
 
 ## Block Events
 All scheduled block events get processed.
@@ -58,7 +63,7 @@ Blocks using block events include: Pistons, Beacons, Ender Chests.
 ## Entities
 Entities get processed.
 
-## Tile Entity
+## Tile Entities
 Tickable Tile Entities get processed.
 Tickable Tile Entities include: Hoppers, Block 36.
 
