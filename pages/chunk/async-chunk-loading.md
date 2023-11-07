@@ -1,4 +1,25 @@
-This page is about async chunk loading.
+
+# Async Chunk Loading / Chunk Swaps ☆
+
+## Table of Contents
+
+
+- [Introduction](#introduction)
+  * [Terminology](#terminology)
+- [Common Techniques](#common-techniques)
+  * [Slowing down Stained Glass Threads](#slowing-down-stained-glass-threads)
+  * [Racing to the Unload Phase](#racing-to-the-unload-phase)
+- [Specific Methods](#specific-methods)
+  * [Upsize Rehash Chunk Swap](#upsize-rehash-chunk-swap)
+  * [Classical Multiplayer Unload Chunk Swap](#classical-multiplayer-unload-chunk-swap)
+  * [ElRich Radixan Singleplayer Unload Chunk Swap](#elrich-radixan-singleplayer-unload-chunk-swap)
+  * [Void Synchronized Method for Regular Async Load](#void-synchronized-method-for-regular-async-load)
+- [Miscellaneous](#miscellaneous)
+  * [Preventing crashes during async chunk load](#preventing-crashes-during-async-chunk-load)
+  * [Using Chunk Swaps for Falling Block Swaps](#using-chunk-swaps-for-falling-block-swaps)
+
+
+
 
 # Introduction
 
@@ -42,7 +63,7 @@ For almost all async chunk loading methods it is important to slow down the stai
 or perform an operation that allows a chunk swap in the glass chunk.
 
 The following methods can be used for slowing down stained glass threads:
-1. [Cluster chunks](chunk/chunk-hashmap.md#cluster-chunks) can slow down the `getBlockState` call in the stained glass thread code.
+1. [Cluster chunks](chunk-hashmap.md#cluster-chunks) can slow down the `getBlockState` call in the stained glass thread code.
 2. Beacon blocks below the stained glass can force the stained glass thread code to call the `((ServerWorld)world).submit` function, which slows down the thread.
 
 Beacons are particularly noteworthy, because they lead to a `synchronized` block.
@@ -158,7 +179,10 @@ Otherwise there might be other chunks unloading before the desired chunk unloads
 ## Upsize Rehash Chunk Swap
 
 An upsize rehash chunk swap setup without cluster chunks in the end dimension is shown in cool mann's video [How to Get All* Unobtainable Blocks as Items in Minecraft Survival [1.12] pt. 1](https://www.youtube.com/watch?v=VTbpUjK-A74).
+
 A [cluster chunk finder](chunk-hashmap.md#cluster-finder-programs) intended for upsize rehash chunk swaps by Cheater Codes is [here](https://github.com/CheaterCodes/easy-cluster/tree/main).
+
+A world download by cool mann for rehash chunk swaps with cluster chunks is [here](https://www.mediafire.com/file/2l7gfzedckdd398/hekate_setup_42.rar/file), but instructions for how to use that world download are nowhere.
 
 
 As explained in [the chunk hashmap article on rehash chunk swaps](chunk-hashmap.md#get-rehash) upsize rehash chunk swaps only work in specific locations:
@@ -207,17 +231,113 @@ so when one does an upsize rehash chunk swap, it is recommended one loads the re
 This does not prevent the game from iterating over every block in every chunk section of the rehash chunk, so one still needs to minimize chunk sections.
 But it does help a little bit nonetheless.
 
-
-
 ## Classical Multiplayer Unload Chunk Swap
 An unload chunk swap setup for multiplayer is shown in [Falling Block Episode 3](https://www.youtube.com/watch?v=8-AumLja16A).
 
-## ElRich Singleplayer Unload Chunk Swap
+World download is [here](https://www.mediafire.com/file/shf3k8uyikdupuv/Chunk+swap+world.zip/file).
+
+Render Distance 16.
+
+As explained in the [explanation of unload chunk swaps in the chunk hashmap article](chunk-hashmap.md#get-remove),
+for an unload chunk swap, we need a *glass chunk* with which we want to do the chunk swap,
+and we have an *unload chunk* that is clustering the glass chunk.
+
+In the setup the unload chunk has the same hash value as the glass chunk.
+The setup also includes 1000 cluster chunks whose hash values start right after that of the unload chunk.
+So if one loads the unload chunk and the 1000 cluster chunks and then loads the glass chunk, then the glass chunk will get 1000 clustering,
+and unloading the unload chunk will shift the index of the glass chunk down by 1000. This creates ideal conditions for an unload chunk swap.
+
+In the above setup we additionally have a *start platform* which is right outside of view distance of the glass chunk,
+and we have a *unload platform* which is diagonally offset from the unload chunk, and just barely still within view distance of the unload chunk.
+
+The setup uses 3 players.
+
+Player 1 stands at the start platform.
+Player 2 and 3 stand at the unload platform. Player 2 is within view distance of the unload chunk. Player 3 is outside the view distance of the unload chunk.
+
+![Classical Setup](../../images/ClassicalUnloadChunkSwapSetup.PNG)
+
+To use the setup we execute several steps:
+1. Player 1 activates some levers at the start platform which load the permaloader, the mob switches, and the 1000 cluster chunks. Then we wait for an autosave.
+
+2. All players simultaneously relog. This is done to downsize the chunk hashmap. While loading the 1000 cluster chunks, the game also loads many unnecessary chunks, and upsizes the chunk hashmap to hashsize 16384.
+After an autosave, if all players relog, the chunk hashmap downsizes back to 8192, which is the intended hashsize for the setup.
+
+3. Player 2 aligns against a cobble wall at the unload platform and relogs. After this the unload chunk is loaded, and player 2 has a specific position in the player chunk map right next to the cobble wall.
+The position of player 2 in the player chunk map will only update again once he goes more than 8 blocks away from his previous position. The cobble wall is exactly 8 blocks away from a chunk border.
+So if player 2 later crosses that chunk border the unload chunk will immediately get scheduled to unload. So aligning against the cobble wall and relogging gives us a precise way to control when exactly the unload chunk gets scheduled to unload.
+
+4. Player 1 activates a lever at the start platform which creates an [invisible chunk](population.md#invisible-chunk-1) next to the glass chunk, and turns on [instant tile ticks](population.md#instant-tile-ticks). Then Player 1 flies to the glass chunk before the next autosave occurs.
+
+5. Player 2 activates an [observer chain that creates a lag spike](update-multiplier.md#lag-spikes) lasting for roughly ten seconds.
+During this lag spike, player 2 walks across a chunk border away from the unload chunk.
+Then player 1 at the glass chunk places 36 stained glass blocks above a beacon tower consisting of 4500 beacons.
+
+After the lag spike all these player actions will be executed in a single gametick in the player phase.
+
+When player 2 walks across the chunk border, this scheduled the unload chunk to unload.
+
+All other chunks that player 2 might have scheduled to unload stay within view distance of player 3, so the presence of player 3 ensures that no unnecessary chunks get scheduled to unload.
+
+Player 1 then places all the stained glass blocks and starts 36 stained glass threads.
+
+The stained glass threads get slowed down both by the 4500 beacons and the 1000 cluster chunks.
+
+Meanwhile the main thread finishes the player phase, then goes through a mob spawning phase, that is short due to mob switches,
+and then enters the chunk unloading phase, in which only a single chunk gets unloaded, namely the unload chunk.
+
+The stained glass threads are then usually still alive when the unload chunk gets unloaded, and an unload chunk swap can happen.
+In fact in the setup usually multiple stained glass threads manage to perform an unload chunk swap, and the already loaded glass chunk gets reloaded by multiple async thread.
+However usually only one of the async threads manages to populate the invisible chunk, and create async block updates.
+
+## ElRich Radixan Singleplayer Unload Chunk Swap
+A video showing this setup is ElRich's [Survival 1.12 Ep155, Cómo conseguir BEDROCK en modo supervivencia, at 1:00:12](https://www.youtube.com/watch?v=VkrYzPefX3I&t=3612s).
+
+World download is [here](https://www.mediafire.com/file/e24srbvb6melto7).
+
+This setup is very similar to the [classical multiplayer unload chunk swap](#classical-multiplayer-unload-chunk-swap),
+except that it only requires a single player, instead of 3.
+The unload chunk is loaded using redstone. The unloading of the unload chunk is scheduled by pressing ESC, instead of having a player go away from it.
+
+The following text passage explaining this ESC mechanic is by ElRich:
+
+In SSP, at the start of the tick you can pause the game by opening the pause menu (ESC), using a book, placing a sign...
+
+When the game is paused, it will save the world just like an autosave would (the only difference is that this way prints "Saving the world" messages).
+
+We can use this to unload the unload chunk on demand in a precise tick. In order to do that, once the glass chunk is loaded, we send a signal to stop keeping it loaded. However, we are loading the chunks that the wire goes through by doing so. Instead we use a timer to keep it loaded some time so we can unload them first.
+
+To synchronize the placing of glass with the unload, we lag the game two consecutive ticks.
+
+During the first lag spike we have to trigger a world save by pressing ESC.
+
+(We can detect when the spike has ended typing in the chat previously since it will be prompted later in the same tick, or by looking at the console.)
+Once the lag ends, we resume the game and, at the start of the next tick, the game unloads 100 chunks that are part of the permaloader.
+Then, during the second lag spike, we place stained glass.
+
+The next tick, the rest of chunks that are not permaloaded are unloaded. Preferably we want the unload chunk to be the only one.
+
 
 ## Void Synchronized Method for Regular Async Load
+This is a Regular Async Load method, based on a clever exploitation of `synchronized` blocks discovered by Void.
+
+World Download is [here](https://www.mediafire.com/file/b3selx32rzkd4ss/Voids_synchronized.zip/file).
+
+Instructions:
+
+Render distance 10.
+
+The platform for operating the setup is at 10229 129 -5400.
+
+Align against the cobble wall and relog.
+
+Wait for an autosave, then flick the levers/buttons with the signs 1 to 5 in the correct order.
+
+If you get no async line, fly two or three chunks away from the setup, wait two or three seconds, fly in, and do another attempt.
+
+Explanation:
 
 The main difficulty with performing an async regular load is that the `getBlockState` calls of the async thread can cancel chunk unloading.
-The last tick phase before the [unload phase](../tick-phases.md#chunk-unloading) in which one can schedule chunk unloading is the [player phase](../tick-phases.md#player-phase).
 So to perform an async regular load, one needs to first schedule the chunk in which the async thread is running to be unloaded, and this scheduling happens in the player phase or even earlier. And then the main thread needs to get through the whole player phase, and the whole mob spawning phase and into the unload phase, all while the async thread does not do a single `getBlockState` call.
 If the async thread does do a single `getBlockState` call in this time, then the scheduled chunk unloading will be cancelled, and the chunk will not get unloaded in the unload phase.
 
@@ -226,13 +346,15 @@ This is all done in the [player phase](tick-phases.md#player-phase), and all the
 As explained in the section on [slowing down stained glass threads](#slowing-down-stained-glass-threads), all the stained glass threads will wait at the beacons, until the main thread has finished the player phase.
 So at the end of the player phase, all the 1000 stained glass threads will still be alive, even though the player phase with all its instantfalling dragon eggs took a really long time.
 
-After the player phase, the stained glass threads manage to slow down each other so much that an async regular load becomes possible.
+All except one of the stained glass threads are started in an irrelevant chunk we do not care about.
+Only one of the stained glass threads gets started in the glass chunk that we want to asyncly reload.
 
-
+After the player phase, the 999 stained glass threads in the irrelevant chunk manage to stop the one thread in the glass chunk in front of the `synchronized` block in the `submit` code for such a long time, that the main thread can unload the glass chunk.
+Once the one thread in the glass chunk finally gets past the `synchronized` block, it does a `getBlockState` call and regularly reloads the glass chunk.
 
 # Miscellaneous
 
-# Preventing crashes during async chunk load
+## Preventing crashes during async chunk load
 
 When a chunk is loaded on an async thread, then the async thread will load in all the entities and tile entities that exist in that chunk.
 If the main thread starts processing entities or tile entities while the async thread is loading in entities or tile entities, then this can crash the game in a `ConcurrentModificationException`.
@@ -240,7 +362,7 @@ If the main thread starts processing entities or tile entities while the async t
 For this reason it is customary to create a lag spike on the main thread in the [block event phase](../tick-phases.md#block-event-phase) right after one has performed an async chunk load, to prevent the main thread from processing entities or tile entities too early.
 One can create a lag spike during the block event phase, by activating a piston, and letting the piston activate an [update multiplier chain](../update-multiplier.md#lag-spikes).
 
-# Using Chunk Swaps for Falling Block Swaps
+## Using Chunk Swaps for Falling Block Swaps
 Chunk Swaps can be used to replace gravity affected blocks by a different blocks on an async thread, and in this way they can be used for [falling block swaps without async lines](../falling-block/falling-block-swaps.md#old-coolmann-method).
 
 
