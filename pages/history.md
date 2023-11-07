@@ -2,14 +2,14 @@ This contains various bits of technical minecraft history.
 
 ## Table of Contents
 
-- [Slimeblocks, tnt duping and pig spawner generation](#slimeblocks--tnt-duping-and-pig-spawner-generation)
+- [Slimeblocks, tnt duping and pig spawner generation](#pig-spawner-history)
 - [Falling Block History](#falling-block-history)
   * [Early History](#early-history)
   * [Backdoor Tearm](#backdoor-tearm)
   * [Threadstone Discord](#threadstone-discord)
 
 
-# Slimeblocks, tnt duping and pig spawner generation
+# Slimeblocks, tnt duping and pig spawner generation <a name = "pig-spawner-history">
 
 When mojang initially added slimeblocks, they were bouncy, but they did not stick to other slimeblocks and did not allow for easy flying machines.
 CodeCrafted made a troll video [Minecraft: "Sticky" slime block | Pull multiple blocks](https://www.youtube.com/watch?v=IPm4m1zBd9Q) pretending that slimeblocks had a connectivity property, allowing sticky pistons to pull multiple slimeblocks at once. This was made in a snapshot during which slimeblocks did not have that property.
@@ -85,9 +85,79 @@ But the basic idea of using the stained glass thread to perform a falling block 
 
 The question is now just how to load a chunk using the stained glass thread.
 
+Xcom started working on the project, but then decided to first investigate other methods for getting the bedrock item.
 
+A few months later, Xcom and Matthew Bolan got the bedrock item in 1.8 from [end crystal tower population](chunk/population.md#18-bedrock-item-from-end-crystal-towers).
+
+A few months after that, Earthcomputer, Xcom and other people got the bedrock item in 1.12 by silk touch mining it during [end gateway population](chunk/population.md#112-bedrock-item-from-gateways).
+
+With this the bedrock item was obtained.
+
+However the falling block method also promised other unobtainable items like end portal frame and spawners, so research returned to the falling block method.
 
 ## Backdoor Tearm
+The event that properly started falling block research was the publication of [cool mann's homework](https://docs.google.com/document/d/1rTKfmVLAtmvBMWW1QSgnetSG8Fuit5CaUvV77T9SgXk/edit).
+
+The document was written on 27th August 2020, and published in the description of cool mann's video [It works](https://www.youtube.com/watch?v=TiQMMwMJIzM) on 28th August 2020.
+
+On the same day Xcom published the video [The final quest [1.12 or lower]](https://www.youtube.com/watch?v=ubVJ_JZFqec), announcing that he will work on falling block research in his twitch streams.
+From these twitch streams there is nothing publically available any more except for a few [clips](https://twitchtracker.com/xcom6000/clips).
+
+On 31th August also a private discord chat called "Backdoor Team" was created, containing initially
+Xcom, cool mann, Earthcomputer, Matthew Bolan and Kerb.
+
+On 7th August, cool mann released his video [How to Get All* Unobtainable Blocks as Items in Minecraft Survival [1.12] pt. 1](https://www.youtube.com/watch?v=VTbpUjK-A74).
+
+One day later, cool mann manages to get an end portal frame item from his non-surviva-friendly setup without mods to critical parts of the code.
+
+![Cool mann epf](../images/CoolMannEPF.PNG)
+
+But cool mann's setup only worked in the end dimension, because it used void chunks.
+
+The next task was now to make a rehash chunk swap setup that works in the overworld.
+This was considerably more difficult, because overworld chunks have much more chunk sections, [which is bad for rehash chunk swaps](chunk/async-chunk-loading.md#upsize-rehash-chunk-swap).
+
+Rehash chunk swaps without cluster chunks only work in locations with very specific seeds. An explanation of this fact is [here](chunk/chunk-hashmap.md#get-rehash).
+Also the intention was to directly do a falling block swap during the chunk swap,
+so the end portal frame blocks had to be in the chunk with the specific seed.
+
+So it initially seemed like the method could only be used to obtain end portal frame items in worlds in which a stronghold happens to generate in a chunk with the exactly correct hash value for rehash chunk swaps.
+In most worlds such a stronghold does not generate.
+
+To overcome this problem, cool mann proposed using cluster chunks to increase the number of positions where rehash chunk swaps could be performed.
+
+![Cluster Rehash](../images/ClusterRehash.PNG)
+
+(For accurate crediting I should remark that cool mann was not the only one in the group thinking about combining cluster chunks with the rehash chunk swap.)
+
+With this one could perform rehash chunk swaps in any world whose hash value is close to the end of the array. This requirement was sufficiently generous to get end portal frames in most worlds.
+Using this idea, cool mann created an end portal frame item setup for the Hekate server. A world download for this setup is [here](https://www.mediafire.com/file/2l7gfzedckdd398/hekate_setup_42.rar/file).
+
+However this setup was never build in survival.
+
+Instead cool mann proposed that one should use unload chunk swaps instead of rehash chunk swaps:
+
+![Unload Chunk Swap](../images/CoolMannUnloadChunkSwap.PNG)
+
+Then cool mann also proposed that one should not just do the falling block swap during the chunk swap,
+but try to keep the async thread alive in an ITT clock.
+He showed [an unlisted video](https://www.youtube.com/watch?v=ev3AjEl_vUQ) in which an async thread was kept alive for several seconds using redstone dust lag.
+
+![ITT Clock](../images/CollmannITTClock.PNG)
+
+And then cool mann got burned out and stopped working on the project forever.
+
+Cheater Codes suggested using long [ITT observers lines](update-multiplier.md) instead of ITT clocks, and thus the idea of [async lines](async-line.md) was born.
+
+To create an async line you do not just need async chunk loading, but the async chunk loading needs to trigger a terrain population.
+Since [invisible chunks](chunk/population.md#invisible-chunks-1) had not been discovered yet, there was no known way to put beacons into unpopulated chunk,
+and no way to get a terrain population from async chunk loading, unless the asyncly loaded chunk was unpopulated on disk.
+
+Also there was also no clear evidence that beacons were really that important. 
+So beacons were unwisely removed, and Kerb and Cheater Codes spend many months testing rehash chunk swap setups in the overworld with a few hundred cluster chunks and zero beacons.
+
+
+
 
 
 
