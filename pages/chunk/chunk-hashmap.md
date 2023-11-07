@@ -312,6 +312,21 @@ The other possible race conditions are more interesting and will now be describe
 If one thread calls the `remove` method while another thread calls the `get` method, then it can happen that the `get` method fails to find a chunk, even when the chunk is in the chunk hashmap.
 This results in an [unload chunk swap](async-chunk-loading.md#unload-chunk-swap).
 
+If a chunk gets removed by the `remove` method, and that chunk was [clustering](#cluster-chunks) some other chunks, in the sense that the other chunks could have occupied the index of the first chunk and only took later indices because the first chunk was already loaded,
+then the `shiftKeys` method will move one of the clustered chunks into the index of the first chunk.
+
+Let us call the removed chunk the *unload chunk*, and the chunk whose index gets shifted the *glass chunk*.
+
+If a `get` method tries to find the glass chunk, while the `shiftKeys` method is changing the index of the glass chunk from its original index, then we can get the following race condition:
+1. The `get` method checks the index of the unload chunk, sees that the glass chunk is not at this index, and continues iterating through the cluster.
+2. The `shiftKeys` method changes the index of the glass chunk, so that the glass chunk now has the index that the unload chunk used to have.
+3. The `get` method reaches the index that the glass chunk used to have. Since the glass chunk is no longer at this index, the `get` method cannot find the glass chunk.
+
+When this sequence of events happens, we get an unload chunk swap at the position of the glass chunk.
+
+The success rate of this race condition increases, if the difference between the index of the unload chunk and the index, that the glass chunk initially has, is as great as possible.
+So one can improve the success rates by inserting as many [cluster chunks](#cluster-chunks) between the unload chunk and the glass chunk as possible.
+
 ## `get` + `rehash` - Rehash Chunk Swap <a name="get-rehash"/>
 If one thread calls the `rehash` method while another thread calls the `get` method, then it can happen that the `get` method fails to find a chunk, even when the chunk is in the chunk hashmap.
 This results in a [rehash chunk swap](async-chunk-loading.md#rehash-chunk-swap).
