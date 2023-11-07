@@ -25,15 +25,35 @@ If the chunk gets unloaded while the async thread is running, then the resulting
 
 The chunk in which we start the stained glass threads will be called the *glass chunk*.
 
-## Slowing down glass threads
 
-Most async chunk load methods need to slow down the stained glass threads, so that they survive long enough, until the main thread either unloads the glass chunk or does an operation that causes a chunk swap in the glass chunk.
+## Unload Race
+In the Unload Race, the main thread starts stained glass threads by placing or breaking stained glass blocks in the [player phase](../tick-phases.md#player-phase),
+and then the main thread tries to get to the chunk unloading phase while the stained glass threads are still alive.
 
-There are exactly two ways to slow down stained glass threads:
-- Use [cluster chunks](chunk-hashmap.md#cluster-chunks) to slow down chunk accesses in the glass chunk.
-- Have beacons below the stained glass.
+The Unload race is required for:
+- Unload Chunk Swaps
+- Downsize Rehash Chunk Swaps
+- Async regular load
 
 
+
+
+
+
+
+## Rehash Race
+
+In the Rehash Race, the main thread starts stained glass threads by placing or breaking stained glass blocks,
+and then the main thread loads a chunk, and once the chunk loading is completed the main thread upsizes the chunk hashmap, all while the stained glass threads are still alive.
+
+The Rehash Race is required for:
+- Upsize Rehash Chunk Swaps
+
+
+
+
+
+# TODO:  DELETE EVERYTHING BELOW
 
 
 ## Chunk swap
