@@ -5,7 +5,7 @@ This contains various bits of technical minecraft history.
 - [Slimeblocks, tnt duping and pig spawner generation](#pig-spawner-history)
 - [Falling Block History](#falling-block-history)
   * [Early History](#early-history)
-  * [Backdoor Tearm](#backdoor-tearm)
+  * [Backdoor Team](#backdoor-team)
   * [Threadstone Discord](#threadstone-discord)
 
 
@@ -95,7 +95,7 @@ With this the bedrock item was obtained.
 
 However the falling block method also promised other unobtainable items like end portal frame and spawners, so research returned to the falling block method.
 
-## Backdoor Tearm
+## Backdoor Team
 The event that properly started falling block research was the publication of [cool mann's homework](https://docs.google.com/document/d/1rTKfmVLAtmvBMWW1QSgnetSG8Fuit5CaUvV77T9SgXk/edit).
 
 The document was written on 27th August 2020, and published in the description of cool mann's video [It works](https://www.youtube.com/watch?v=TiQMMwMJIzM) on 28th August 2020.
@@ -104,7 +104,8 @@ On the same day Xcom published the video [The final quest [1.12 or lower]](https
 From these twitch streams there is nothing publically available any more except for a few [clips](https://twitchtracker.com/xcom6000/clips).
 
 On 31th August also a private discord chat called "Backdoor Team" was created, containing initially
-Xcom, cool mann, Earthcomputer, Matthew Bolan and Kerb.
+Xcom, cool mann, Earthcomputer, Matthew Bolan and Kerb. Later Cheater Codes is also added.
+Later a Backdoor discord is made, containing many more people.
 
 On 7th August, cool mann released his video [How to Get All* Unobtainable Blocks as Items in Minecraft Survival [1.12] pt. 1](https://www.youtube.com/watch?v=VTbpUjK-A74).
 
@@ -155,15 +156,94 @@ and no way to get a terrain population from async chunk loading, unless the asyn
 
 Also there was also no clear evidence that beacons were really that important. 
 So beacons were unwisely removed, and Kerb and Cheater Codes spend many months testing rehash chunk swap setups in the overworld with a few hundred cluster chunks and zero beacons.
+A video clip of Kerb talking about the setup is [here](https://www.youtube.com/watch?v=pnaSDSuHHtE). A document by Cheater Codes explaining the setup is [here](https://hackmd.io/8CVUgBDTQl22LifmgFmotA).
+In this document the "easy" method refers to falling block swaps of blocks that can survive block updates while having air underneath them. Falling nether portals were thought to require the "hard" method.
 
+Punchster2 also joins the project.
 
+Meanwhile Xcom and Earthcomputer are trying to figure out how to accurately measure the lifetime of threads. At first glance it seems like one could use java's `System.nanoTime` function for this purpose, but that actually gives highly inaccurate results.
+Eventually Earthcomputer writes some native methods to make a timer that is more crude but also more accurate than `System.nanoTime`. This accurate timer is available on the [last_quest_x branch of carpet mod](https://github.com/gnembon/carpetmod112/blob/last_quest_x/carpetmodSrc/accuratetimer/AccurateTimer.java). 
 
+Using this accurate timer, thread lifetimes could finally be measured in a reasonable fashion.
+It becomes clear that seriously slowing down glass threads with cluster chunks requires not 100 or 200 but 1000 or 2000 cluster chunks.
+Also beacons are important.
 
+The importance of beacons becomes even more clear, when punchster2 discovers that they force the async thread to execute a `synchronized` block.
 
+So even though there is still no known way to place beacons in unpopulated chunks, Xcom, punchster2 and Kerb start working on an unload chunk swap setup using 4500 beacons.
+The idea is that you savestate the glass chunk as unpopulated, then build the beacon tower, then perform the chunk swap.
+And if the chunk swap is successful, then the 4500 beacons are gone, but you've got an async observer line, and that is worth it.
+
+On 25.11.2022 also Myren Eario joins the project.
+
+On 5th December the unload chunk swap setup by Xcom and punchster reaches a promising state, and an [unlisted video](https://www.youtube.com/watch?v=xYkuRN2_JOI) is published to the memes channel of the scicraft discord.
+
+The question is now just how to use the async observer line to perform a falling block swap.
+Myren, punchster and xcom develop contraptions for nether portals and end portal frames, and punchster publishes them in the form of [shitposts](https://www.youtube.com/watch?v=6Lmxarv8O9c).
+
+Towards the end of December, Myren discovers invisible chunks, which greatly simplifies the setup.
+
+The `synchronized` block in stronghold population throws the end portal frame setup back by a few weeks.
+
+But in early February a setup for end portal frame items is finished.
+
+Earthcomputer codes a user friendly [cluster finder](https://github.com/Earthcomputer/FallingClusterFinderJava/releases), and releases his [falling block video](https://www.youtube.com/watch?v=BQnejuEjMJs).
+
+[Scicraft gets the end portal frame item](https://www.youtube.com/watch?v=kPWjC7QtF6k).
+
+After several years, the project sees the light of day.
+
+Credits for the backdoor team period are as follows:
+
+Significant research:
+- Cheater Codes
+- coolmann
+- cortex
+- Earthcomputer
+- Kerb
+- Myren
+- punchster
+- Xcom
+
+Contributors:
+- invokespecial
+- Kman
+- Matthew Bolan
+- prgmTrouble
+- skyrising
+- Sylkos
 
 ## Threadstone Discord
 
+The following events are not necessarily in historically correct order.
 
+Myren starts making [several videos about Falling block](https://www.youtube.com/playlist?list=PL8r-bvM9ltXOCEQMW_WTvQWUfmwVl528h).
 
+Cool mann makes an unlisted video about [creating player heads](https://www.youtube.com/watch?v=BE16Zipwwb4).
 
+JKM watches myren's videos, joins the Prototech server, and obtains the [end portal frame item on prototech](https://www.youtube.com/watch?v=z7-Fw51WFOc).
 
+JKM starts working on [falling spawners](https://www.youtube.com/watch?v=LgRDEetBtNI), and then obtains [the spawner item on prototech](https://www.youtube.com/watch?v=YznV5b29YTw).
+
+rpm and the KiwiTech server obtain [end portal frames, spawners and barriers](https://www.youtube.com/watch?v=wiCrgOcSKSE).
+
+The backdoor team starts looking into Palette Corruption. 2No2Name joins and points out the existence of [word tearing](word-tearing.md).
+
+The Threadstone discord gets created. A few servers use its help to get end portal frame items via population method.
+
+Myren uses word tearing to create an [easy generic method for falling block swaps](generic-method.md).
+
+JKM and rpm use the generic method to obtain [command block items on Prototech](https://www.youtube.com/watch?v=PI2LPZaL5To).
+
+JKM is invited to scicraft to also get [command block items on scicraft](https://www.youtube.com/watch?v=UIs3pcWEuO8).
+
+ElRichMC gets [falling bedrock](https://www.youtube.com/watch?v=VkrYzPefX3I).
+
+ElRichMC and Radixan create a very nice [automatic generic method](https://www.youtube.com/watch?v=U1yXvJBxhdM).
+
+Angarn and Floppy get unobtainable items on Dugged without using and savestates. The only public video about it is a [shitpost](https://www.youtube.com/watch?v=boZGqhwcnIk),
+but there is a serious [unlisted video](https://www.youtube.com/watch?v=IF4zQxRicG4).
+
+A few months later, rpm creates a [falling nether portal in 1.8](https://www.youtube.com/watch?v=lDAyFK5WpYY).
+
+Much later, Void discovers the synchronized method for async chunk reload.
