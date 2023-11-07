@@ -1,4 +1,4 @@
-# Double Tile Tick Scheduling
+# Double Tile Tick Scheduling ☆
 
 Double Tile Tick Scheduling is a complicated bug discovered by [Earthcomputer](https://www.youtube.com/@Earthcomputer). The bug has no important applications and full explanation of it has never been published on youtube.
 
@@ -14,33 +14,33 @@ Double Tile Tick Scheduling is a complicated bug discovered by [Earthcomputer](h
 
 # Introduction
 
-Tile ticks are called NextTickListEntry in 1.12 MCP.
-The NextTickListEntry class implements the [Comparable interface](https://docs.oracle.com/javase/8/docs/api/java/lang/Comparable.html).
+Tile ticks are called `ScheduledTick` in Ornite Feather mappings.
+The `ScheduledTick` class implements the [`Comparable` interface](https://docs.oracle.com/javase/8/docs/api/java/lang/Comparable.html).
 
-This means the NextTickListEntry class has both an equals() method
-and a compareTo() method.
+This means the `ScheduledTick` class has both an `equals` method
+and a `compareTo` method.
 
-The ordering induced by the compareTo() method is called "consistent with equals"
-if for any two objects for which equals() is true, compareTo() returns 0.
+The ordering induced by the `compareTo` method is called "consistent with equals"
+if for any two objects for which `equals` is true, `compareTo` returns 0.
 
-The NextTickListEntry class in minecraft has an ordering which is not consistent with equals.
+The `ScheduledTick` class in minecraft has an ordering which is not consistent with equals.
 
-Two tile ticks are equal in the sense of equals() if they have the same position and block type.
-But the compareTo() method tells you which tile tick comes first in the update order.
+Two tile ticks are equal in the sense of `equals` if they have the same position and block type.
+But the `compareTo` method tells you which tile tick comes first in the update order.
 Since two tile ticks can be at the same position and be scheduled by the same block without having the same update order,
 the tile tick ordering is not consistent with equals.
 
-Now the HashSet that stores the tile ticks assumes that the ordering should be consistent with equality.
-Since it is not, the HashSet can sometimes get confused and this makes it possible to add duplicate tile ticks.
+Now the `Set` that stores the tile ticks in the `ServerWorld` class, assumes that the ordering should be consistent with equality.
+Since it is not, the `Set` can sometimes get confused and this makes it possible to add duplicate tile ticks.
 How exactly does this work?
 
-In the HashSet there is a bucket for each possible hash value. If two tile ticks get added to the same bucket, then they usually get put into a list.
+In a `Set` there is a bucket for each possible hash value. If two tile ticks get added to the same bucket, then they usually get put into a list.
 However if the list in a bucket gets too long, then the bucket gets treeified, and the list gets replaced by a binary tree.
-The compareTo() method of the objects get used to decide which objects get put where in the binary tree.
+The `compareTo` method of the objects get used to decide which objects get put where in the binary tree.
 Small objects get put further to the left, large objects further to the right.
 The tree tries to prevent duplicate objects from being entered into the tree, but this only works if the ordering is consistent with equals.
 
-If we have two tile ticks T1 and T2 which are equal according to equals(), but where T2 is larger than T1 according to compareTo(),
+If we have two tile ticks T1 and T2 which are equal according to `equals`, but where T2 is larger than T1 according to `compareTo`,
 then it is possible to enter both into a binary tree in a hash bucket. We could enter T1 somewhere on the left half of the tree,
 and make sure that T2 is larger than the root of the tree. If you then try to put T2 into the tree it will compare it to the root and then compare it to a bunch of objects on the right half of the tree,
 but it will never compare it with T1. So in the end T2 gets entered into the tree, even though T1 is already in the tree. And then you have scheduled a duplicate tile tick.
@@ -54,7 +54,7 @@ The contraption schedules enough tile ticks to treeify that hash bucket.
 
 Once the bucket is treeified, it is possible to schedule duplicate tile ticks in that hash bucket.
 
-A video explanation of HashSets is in Earthcomputer's video [What is a HashSet?](https://www.youtube.com/watch?v=y5Cx07OHaOI).
+A video explanation of hashsets behaving like `Set` is in Earthcomputer's video [What is a HashSet?](https://www.youtube.com/watch?v=y5Cx07OHaOI).
 
 # Applications
 
@@ -102,17 +102,20 @@ If one manages to enter a duplicate tile tick into the hashset without entering 
 
 This is a purely theoretical application whose details have not been worked out.
 
-[Cool mann's chunk swap setup for the end](https://www.youtube.com/watch?v=VTbpUjK-A74) can be used to perform falling block swaps in the end.
-In the video he uses instant tile ticks, which is not vanilla-friendly, but the contraption could easily be modified to not require instant tile ticks.
+[Cool mann's chunk swap setup for the end](https://www.youtube.com/watch?v=VTbpUjK-A74) can be used to perform [falling block swaps in the end](falling-block/falling-block-swaps.md#old-coolmann-method).
+
+In his video cool mann uses instant tile ticks, which is not vanilla-friendly, but the contraption could easily be modified to not require instant tile ticks.
+
 To improve the falling block swap chances one should use cluster chunks, but additionally one should use double tile tick scheduling to schedule multiple tile ticks on the sand blocks and further increase the falling block swap chances.
-This could lead to a population based setup for creating falling end gateways, without using word tearing.
+
+This could lead to a population based setup for creating falling end gateways, without using [word tearing](word-tearing.md).
 
 # Accidental fix in 1.13
 
 In 1.13 mojang fixed double tile tick scheduling by complete accident.
-They made the NextTickListEntry class into a generic type class.
-So it's now NextTickListEntry\<T\> instead of just NextTickListEntry.
-There is a java bug that makes it so the comparable class doesn't work properly for generic type classes, and this bug makes it so the game never ever uses the equals() method of the NextTickListEntry class, but instead just uses equality of objects.
+They made the `ScheduledTick` class into a generic type class.
+So it's now `ScheduledTick<T>` instead of just `ScheduledTick`.
+There is a java bug that makes it so the comparable class doesn't work properly for generic type classes, and this bug makes it so the game never ever uses the `equals` method of the `ScheduledTick` class, but instead just uses equality of objects.
 This fixed double tile tick scheduling.
 So mojang didn't even know about double tile tick scheduling,
 but they accidentally introduced a java bug which cancels out the double tile tick scheduling bug.
