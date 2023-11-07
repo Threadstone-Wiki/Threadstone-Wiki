@@ -23,9 +23,9 @@ The best method for async chunk loading in survival is the [Void synchronized me
 
 # Chunk swap
 
-In each dimension the loaded chunks are stored in a [`Long2ObjectOpenHashmap`](https://github.com/karussell/fastutil/blob/master/src/it/unimi/dsi/fastutil/longs/Long2ObjectOpenHashMap.java).
-The `Long2ObjectOpenhashmap` is a data structure that does not support asynchronous operations. If multiple threads access the `Long2ObjectOpenhashmap` at the same time, it can fail to work as intended.
-In particular it is possible to load chunks that are already loaded. For this there are two different methods.
+In each dimension the loaded chunks are stored in a [chunk hashmap](chunk-hashmap.md).
+The chunk hashmap does not support asynchronous operations. If a stained glass thread tries to get a chunk from the chunk hashmap, while the main thread is performing another operation on the chunk hashmap,
+then the stained glass thread can fail to find the chunk, even if it actually was in the hashmap.
 
 ## Rehash chunk swap
 A detailed explanation of rehash chunk swaps is in [cool mann's homework](https://docs.google.com/document/d/1rTKfmVLAtmvBMWW1QSgnetSG8Fuit5CaUvV77T9SgXk/edit)
