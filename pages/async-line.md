@@ -48,7 +48,7 @@ Extending the observer line by one additional observer doubles the lifetime of t
 The async block updates that an async line sends out can be used for many threadstone exploits, like:
 
 - creating unobtainable blocks with [registry word tearing](word-tearing.md#registry-word-tearing)
-- obtaining unobtainable items and falling blocks with [falling block swaps](../falling-block/falling-block-swaps.md)
+- obtaining unobtainable items and falling blocks with [falling block swaps](falling-block/falling-block-swaps.md)
 - creating player heads
 - obtaining bedrock items by silk touch mining bedrock created through [hashmap word tearing](word-tearing.md#hashmap-word-tearing)
 
