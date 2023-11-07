@@ -364,10 +364,6 @@ Accidentally loading a chunk on the main thread is extremely easy, because any a
 
 If a permaloader is active, then chunks will be reloaded in that permaloader at every autosave. So permaloaders have to be disabled when the async stronghold population starts.
 
-If one furthermore has cluster chunks, and disables the permaloader, then at every autosave 100 cluster chunks will unload. This eventually downsizes the chunk hashmap, which [kills the async line](https://github.com/Threadstone-Wiki/Threadstone-Wiki/blob/main/pages/async-line.md#async-thread-crashing).
-
-So if you want a real challenge, try this method with a [classical unload chunk swap](../chunk/async-chunk-loading.md#unload-chunk-swap) as your source of async lines.
-
 ### Spawner
 A video showing a falling block swap for spawners using carpet commands is in Myren's unlisted video [Async Population Spawner](https://www.youtube.com/watch?v=CVAoZLED3V4&list=PL8r-bvM9ltXNkjl7IhGQAHygIPfy2niuC&index=44).
 Since dungeons are not a structure, dungeon population is not synchronized. This makes this method much easier to pull off without crashing the game than the async stronghold population method for end portal frames.
