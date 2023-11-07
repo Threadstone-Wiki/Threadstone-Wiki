@@ -43,7 +43,7 @@ Examples for this are all over the place in threadstone. Here is a highly incomp
 
 Furthermore lag spikes on the main thread can be used to give the player time to input a series of player actions, which will after the lag spike all be executed in a single gametick.
 This trick is used in:
-- [Unload chunk swap](chunk/async-chunk-loading.md#unload-chunk-swap) and [Async regular load](chunk/async-chunk-loading.md#regular-load) setups, in which players need to both schedule a chunk unloading and start stained glass threads within the same player phase.
+- In the [classical unload chunk swap setup](chunk/async-chunk-loading.md#classical-multiplayer-unload-chunk-swap), players need to both schedule a chunk unloading and place multiple stained glass blocks within a single player phase.
 - Player head creation
 - The [gateway method for 1.12 bedrock item](https://www.youtube.com/watch?v=ajUea-FnRrc). Although traditionally one uses tnt instead of an update multiplier to create the lag spike in this case.
 
