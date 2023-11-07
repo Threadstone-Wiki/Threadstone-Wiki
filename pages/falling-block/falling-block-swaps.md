@@ -355,7 +355,7 @@ In MCP naming conventions, structure generation is handled by the `MapGenStructu
 This class has a `synchronized` method called `generateStructure` which is called whenever a structure is generated during terrain population.
 And it has another `synchronized` method called `recursiveGenerate` which in the overworld is called whenever a chunk is loaded.
 
-[Footnote: Ornithe's feather mappings gives these completely different functions the same name `place`, which is insane. The MCP name `recursiveGenerate` is a great name, because it immediately tells you that you have no clue what it does, and if you think it does something intuitive you are wrong. It definitely does not `place` any blocks.]
+[Footnote: Ornithe's feather mappings use the same name `place` for both of these very different functions. This strikes me as bad naming.]
 
 This means that if the async thread starts populating a stronghold, and the main thread loads a chunk, the main thread has to wait for the async thread to finish populating the stronghold.
 If the stronghold population is slowed down by a long observer line this can take centuries, and in any case causes the falling block swap to fail.
