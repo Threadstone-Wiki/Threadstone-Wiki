@@ -73,6 +73,20 @@ It is only worth reading cool mann's comments in this conversation, because the 
 
 Coolmann mentions not only the idea of falling block swaps, but in the last comment also mentions the instant tile tick flag.
 
+Then nothing happens for 1 and a half years.
+
+Then Earthcomputer discovers the [stained glass thread code](threads.md#stained-glass-threads),
+and talks about it on the public Monkeys discord. The "Deleted User" in the following conversation in Earthcomputer. The conversation is in the `bedrock-item-yes` channel on the Monkeys discord.
+
+![Earth1](../images/BedrockItemYes.PNG)
+
+Note that the beacon does not actually check its beacon base asynchronously, and that nether roof bedrock is not placed by population.
+But the basic idea of using the stained glass thread to perform a falling block swap to get a bedrock item is already there.
+
+The question is now just how to load a chunk using the stained glass thread.
+
+
+
 ## Backdoor Tearm
 
 
