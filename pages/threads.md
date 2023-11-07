@@ -87,7 +87,7 @@ public static void updateBeam(World world, BlockPos pos) {
 ```
 The thread checks for beacon blocks below the stained glass, and whenever it finds a beacon, it schedules the beacon to change its beacon beam color on the main thread in the next [player phase](tick-phases.md#player-phase).
 
-The `getBlockState` call in this piece of code can under unusual circumstances cause [async chunk loading](async-chunk-loading.md), which can trigger an [async terrain population](population.md#glass-threads-causing-async-updates),
+The `getBlockState` call in this piece of code can under unusual circumstances cause [async chunk loading](chunk/async-chunk-loading.md), which can trigger an [async terrain population](chunk/population.md#glass-threads-causing-async-updates),
 which can trigger async block updates, which enables many powerful [threadstone exploits](async-line.md#applications).
 
 In Spigot Paper the patch that removes this code is called the ["Shame on you mojang"-patch](https://steamwar.de/devlabs/Mirrors/Paper/src/commit/4fbed1adab87251e5e11d507919f96b410e6faad/Spigot-Server-Patches/0199-Shame-on-you-Mojang.patch).
