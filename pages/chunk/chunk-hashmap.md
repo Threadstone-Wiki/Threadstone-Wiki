@@ -29,6 +29,10 @@ In carpet mod one can print out the chunk hashmap using the command `/loadedChun
 Every entry in this excel file is a loaded chunk.
 
 The length of the excel file is the *hashsize* of the chunk hashmap. The hashsize is always a power of 2, and can increase or decrease if many chunks are loaded or unloaded. See [resizing](#rehash).
+If the hashsize is 2^n, we call n the *number of bits* of the chunk hashmap.
+
+The chunk hashmap has a `key` array and a `values` array. The `values` array stores chunk instances, the `key` array stores keys of chunks which are explained below.
+The length of the `key` and `value` arrays are one larger than the hashsize. The last spot in these arrays is always unused, storing the key `0L` and the chunk `null`.
 
 Every loaded chunk has *x and z coordinates*, a *key*, a *hash value*, and an *index* that it occupies in the chunk hashmap.
 
@@ -48,7 +52,10 @@ public static final long mix(long key) {
     }
 ```
 The hash value of the chunk is then calculated by the formula `(int)HashCommon.mix(key) & this.mask`
-where `mask` is one less than the hashsize of the chunk hashmap.
+where `this.mask` is one less than the hashsize of the chunk hashmap.
+So in binary, `this.mask` is equal to `1111...111` where the number of `1`s is the number of bits of the chunk hashmap.
+So `(int)HashCommon.mix(key) & this.mask` takes the last n bits from `(int)HashCommon.mix(key)`, where n is the number of bits of the chunk hashmap.
+
 The hash value that a chunk has in the chunk hashmap has nothing to do with the hash value the chunk has in the [chunk unload order](chunk.md#unloading).
 
 - The index of a chunk depends on when exactly the chunk is entered into the hashmap.
@@ -227,7 +234,6 @@ It repeatedly moves chunks from one index to the index of the previously moved c
 
 After it has completed the `shiftKeys` function, the chunk hashmap will check whether it should [downsize](#rehash).
 
-
 ## `rehash` - Resizing Chunk Hashmap <a name="rehash"/>
 
 The `rehash` function changes the hashsize of the chunk hashmap to a given number `newN`.
@@ -309,6 +315,74 @@ This results in an [unload chunk swap](async-chunk-loading.md#unload-chunk-swap)
 ## `get` + `rehash` - Rehash Chunk Swap <a name="get-rehash"/>
 If one thread calls the `rehash` method while another thread calls the `get` method, then it can happen that the `get` method fails to find a chunk, even when the chunk is in the chunk hashmap.
 This results in a [rehash chunk swap](async-chunk-loading.md#rehash-chunk-swap).
+
+
+In the `rehash` code we have the line
+```
+        this.mask = mask;
+```
+that replaces the old `mask` by the new mask.
+
+In the `get` method we have these lines
+
+```
+ long[] key = this.key;
+ long curr;
+ int pos;
+ if ((curr = key[pos = (int)HashCommon.mix(k) & this.mask]) == 0L) {
+      return this.defRetValue;
+ } else if (k == curr) {
+      return this.value[pos];
+ } else {
+      while((curr = key[pos = pos + 1 & this.mask]) != 0L) {
+           if (k == curr) {
+                 return this.value[pos];
+           }
+      }
+  return this.defRetValue;
+  }
+```
+If `this.mask` changes after the `get` method has executed the `long[] key = this.key` line, but before the `get` method has found its chunk,
+then the `get` method can access elements of the `key` array that it would usually not access,
+because the lines `(int)HashCommon.mix(k) & this.mask` or `pos + 1 & this.mask` can give unexpected values. 
+If the `key` array has the empty key `0L` at one of these unexpected values, the `get` method will not find its chunk, and a rehash chunk swap happens.
+
+Rehash chunk swaps can happen both when upsizing and downsizing the chunk hashmap.
+But not every chunk can be used for a rehash chunk swap. There are certain restrictions on the hash value the chunk needs to have.
+The case of upsizing will now be discussed in more detail.
+
+Suppose the rehash is upsizing the chunk hashmap from n bits to n+1 bits.
+
+For the new value of `(int)HashCommon.mix(k) & this.mask` there are 3 possible outcomes:
+- The (n+1)-th bit of `(int)HashCommon.mix(k)` is 0: In this case `(int)HashCommon.mix(k) & this.mask` does not change at all, and no rehash chunk swaps happens.
+- The (n+1)-th bit of `(int)HashCommon.mix(k)` is 1, and some of the first n bits of `(int)HashCommon.mix(k)` are also 1: In this case `(int)HashCommon.mix(k) & this.mask` will be larger than 2^n, and then the line `key[pos = (int)HashCommon.mix(k) & this.mask]` throws an `ArrayIndexOutOfBounds` exception, which terminates the thread that does the `get` call.
+- The (n+1)-th bit of `(int)HashCommon.mix(k)` is 1, and all of its earlier bits are 0: In this case `(int)HashCommon.mix(k) & this.mask` will be exactly 2^n. The line `key[pos = (int)HashCommon.mix(k) & this.mask]` accesses the always unused key `0L`, so a rehash chunk swap occurs.
+
+So the `(int)HashCommon.mix(k) & this.mask` line can only be used for rehash chunk swaps in chunks whose hash value after the upsize is exactly `100...000`, where the number of `0`s is equal to the number of bits of the chunk hashmap before the upsize.
+
+Let us next look at how `pos + 1 & this.mask` can be changed.
+
+The `get` method only reaches the `pos + 1 & this.mask` line, if we have [cluster chunks](#cluster-chunks) slowing down the `get` access.
+
+Also, changing the mask will only change the value of `pos + 1 & this.mask` if we have just reached the very end of the chunk hashmap while iterating through the cluster chunks.
+In that case we will again get the unused `0L` key that is always at the end of the `key` array, and get a successful rehash chunk swap.
+
+So to get a rehash chunk swap with the `pos + 1 & this.mask` line, the `get` method needs to start iterating through cluster chunks, then the `rehash` method needs to change the mask, and then the `get` method needs to reach the very end of the chunk hashmap before it finds its chunk.
+This is only possible if the chunk the `get` method is looking for had a hash value near the end of the chunk hashmap, and the cluster chunks forced the chunk to take an index near the beginning of the chunk hashmap.
+
+So for example if one has a hashsize of 8192, and has 1000 cluster chunks occupying all of the last 1000 indices of the chunk hashmap, and then loads a chunk with hash value 7200, then this chunk will be placed at the beginning of the chunk hashmap,
+and one can do a rehash chunk swap in that chunk. If one uses only 500 cluster chunks, then it is impossible to do a rehash chunk swap with a chunk with hash value 7200.
+
+Also note, that the more cluster chunks there are, the more likely it is that `this.mask` is changed at some point in time while the `get` method iterates through the cluster chunks.
+
+So with rehash chunk swaps, cluster chunks improve both the chances of the rehash chunk swap occuring, and they increase the number of positions at which it is possible for a rehash chunk swap to occur.
+
+**Conclusion**:
+- Without cluster chunks, rehash chunk swaps can only be done with chunks whose hash value after the upsize is exactly 2^n, where n is the number of bits before the upsize. So only very few specific chunks can be used.
+- With cluster chunks, one can use any chunk with a hash value near the end of the chunk hashmap, that has been moved by the cluster chunks to the beginning of the chunk hashmap.
+- Attempting to do a rehash chunk swap in a chunk whose hash value is not exactly 2^n after the upsize can result in an `ArrayIndexOutOfBounds` exception, even if one uses cluster chunks. This can [kill async lines](../async-line.md#async-thread-crashing) whenever one upsizes the chunk hashmap.
+
+
 
 ## `remove` + `rehash` - Wormhole Chunk <a name="remove-rehash"/> 
 
