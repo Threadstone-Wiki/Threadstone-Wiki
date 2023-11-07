@@ -1,6 +1,23 @@
-Time in minecraft's [main thread](threads.md#main-thread) is separated into gameticks.
+# Game Tick □
+
+## Table of Contents
+
+- [Introduction](#introduction)
+  * [Player Inputs](#player-inputs)
+  * [Mob Spawning](#mob-spawning)
+  * [Chunk Unloading](#chunk-unloading)
+  * [Tile Ticks](#tile-ticks)
+  * [Random Ticks](#random-ticks)
+  * [Update Chunk Map](#update-chunk-map)
+  * [Block Events](#block-events)
+  * [Entities](#entities)
+  * [Tile Entities](#tile-entities)
+  * [Networking Phase](#networking-phase)
+- [Immediate Updates](#immediate-updates)
 
 # Introduction
+
+The [main thread](threads.md#main-thread) in minecraft is repeatedly executing gameticks, and under lag-free circumstances waits 0.05 seconds between gameticks.
 
 In every gametick the following phases happen in the following order:
 
@@ -35,7 +52,7 @@ Player inputs include: Pressing buttons, flicking levers, placing blocks, instan
 If the client-server connection is lag-free, it also includes: Mining blocks, falling on pressure plates.
 
 ## Mob Spawning
-It spawns mobs. This tick phase takes less processing time if mob switches are built.
+Mobs spawn around players. This tick phase takes less processing time if mob switches are built.
 
 ## Chunk Unloading
 All chunks which have previously been scheduled to unload get unloaded.
@@ -63,20 +80,23 @@ All scheduled block events get processed.
 Blocks using block events include: Pistons, Beacons, Ender Chests.
 
 ## Entities
-Entities get processed.
+Non-player entities get processed.
 
 ## Tile Entities
 Tickable Tile Entities get processed.
 Tickable Tile Entities include: Hoppers, Block 36.
 
 ## Networking Phase
-????
+Players joining or leaving the server get added or removed.
 
 # Immediate Updates
-When a block gets updated it can either perform an action *immediately* or *schedule* an action to happen in a certain tick phase.
-If you power a repeater it schedules an action to happen in the tile tick phase.
-If you power a piston it schedules an action to happen in the block event phase.
+When a block gets updated it can either perform an action *immediately* or it can *schedule* an action to happen in a certain tick phase.
+For example, if you power a repeater it schedules a tile tick to turn on in the tile tick phase in two gameticks.
+If you power a piston it schedules a block event to extend in the next block event phase.
 
-Blocks which react immediately to block updates include: Redstone dust, powered rails.
+But there are also blocks that react immediately to block updates. These blocks include:
+- Redstone dust
+- Powered rails
+- Trapdoors
 
-If the [instant tile tick flag](global-flags.md) is on, then all tile tick blocks perform their action immediately instead of scheduling it to happen in the next tile tick phase.
+If the [instant tile tick flag](global-flags.md#instant-tile-ticks) is on, then all tile tick blocks perform their action immediately instead of scheduling it to happen in the tile tick phase.
