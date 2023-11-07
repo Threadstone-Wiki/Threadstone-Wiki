@@ -380,7 +380,7 @@ So with rehash chunk swaps, cluster chunks improve both the chances of the rehas
 **Conclusion**:
 - Without cluster chunks, rehash chunk swaps can only be done with chunks whose hash value after the upsize is exactly 2^n, where n is the number of bits before the upsize. So only very few specific chunks can be used.
 - With cluster chunks, one can use any chunk with a hash value near the end of the chunk hashmap, that has been moved by the cluster chunks to the beginning of the chunk hashmap.
-- Attempting to do a rehash chunk swap in a chunk whose hash value is not exactly 2^n after the upsize can result in an `ArrayIndexOutOfBounds` exception, even if one uses cluster chunks. This can [kill async lines](../async-line.md#async-thread-crashing) whenever one upsizes the chunk hashmap.
+- Attempting to do a rehash chunk swap in a chunk whose hash value is greater than 2^n after the upsize can result in an `ArrayIndexOutOfBounds` exception, even if one uses cluster chunks. This can [kill async lines](../async-line.md#async-thread-crashing) whenever one upsizes the chunk hashmap.
 
 
 
