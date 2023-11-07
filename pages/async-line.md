@@ -137,7 +137,7 @@ There are many different ways in which an async thread can crash, depending on w
 
 When nothing is updated at the end of the async line, it can crash in the following ways:
 - If the observer chain is several thousand blocks long, it crashes due to a `StackOverflow`.
-- If the chunk hashmap is resized, it can do a bad [rehash chunk swap](chunk/async-chunk-loading.md#rehash-chunk-swap) that ends in an `ArrayIndexOutOfBoundsException`.
+- If the chunk hashmap is upsized, it can do a bad [rehash chunk swap](chunk/async-chunk-loading.md#rehash-chunk-swap) that ends in an `ArrayIndexOutOfBoundsException`.
 
 Other non-obvious ways in which the async line can crash are as follows:
 - If the async line updates block 36 while the main thread modifies the tile entity list of the world, then the async thread can crash, because the block update code of block 36 does a completely unnecessary `getBlockEntity` call.
