@@ -128,34 +128,89 @@ This leads to another way of slowing down stained glass threads:
 ## Racing to the Unload Phase
 All methods except for the upsize rehash chunk swap, require the main thread to unload a chunk as quickly as possible.
 
+So the main thread needs to start the stained glass threads, and then needs to get to the [unload phase](../tick-phases.md#unload-phase) as quickly as possible.
 
+It is usually considered unnecessarily annoying to start the stained glass threads in the [mob spawning phase](tick-phases.md#mob-spawning), so one usually starts them in the [player phase](tick-phases.md#player-phase).
 
+The main thread then needs to:
+- Finish the player phase
+- Get through the mob spawning phase
+- Get to the unloading phase, and unload the desired chunk
+before the async threads run out and die.
+
+To minimize the amount of time the main thread needs to do the above three things one can take the following measures:
+1. Don't send unnecessary packets in the player phase.
+
+This is only necessary if one does not use any beacons below the stained glass. If one does use beacons, then the stained glass threads will wait at the beacons for the player phase to finish anyway.
+But if one does not use beacons, one needs to make sure that one doesn't move the mouse around unnecessarily or walks and jumps around with the player unnecessarily, because all of those things make the player phase take longer.
+
+2. Use mob switches.
+
+The mob spawning phase is a lot shorter if it spawns no actual mobs. This can be ensured by building mob switches for hostile mobs, passive mobs, squids and bats.
+
+3. Don't unload unnecessary chunks
+
+If the method requires you to unload a specific chunk, then you should make sure that this chunk is the only chunk that unloads in this gametick.
+Otherwise there might be other chunks unloading before the desired chunk unloads, and this takes up time on the main thread.
 
 # Specific Methods
 
 ## Upsize Rehash Chunk Swap
 
-Rehash chunk swaps can be done both when upsizing or when downsizing the chunk hashmap.
-We will here only discuss the case of upsizing the chunk hashmap.
+An upsize rehash chunk swap setup without cluster chunks in the end dimension is shown in cool mann's video [How to Get All* Unobtainable Blocks as Items in Minecraft Survival [1.12] pt. 1](https://www.youtube.com/watch?v=VTbpUjK-A74).
+A [cluster chunk finder](chunk-hashmap.md#cluster-finder-programs) intended for upsize rehash chunk swaps by Cheater Codes is [here](https://github.com/CheaterCodes/easy-cluster/tree/main).
+
 
 As explained in [the chunk hashmap article on rehash chunk swaps](chunk-hashmap.md#get-rehash) upsize rehash chunk swaps only work in specific locations:
 - If one uses no cluster chunks, then rehash chunk swaps work in chunks whose hash value is exactly 2^n after upsizing, where n is the number of bits of the chunk hashmap before upsizing.
 - If one uses [cluster chunks](chunk-hashmap.md#cluster-chunks), then the rehash can be done in any chunk whose hash value is near the end of the chunk hashmap, but whose index has been forced to the beginning of the chunk hashmap by the cluster.
 
-We will now assume that the chunk we want to asyncly load is in such a suitable location, and call this chunk the *glass chunk*.
+We will now assume that the glass chunk we want to asyncly load is in such a suitable location.
 
 To do an upsize rehash chunk swap, the main thread needs to upsize the chunk hashmap, while stained glass threads are running in the glass chunk.
 This means the main thread needs to do the following things:
 1. Load chunks until the chunk hashmap is 3/4 filled, so that an additional chunk load can upsize the chunk hashmap.
 2. Place or break stained glass in the glass chunks, to start the stained glass thread.
-3. Load an additional chunk.
+3. Load an additional chunk. This chunk is called the *rehash* chunk.
 4. Upsize the chunk hashmap.
 
-The main difficulty is to keep the async threads alive, while the main thread is loading the additional chunk.
+The main difficulty is to keep the async threads alive, while the main thread is loading the rehash chunk.
+To keep the async threads alive one should of course use the usual methods for [slowing down stained glass threads](#slowing-down-stained-glass-threads).
+
+But to make the chunk loading on the main thread as fast as possible one can use the following methods:
+
+1. Use a rehash chunk with as few chunk sections as possible.
+
+When a chunk is loaded, the game needs to iterate through all blocks in all the chunk sections that exist in the nbt data of the chunk.
+This is the main bottleneck that makes upsize rehash chunk swaps difficult.
+
+In the end dimension, there are true void chunks which generate with 0 chunk sections, which allows for easy upsize rehash chunk swaps.
+
+In the overworld all chunks have at least 4 chunk sections.
+
+In the nether all chunks generate with exactly 8 chunk sections.
+
+It is not possible to decrease the amount of chunk sections a chunk has. Mining out a chunk section, just gives you a chunk section full of air, but does not remove the chunk section from the nbt data.
+If a block is placed or light enters a chunk in a certain chunk section once, then this chunk has this chunk section, and all sections below it, forever.
+
+For this reason, it is much easier to do upsize rehash chunk swaps in the end, than in the overworld or nether.
+
+2. Load the rehash chunk from the cache of the Anvil chunk loader
+
+When a chunk gets unloaded, the `chunk` instance gets put into the `chunkSaveQueue` in the `AnvilChunkStorage` class.
+It then gets saved to disk by the [chunk saving thread](../threads.md#chunk-saving-thread).
+If the chunk gets reloaded before it got saved to disk, then it will be returned from the `chunkSaveQueue` instead of being reloaded from disk.
+
+Returning a chunk from the `chunkSaveQueue` is slightly faster than loading it from disk,
+so when one does an upsize rehash chunk swap, it is recommended one loads the rehash chunk from the `chunkSaveQueue` rather than loading it from disk.
+
+This does not prevent the game from iterating over every block in every chunk section of the rehash chunk, so one still needs to minimize chunk sections.
+But it does help a little bit nonetheless.
 
 
 
 ## Classical Multiplayer Unload Chunk Swap
+An unload chunk swap setup for multiplayer is shown in [Falling Block Episode 3](https://www.youtube.com/watch?v=8-AumLja16A).
 
 ## ElRich Singleplayer Unload Chunk Swap
 
@@ -165,6 +220,14 @@ The main difficulty with performing an async regular load is that the `getBlockS
 The last tick phase before the [unload phase](../tick-phases.md#chunk-unloading) in which one can schedule chunk unloading is the [player phase](../tick-phases.md#player-phase).
 So to perform an async regular load, one needs to first schedule the chunk in which the async thread is running to be unloaded, and this scheduling happens in the player phase or even earlier. And then the main thread needs to get through the whole player phase, and the whole mob spawning phase and into the unload phase, all while the async thread does not do a single `getBlockState` call.
 If the async thread does do a single `getBlockState` call in this time, then the scheduled chunk unloading will be cancelled, and the chunk will not get unloaded in the unload phase.
+
+Void's synchronized setup use ITT instantfalling dragon eggs to break over 1000 stained glass blocks and start over 1000 staned glass threads.
+This is all done in the [player phase](tick-phases.md#player-phase), and all the stained glass blocks have beacons underneath them.
+As explained in the section on [slowing down stained glass threads](#slowing-down-stained-glass-threads), all the stained glass threads will wait at the beacons, until the main thread has finished the player phase.
+So at the end of the player phase, all the 1000 stained glass threads will still be alive, even though the player phase with all its instantfalling dragon eggs took a really long time.
+
+After the player phase, the stained glass threads manage to slow down each other so much that an async regular load becomes possible.
+
 
 
 # Miscellaneous
@@ -178,7 +241,7 @@ For this reason it is customary to create a lag spike on the main thread in the 
 One can create a lag spike during the block event phase, by activating a piston, and letting the piston activate an [update multiplier chain](../update-multiplier.md#lag-spikes).
 
 # Using Chunk Swaps for Falling Block Swaps
-
+Chunk Swaps can be used to replace gravity affected blocks by a different blocks on an async thread, and in this way they can be used for [falling block swaps without async lines](../falling-block/falling-block-swaps.md#old-coolmann-method).
 
 
 
