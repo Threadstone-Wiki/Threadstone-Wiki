@@ -9,9 +9,9 @@ When the tile tick gets processed it will check whether it is floating, in the s
 
 It it is not floating, it will do nothing. Otherwise it continues as follows:
 
-The gravity-affected block will check whether it is in an [entity-processing chunk](chunk/chunk.md#entity-processing).
+If [instant falling flag](global-flags.md#instant-falling) is off, then the gravity-affected block will check whether it is in an [entity-processing chunk](chunk/chunk.md#entity-processing).
 
-If it is in an entity-processing chunk and the [instant falling flag](global-flags.md#instant-falling) is off, then it will do normal falling behavior.
+If the check tells it that it is in an entity-processing chunk, then it will do normal falling behavior.
 
 If it is in a lazy chunk or if instant falling is on, then it will do instantfalling behavior.
 
