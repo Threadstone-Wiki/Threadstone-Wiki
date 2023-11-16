@@ -45,7 +45,7 @@ then in each tick the game first does the following things:
 
 ## Player Inputs
 The game processes all the packets that it received from players since the last player phase.
-It also processes beacon actions that were scheduled by stained glass threads.
+It also processes beacon actions that were scheduled by [stained glass threads](threads.md#stained-glass-threads).
 Exceptions that are thrown during this phase are ignored, which leads to [update suppression](update-suppression.md).
 
 Player inputs include: Pressing buttons, flicking levers, placing blocks, instantmining blocks.
