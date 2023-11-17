@@ -3,7 +3,9 @@ The following mechanics are related to chunks.
 
 # Terminology
 
-A *chunk* is a region in 3-dimensional space. It is 16 units long along the x and z axis, and infinitely long along the y axis.
+In every dimension (i.e. in the overworld, nether and end) there are chunks.
+
+In every of these dimensions, a *chunk* is a region in 3d space. The space region is 16 units long along the x and z axis, and infinitely long along the y axis.
 The four edges of a chunk have integer x and z coordinates which are divisible by 16.
 
 The x and z coordinates of the edge with the least coordinates, are called the *block coordinates* of the chunk.
@@ -12,9 +14,9 @@ The block coordinates divided by 16 are called the *chunk coordinates* of the ch
 In minecraft there is a class called `Chunk` in MCP and `WorldChunk` in Ornithe.
 Instances of these classes will be called "`Chunk` instances".
 
-In minecraft there is a [chunk hashmap](chunk-hashmap.md), which stores `Chunk` instances, and associates to each stored `Chunk` instance an x and z coordinate.
+In each dimension in minecraft there is a [chunk hashmap](chunk-hashmap.md), which stores `Chunk` instances, and associates to each stored `Chunk` instance an x and z coordinate.
 
-A chunk with chunk coordinates x and z is called *loaded* if the chunk hashmap in minecraft contains a `Chunk` instance with the same x and z coordinates as our chunk.
+In each dimension, a chunk with chunk coordinates x and z is called *loaded* if the chunk hashmap of the dimension contains a `Chunk` instance with the same x and z coordinates as the chunk.
 Otherwise the chunk is called *unloaded*.
 
 # Chunks in View Distance
@@ -31,6 +33,9 @@ If an already generated chunk comes within view distance of a player it gets imm
 
 If a chunk gets outside of view distance of all players it gets scheduled to be [unloaded](#unloading).
 
+# Spawn Chunks
+
+In the overworld, there is a 17x17 grid of chunks called the *spawn chunks*, which get loaded when the server starts, and only get unloaded when the server shuts down.
 
 # Loading
 
@@ -38,6 +43,7 @@ An unloaded chunk becomes loaded in the following situations:
 - If the game requests any kind of information from the chunk, or tries to make any kind of change in the chunk, then the chunk is loaded [immediately](../tick-phases.md#immediate-updates). This happens for example every time the game does a `setBlockSate` or `getBlockState` call at a position contained in the chunk.
 - If the chunk comes within view distance of a player, and the chunk is already generated on disk, then the chunk is loaded immediately.
 - If the chunk comes within wiew distance of a player, but the chunk is not yet generated, then the chunk is scheduled to be generated and loaded in some future [chunk map phase](../tick-phases.md#update-chunk-map).
+- The chunk is a spawn chunk, and the server is just starting.
 
 When a chunk is loaded it immediately checks whether a [terrain population](population.md) should occur, and immediately executes it if it should occur.
 
@@ -52,9 +58,11 @@ This makes chest one of the cheapest ways to load large amounts of chunks.
 
 # Unloading
 
-A chunk gets scheduled to be unloaded in the following situations:
+A chunk that is not a [spawn chunk](#spawn-chunks) gets scheduled to be unloaded in the following situations:
 - The chunk gets outside of view distance of a player, and is not in view distance of any other player.
 - An autosave occurs, while the chunk is not within view distance of any player.
+
+Additionally, if the server shuts down, then all loaded chunks get immediately unloaded.
 
 If a chunk is scheduled to be unloaded, and any chunk access it made to that chunk, for example through a `getBlockState` or `setBlockState` call in that chunk,
 then the unloading of that chunk gets canceled.
