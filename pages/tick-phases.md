@@ -84,7 +84,7 @@ All scheduled block events get processed.
 Blocks using block events include: Pistons, Beacons, Ender Chests.
 
 ## Entities
-Non-player entities get processed.
+All non-player entities which are in [entity processing chunks](chunk/chunk.md#entity-processing) get processed.
 
 ## Tile Entities
 Tickable Tile Entities get processed.
