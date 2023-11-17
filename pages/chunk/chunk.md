@@ -115,6 +115,7 @@ Chunk saving can be prevented using [chunk savestates](savestate.md).
 A chunk which is in the center of a 5x5 grid of loaded chunks is called an *entity-processing chunk*.
 A chunk which is not an entity-processing chunk is called a *lazy chunk*.
 
-Entities only get processed in entity-processing chunks.
+During the [entity phase](../tick-phases.md#entities) of a tick, entities only get processed if they are in entity-processing chunks.
+
 [Gravity-affected blocks](../falling-block/gravity-affected-block.md) only create [falling block entities](../falling-block/falling-block-entity.md) in entity-processing chunks,
 and do [instantfalling](../falling-block/gravity-affected-block.md#instantfalling-behavior) in non-entity-processing chunks.
