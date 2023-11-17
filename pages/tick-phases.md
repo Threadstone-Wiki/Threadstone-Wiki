@@ -1,4 +1,4 @@
-# Game Tick □
+# Game Tick ☆
 
 ## Table of Contents
 
@@ -49,6 +49,7 @@ It also processes beacon actions that were scheduled by [stained glass threads](
 Exceptions that are thrown during this phase are ignored, which leads to [update suppression](update-suppression.md).
 
 Player inputs include: Pressing buttons, flicking levers, placing blocks, instantmining blocks.
+
 If the client-server connection is lag-free, it also includes: Mining blocks, falling on pressure plates.
 
 ## Mob Spawning
@@ -59,7 +60,10 @@ All chunks which have previously been scheduled to unload get [unloaded](chunk/c
 
 ## Tile Ticks
 All scheduled tile ticks get processed.
-Blocks using Tile Ticks include: Repeaters, comparators, observers, redstone torches, gravity-affected blocks, liquids, and many more.
+
+Blocks using tile ticks for all their scheduled actions include: Repeaters, comparators, redstone torches, observers, [gravity-affected blocks](falling-block/gravity-affected-block.md), liquids, dispensers, droppers.
+
+Blocks that use tile ticks for "resetting" or "unpowering" purposes only include: Buttons, pressure plates, redstone lamps, tripwire, tripwire hooks, frosted ice.
 
 ## Random Ticks
 Wheat grows.
@@ -84,12 +88,13 @@ Non-player entities get processed.
 
 ## Tile Entities
 Tickable Tile Entities get processed.
-Tickable Tile Entities include: Hoppers, Block 36.
+
+The most interesting tickable tile entities are: Hoppers, Block 36
 
 ## Networking Phase
-Players joining or leaving the server get added or removed.
+- Players joining or leaving the server get added or removed.
 
-Every 900 ticks an autosave occurs. During an autosave, all loaded chunks get [saved](chunk/chunk.md#saving), and all non-spawn chunks which are outside of view distance of all players get scheduled to be [unloaded](chunk/chunk.md#unloading).
+- Every 900 ticks an autosave occurs. During an autosave, all loaded chunks get [saved](chunk/chunk.md#saving), and all non-spawn chunks which are outside of view distance of all players get scheduled to be [unloaded](chunk/chunk.md#unloading).
 
 # Immediate Updates
 When a block gets updated it can either perform an action *immediately* or it can *schedule* an action to happen in a certain tick phase.
