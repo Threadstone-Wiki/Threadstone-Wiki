@@ -25,7 +25,7 @@
 
 A video explanation of terrain population is in [Panda's Survival #22: End Crystal Generation. Time: 7:00](https://www.youtube.com/watch?v=EeobLrHkfYI&t=420s)
 
-Minecraft has procedural world generation, consisting of two steps. The first step is called *Chunk Generation* and happens as soon as the chunk is loaded for the first time.
+Minecraft has procedural world generation, consisting of two steps. The first step is called *Chunk Generation* and happens as soon as the [chunk](chunk.md) is loaded for the first time.
 The second step is called *Terrain Population* and only occurs if a 2x2 grid of chunks is loaded. When such a 2x2 grid of chunks is loaded, the chunk with the lowest x and z coordinates in the 2x2 grid immediately gets *populated*.
 
 Chunk Generation places in the overworld things like bedrock, dirt, grass, stone, in oceans water.
