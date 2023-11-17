@@ -20,7 +20,7 @@
 
 # Introduction
 
-In each dimension the loaded chunks are stored in a [`Long2ObjectOpenHashmap`, from fast-utils version 7.1.0](../../resources/Long2ObjectOpenHashmap.java).
+In each dimension the loaded [chunks](chunk.md) are stored in a [`Long2ObjectOpenHashmap`, from fast-utils version 7.1.0](../../resources/Long2ObjectOpenHashmap.java).
 
 In carpet mod one can print out the chunk hashmap using the command `/loadedChunks dump`. The command creates an excel file in the server folder, which looks like this
 
@@ -61,7 +61,7 @@ The hash value that a chunk has in the chunk hashmap has nothing to do with the 
 - The index of a chunk depends on when exactly the chunk is entered into the hashmap.
 
 ## `put` - Loading Chunks <a name="put"/>
-When a chunk gets loaded, the game adds it to the chunk hashmap,
+When a chunk gets [loaded](chunk.md#loading), the game adds it to the chunk hashmap,
 which happens using the following `put` function, 
 where `v` is the chunk and `k` is the key of the chunk.
 
@@ -159,7 +159,7 @@ If it finds an empty spot, it will return `defRetValue`, and the game will assum
 This `get` method can be slowed down using [cluster chunks](#cluster-chunks).
 
 ## `remove` - Unloading Chunks <a name="remove"/>
-When a chunk gets unloaded, the game calls the following `remove` function, where `k` is the key of the chunk.
+When a chunk gets [unloaded](chunk.md#unloading), the game calls the following `remove` function, where `k` is the key of the chunk.
 ```
   public V remove(long k) {
         if (k == 0L) {
