@@ -1,5 +1,17 @@
-Space in Minecraft is separated into Chunks
-The following mechanics are related to chunks.
+# Chunk ☆
+
+## Table of Contents
+
+- [Terminology](#terminology)
+- [Chunks in View Distance](#chunks-in-view-distance)
+- [Spawn Chunks](#spawn-chunks)
+- [Loading](#loading)
+  * [Chest Grids](#chest-grids)
+- [Unloading](#unloading)
+  * [Gnembon Permaloader](#gnembon-permaloader)
+  * [Mini Permaloader](#mini-permaloader)
+- [Saving](#saving)
+- [Entity-processing](#entity-processing)
 
 # Terminology
 
