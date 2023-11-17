@@ -55,7 +55,7 @@ If the client-server connection is lag-free, it also includes: Mining blocks, fa
 Mobs spawn around players. This tick phase takes less processing time if mob switches are built.
 
 ## Chunk Unloading
-All chunks which have previously been scheduled to unload get unloaded.
+All chunks which have previously been scheduled to unload get [unloaded](chunk/chunk.md#unloading).
 
 ## Tile Ticks
 All scheduled tile ticks get processed.
@@ -72,7 +72,7 @@ This means, your client gets informed about all block changes that happened sinc
 If less than 64 block changes happened in a chunk since the last time these packets were send, these block changes will be send in `BlockUpdateS2CPacket` or `BlocksUpdateS2CPacket` packets.
 If more than 64 block changes happened, it will send a `WorldChunkS2CPacket` which sends the whole chunk again.
 
-- Up to 49 ungenerated chunks in view distance of players get generated and loaded. This operation stops as soon as it takes more than 50 milliseconds.
+- Up to 49 ungenerated chunks in view distance of players get generated and [loaded](chunk/chunk.md#loading). This operation stops as soon as it takes more than 50 milliseconds.
 
 ## Block Events
 All scheduled block events get processed.
@@ -88,6 +88,8 @@ Tickable Tile Entities include: Hoppers, Block 36.
 
 ## Networking Phase
 Players joining or leaving the server get added or removed.
+
+Every 900 ticks an autosave occurs. During an autosave, all loaded chunks get [saved](chunk/chunk.md#saving), and all non-spawn chunks which are outside of view distance of all players get scheduled to be [unloaded](chunk/chunk.md#unloading).
 
 # Immediate Updates
 When a block gets updated it can either perform an action *immediately* or it can *schedule* an action to happen in a certain tick phase.
