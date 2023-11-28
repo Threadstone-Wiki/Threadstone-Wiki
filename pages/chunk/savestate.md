@@ -95,7 +95,7 @@ Two such shulker boxes are enough to savestate the chunk.
 
 # Unpopulated chunks
 
-Savestates are one of the most powerful methods for building contraptions near unpopulated chunks:
+Savestates are one of the most powerful methods for building contraptions near [unpopulated chunks](population.md):
 One can fly to an unpopulated chunk (and thereby populate it), then savestate the chunk before it gets saved, (so that the chunk is populated in game but unpopulated on disk),
 and then build contraptions around the savestated chunk.
 After unloading the whole area, one has on disk an unpopulated chunk surrounded by the contraptions that one built around it.
