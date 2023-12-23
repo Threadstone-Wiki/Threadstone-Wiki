@@ -102,7 +102,7 @@ If the comparator updates get suppressed, then the tile entity of the block will
 
 Tile Entity Swaps are applied in:
 - [Class Cast Suppressors](https://www.youtube.com/watch?v=f4ty-PZcvrI)
-- Population method for Falling Barrier
+- [Population method for Falling Barrier](falling-block/falling-block-swaps.md#barrier)
 
 ## Item Shadowing
 A video showcase of Item Shadowing is in [Magic reveal: Item Shadowing](https://www.youtube.com/watch?v=mTeYwq7HaEA) by Fallen_Breath and [Item Shadowing Explained - Wireless item transfer - Vanilla Minecraft 1.12+](https://www.youtube.com/watch?v=i8_FPyn20ns) FX-Process.
