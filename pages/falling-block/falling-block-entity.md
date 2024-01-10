@@ -38,4 +38,3 @@ Falling Block Entities outside the nether cannot enter the nether.
 
 ## Through End Gateways
 
-- Unlocked hopper
