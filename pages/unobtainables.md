@@ -75,11 +75,19 @@ Falling Nether Portals are useful, because they can be used to create nether por
 Falling blocks that are not very interesting in 1.12, but become interesting after updating to more recent versions:
 - Block 36
 - Piston Head
-- Silverfish stone variants (because in recent versions they drop their items with the correct damage value)
+- Silverfish stone variants
+
+Falling block 36 and falling piston heads cannot land at all in 1.12. They turn into air when they land.
+In more recent versions they can land, and enable one to create block 36 or multi-headed pistons, without having to crash the server in an update suppression.
+
+Silverfish stone variants are interesting after upgrading, because after upgrading do they drop the silverfish stone variant item with the correct damage value.
 
 Falling Blocks that are memes:
 - Downwards facing headless piston
 - Unlocked hopper
+
+Falling downwards facing headless pistons could be used for bedrock breaking. Without flying savestates that duplicate the falling headless pistons, this concept doesn't seem to go very far.
+Unlocked hoppers are a source of lag in storage systems, much to the dismay of all those for whom storage tech is a passion.
 
 # Blocks
 Every possible block id with every possible damange value can be created as a block using [word tearing](word-tearing.md).
