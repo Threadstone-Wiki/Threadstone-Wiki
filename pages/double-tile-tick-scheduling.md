@@ -94,7 +94,7 @@ This leads to the following over-complicated anvil repairing method in the video
 This is ultimately a very unimportant application because letting anvils instantfall in lazy chunks also repairs them.
 
 ## Crashing the game
-The game has actually not one but two lists of tile ticks: The pendingTickListEntriesHashSet and the pendingTickListEntriesTreeSet.
+Each `ServerWorld` has actually not one but two lists of tile ticks: The `scheduledTicks` hash set and the `scheduledTicksInOrder` tree set.
 Both are vulnerable to double tile tick scheduling.
 If one manages to enter a duplicate tile tick into the hashset without entering it into the treeset, the game will crash in the next tile tick phase.
 
