@@ -52,6 +52,8 @@ The async block updates that an async line sends out can be used for many thread
 - creating player heads
 - obtaining bedrock items by silk touch mining bedrock created through [hashmap word tearing](word-tearing.md#hashmap-word-tearing)
 
+For a complete overview of all blocks, items and entities which can be obtained see [here](unobtainables.md).
+
 # Side Effects
 
 ## Disabled Packets
