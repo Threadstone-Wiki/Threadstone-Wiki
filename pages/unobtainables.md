@@ -2,6 +2,8 @@ This page is about items, entities and blocks that cannot be obtained without gl
 
 # Introduction
 
+This page lists unusual things which you can get using threadstone, that stay around after restarting the server.
+
 The big applications are:
 1. Unobtainable items
 2. Water in the Nether
@@ -102,4 +104,8 @@ Interesting examples are:
 Falling Nether Portals can be used to create:
 - Nether Portals in the End
 
+
+# Miscellaneous
+
+You can insert shields into jukeboxes.
 
