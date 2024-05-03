@@ -83,4 +83,14 @@ The falling block can be kept alive by having a piston clock pushing slabs back 
 The falling block will then arrive right on top of the block 36 of the slabs, so it will be on ground and inside block 36.
 
 
+# Duplication
+
+## Savestates
+
+In 1.12 falling block entities can be duplicated using [savestates](../chunk/savestate.md). However the duplicated falling blocks will have the exact same UUID as the original falling blocks, which may render some of them [invisible](../chunk/savestate.md#duplicated-entity-uuids).
+
+## End Portal Duping
+One can use end portals to place down a falling block, while still keeping the falling blocks.
+This is discussed in the video [What to do with your falling blocks from 1.12 after updating to 1.18, at 3:16](https://www.youtube.com/watch?v=l9aw_Db_4q4&t=196s). It works both in 1.12 and in recent versions. A server that has already updated to recent versions and which has end portal frame items and an unobtainable falling block can re-use the unobtainable falling block infinitely many times.
+
 
