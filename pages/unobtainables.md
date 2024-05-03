@@ -11,6 +11,7 @@ The big applications are:
 
 The method for getting water in the nether is horrible in vanilla.
 
+Nether Portals in the End can be used to build [hyperlink networks](hyperlink.md).
 
 # Items
 
