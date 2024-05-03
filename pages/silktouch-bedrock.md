@@ -18,9 +18,11 @@ If one can use the block updates from fire existinguishing to [immediately](tick
 then one can obtain the bedrock item in 1.12 without having to perform a [falling block swap](falling-block/falling-block-swaps.md).
 
 There are 2 methods for immediately replacing an instantmineable block by a bedrock block:
-1. One can trigger a [terrain population](chunk/population.md) to immediately generate a gateway, whose bedrock replaces the instantmineable block.
-2. One can use [hashmap word tearing](word-tearing.md#hashmap-word-tearing) to transform the instantmineable block into bedrock.
+- We can trigger a [terrain population](chunk/population.md) that generates an [end gateway](gateway.md) one of whose bedrock blocks replaces the instantmineable block. This is the [Classical Population Method using End Gateways](#classical-population-method-using-end-gateways)
+- If the instantmineable block is a powered rail, we can repeatedly activate and deactivate the rail, and use [hashmap word tearing](word-tearing.md#hashmap-word-tearing) to convert it into bedrock. This is the [Async Method using Hashmap Word Tearing](#async-method-using-hashmap-word-tearing)
 
-# Population Method using End Gateways
+# Classical Population Method using End Gateways
+
+The End Gateway population method for silk touch mining bedrock is explained in Earthcomputer's video [[1.12] How to get the Bedrock Item](https://www.youtube.com/watch?v=YHdSpO-Gsvc) and in Xcom's video [How to get a bedrock item in survival 1.9 to 1.12](https://www.youtube.com/watch?v=ajUea-FnRrc).
 
 # Async Method using Hashmap Word Tearing
