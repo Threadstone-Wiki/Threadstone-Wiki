@@ -28,13 +28,25 @@ If the block ids match, then the block gets deleted. If they do not match, the f
 
 # Preserving and Transporting
 
-
 Falling Block Entities cannot use nether portals. Falling Block Entities in the nether can be transported to other dimensions by using end portals.
 Falling Block Entities outside the nether cannot enter the nether.
 
+![Dimension Diagram](/images/FallingBlockDimensionTravel.PNG)
+
+
 ## Into the End
+When a falling block arrives in the end, it will be placed above the center of the obsidian platform with a one block gap.
+
+<img src="/images/FallingBlockToEnd.PNG" width="380" height="300">  
+
+In 1.12, a falling block arriving at the obsidian platform will not regenerate the obsidian platform. Only a player causes the obsidian platform to regenerate.
 
 ## Out of the End
 
-## Through End Gateways
+In 1.12, a falling block going from the end to the overworld will be placed directly on top of the highest solid block at the world spawn location.
+The falling block can easily be kept alive by having a block 36 above that solid block.
 
+## Through End Gateways
+When a falling block goes through an end gateway, it will search for the highest solid non-bedrock block that is less than 5 blocks away in x and z direction, and place the falling block 0.5 blocks above that solid block.
+
+<img src="/images/FallingBlockThroughGateway.PNG" width="400" height="270"> 
