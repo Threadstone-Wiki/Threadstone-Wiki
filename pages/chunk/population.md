@@ -159,7 +159,7 @@ The async chunk load can then populate the invisible chunk on the async thread.
 ## 1.12 Bedrock Item from Gateways
 The first method for obtaining bedrock items in 1.12 that was discovered works by silk touch instantmining a slimeblock, extinguishing a fire block while doing so,
 and then triggering a population that replaces the slimeblock by the bedrock block of an end gateway.
-Video explanations are in [Earthcomputer's \[1.12\] How to get the Bedrock Item](https://www.youtube.com/watch?v=YHdSpO-Gsvc) and [Xcom's How to get a bedrock item in survival 1.9 to 1.12](https://www.youtube.com/watch?v=ajUea-FnRrc).
+Video explanations are in [Earthcomputer's \[1.12\] How to get the Bedrock Item](https://www.youtube.com/watch?v=YHdSpO-Gsvc) and [Xcom's How to get a bedrock item in survival 1.9 to 1.12](https://www.youtube.com/watch?v=ajUea-FnRrc). See also the page about [silk touch mining bedrock](../silktouch-bedrock.md#classical-population-method-using-end-gateways).
 
 ## 1.8 Bedrock Item from End Crystal Towers
 In 1.8 and earlier versions one can use terrain population to generate end crystal towers in the end.
