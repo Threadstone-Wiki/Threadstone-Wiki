@@ -55,7 +55,7 @@ Items that are COMPLETELY UNOBTAINABLE using all currently known methods:
 - Mob Spawn Eggs
 
 # Falling Block Entities
-Every possible block id with every possible damange value can be created as a falling block entity, by first creating the block using [word tearing](word-tearing.md) and then performing a [falling block swap](falling-block/falling-block-swaps.md).
+Every possible block id with every possible damange value can be created as a [falling block entity](falling-block/falling-block-entity.md), by first creating the block using [word tearing](word-tearing.md) and then performing a [falling block swap](falling-block/falling-block-swaps.md).
 
 Some falling blocks are only interesting because they drop interesting items, and have no utility beyond that. For example, a falling end portal frame is only interesting because it drops an end portal frame item.
 
@@ -67,7 +67,7 @@ Falling blocks that are useful as falling blocks, because the items they drop ar
 - Chain Command Block
 - Structure Block
 
-Falling blocks that are useful as falling blocks, because they drop no item:
+Falling blocks that are useful as falling blocks, even though they drop no item:
 - Nether Portal
 - End Gateway
 - End Portal
