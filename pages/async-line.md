@@ -50,7 +50,7 @@ The async block updates that an async line sends out can be used for many thread
 - creating unobtainable blocks with [registry word tearing](word-tearing.md#registry-word-tearing)
 - obtaining unobtainable items and falling blocks with [falling block swaps](falling-block/falling-block-swaps.md)
 - creating player heads
-- obtaining bedrock items by silk touch mining bedrock created through [hashmap word tearing](word-tearing.md#hashmap-word-tearing)
+- obtaining bedrock items by [silk touch mining bedrock](silktouch-bedrock.md#async-method-using-hashmap-word-tearing) created through [hashmap word tearing](word-tearing.md#hashmap-word-tearing)
 
 For a complete overview of all blocks, items and entities which can be obtained see [here](unobtainables.md).
 
