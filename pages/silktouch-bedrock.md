@@ -14,7 +14,7 @@ If one mines a bedrock block it usually drops no item.
 But if one mines a bedrock block using a *silk touch* pickaxe, then in 1.12 the bedrock block drops as an item.
 This is explained in Earthcomputer's video [[1.12] The Quest for the Bedrock Item](https://www.youtube.com/watch?v=l988pdLw8O4).
 
-If one can use the block updates from fire existinguishing to [immediately](tick-phases.md/immediate-updates) replace an instantmineable block by a bedrock block,
+If one can use the block updates from fire existinguishing to [immediately](tick-phases.md#immediate-updates) replace an instantmineable block by a bedrock block,
 then one can obtain the bedrock item in 1.12 without having to perform a [falling block swap](falling-block/falling-block-swaps.md).
 
 There are 2 methods for immediately replacing an instantmineable block by a bedrock block:
