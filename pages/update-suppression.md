@@ -114,7 +114,7 @@ This enables a very versatile form of wireless item transfer.
 
 ## Igloo Barrier
 The floating comparator trick can be used to update suppress an igloo population in such a way that it creates a barrier block.
-See [Terrain Population - Igloo Barrier Block](chunk/igloo-barrier-block.md).
+See [Terrain Population - Igloo Barrier Block](chunk/population.md#igloo-barrier-block).
 
 ## 1.13 Threadstone
 The floating comparator trick is of crucial importance to 1.13 threadstone.
