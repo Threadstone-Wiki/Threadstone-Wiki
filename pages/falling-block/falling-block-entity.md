@@ -1,4 +1,16 @@
-This page is about falling block entities.
+# Falling Block Entities ☆
+
+## Table of Contents
+- [Introduction](#introduction)
+- [Age](#age)
+- [Preservation and Transportation](#preservation-and-transportation)
+  * [Into the End](#into-the-end)
+  * [Out of the End](#out-of-the-end)
+  * [Through End Gateways](#through-end-gateways)
+- [Duplication](#duplication)
+  * [Savestates](#savestates)
+  * [End Portal Duping](#end-portal-duping)
+
 
 # Introduction
 
@@ -10,6 +22,10 @@ Usually it is only possible to get falling block entities of sand, red sand, gra
 When a falling block entity lands on a slab, or becomes too old without having ground underneath it, it drops its block as an item, if such an item exists. This makes falling block entities the most important source of [unobtainable items](../unobtainables.md#items).
 
 Some unobtainable falling block entities are interesting even if their block does not have an item. An overview of such interesting unobtainable falling blocks is at [here](../unobtainables.md#falling-block-entities).
+
+The most important application of falling blocks that drop no item is as follows:
+Falling nether portals can be used to create nether portals in the end, which makes it possible to build [hyperlink networks](../hyperlink.md).
+
 
 # Age
 
