@@ -25,4 +25,19 @@ There are 2 methods for immediately replacing an instantmineable block by a bedr
 
 The End Gateway population method for silk touch mining bedrock is explained in Earthcomputer's video [[1.12] How to get the Bedrock Item](https://www.youtube.com/watch?v=YHdSpO-Gsvc) and in Xcom's video [How to get a bedrock item in survival 1.9 to 1.12](https://www.youtube.com/watch?v=ajUea-FnRrc).
 
+At the start we have a slimeblock within the population area of an ungenerated chunk in the end, and fire in front of the slimeblock. The chunk is chosen, such that populating the chunk generates an end gateway that replaces the slimeblock by bedrock.
+We then perform he following steps within the [entity phase](tick-phases.md#entities) of a single gametick:
+
+1. We use TNT to give the player a lot of motion.
+2. We use TNT to shoot an ender pearl as close to the slimeblock as one can get while still being in entity-processing chunks.
+3. When the ender pearl arrives, the ungenerated chunk will be within view distance of the player. Since the chunk is ungenerated, it will not be loaded immediately, but only get [scheduled to be loaded later](chunk/chunk.md#loading). This is why we use an ungenerated chunk instead of merely a generated unpopulated chunk.
+4. After the ender pearl arrives, we use TNT to create a large lag spike.
+5. During the lag spike, the player walks towards the slimeblock. Usually a player can only walk 10 blocks in a single gametick, because of anti-cheat measures, but if the player has a lot of motion he may walk more than that. This is why we gave the player a lot of motion.
+6. Still during the lag spike, the player instantmines the slimeblock through the fire block.
+
+The actions the player executes clientside during the lag spike get executed serverside in the [player phase](tick-phases.md#player-inputs) of the next gametick.
+The fire block then gets extinguished. The block updates from the fire block get send through a powered rail line towards the ungenerated chunk to immediately load and populate it. Then the slimeblock gets replaced by a bedrock block, and this bedrock block gets mined by the player.
+
+At the time this method was developed, TNT was the preferred solution to all problems. For this reason, TNT was used for 3 different things (giving the player motion, shooting the ender pearl, creating lag), even though theoretically an end gateway population method for bedrock silk touch mining doesn't necessarily have to use any TNT.
+
 # Async Method using Hashmap Word Tearing
