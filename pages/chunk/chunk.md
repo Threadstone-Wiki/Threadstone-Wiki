@@ -54,7 +54,7 @@ In the overworld, there is a 17x17 grid of chunks called the *spawn chunks*, whi
 An unloaded chunk becomes loaded in the following situations:
 - If the game requests any kind of information from the chunk, or tries to make any kind of change in the chunk, then the chunk is loaded [immediately](../tick-phases.md#immediate-updates). This happens for example every time the game does a `setBlockSate` or `getBlockState` call at a position contained in the chunk.
 - If the chunk comes within view distance of a player, and the chunk is already generated on disk, then the chunk is loaded immediately.
-- If the chunk comes within wiew distance of a player, but the chunk is not yet generated, then the chunk is scheduled to be generated and loaded in some future [chunk map phase](../tick-phases.md#update-chunk-map).
+- If the chunk comes within view distance of a player, but the chunk is not yet generated, then the chunk is scheduled to be generated and loaded in some future [chunk map phase](../tick-phases.md#update-chunk-map).
 - The chunk is a spawn chunk, and the server is just starting.
 
 When a chunk is loaded it immediately checks whether a [terrain population](population.md) should occur, and immediately executes it if it should occur.
