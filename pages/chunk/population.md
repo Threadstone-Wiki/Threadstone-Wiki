@@ -130,7 +130,7 @@ The redstone power flag will turn back off again if a piece of redstone dust get
 A video explanation of pulling immovable blocks is in [Panda's Generating a Pig Spawner in 1.11](https://www.youtube.com/watch?v=cVvB53sWETg).
 
 If a population occurs while a piston is starting to move blocks, the piston can sometimes move the newly placed blocks even if they are immovable.
-If this is done to tile entity blocks like spawners or end gateways, the tile entity data gets deleted and one obtains pig spawners or dataless gateways.
+If this is done to tile entity blocks like spawners or end gateways, the tile entity data gets deleted and one obtains pig spawners or [dataless gateways](../gateway.md#dataless-gateways).
 
 When a piston processes a block event and wants to start moving blocks, it first creates a list toMove of all the block positions it wants to move and a list toDestroy of all the block positions it wants to destroy.
 Whenever it tries to enter a position into the toMove list it first checks whether the block at that position is movable before entering the position into the list.
