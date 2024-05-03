@@ -5,7 +5,11 @@ This page is about falling block entities.
 When a floating [gravity affected block](gravity-affected-block.md) does [normal falling behavior](gravity-affected-block.md#normal-falling-behavior), it creates a *falling block entity*,
 corresponding to the block at its own position.
 
-Usually it is only possible to get falling block entities of sand, red sand, gravel, anvils and dragon eggs. However one can obtain other falling block entities using [falling block swaps](falling-block-swaps.md).
+Usually it is only possible to get falling block entities of sand, red sand, gravel, anvils and dragon eggs. However one can obtain falling block entities of any block in the game by using [falling block swaps](falling-block-swaps.md).
+
+When a falling block entity lands on a slab, or becomes too old without having ground underneath it, it drops its block as an item, if such an item exists. This makes falling block entities the most important source of [unobtainable items](../unobtainables.md#items).
+
+Some unobtainable falling block entities are interesting even if their block does not have an item. An overview of such interesting unobtainable falling blocks is at [here](../unobtainables.md#falling-block-entities).
 
 # Age
 
@@ -27,6 +31,8 @@ If the block ids match, then the block gets deleted. If they do not match, the f
 
 
 # Preservation and Transportation
+
+To effectively use unobtainable falling blocks that drop no item, one needs to preserve and transport them.
 
 Falling Block Transportation methods for 1.12 are disccused in [Falling Block Episode 8, at 19:16](https://www.youtube.com/watch?v=-4UhrzA-F2g&t=1156s).
 
@@ -75,5 +81,6 @@ When a falling block goes through an end gateway, it will search for the highest
 
 The falling block can be kept alive by having a piston clock pushing slabs back and forth above the solid block above which the falling block arrives.
 The falling block will then arrive right on top of the block 36 of the slabs, so it will be on ground and inside block 36.
+
 
 
