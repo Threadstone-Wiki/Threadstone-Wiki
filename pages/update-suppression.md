@@ -37,6 +37,7 @@ This is a picture of an update suppressor.
 
 If [instant tile ticks](global-flags.md#instant-tile-ticks) are on, then any tile tick based clock is an update suppressor.
 
+If an update suppressor receives a block update during the player phase, it will immediately throw an exception that terminates the block update chain, but the game will continue running.
 
 # Basic Applications
 
