@@ -141,3 +141,5 @@ In singleplayer it does fully crash the game. But it will also save the new posi
 
 Using update suppression for times 8 teleportation is only necessary in 1.12.2.
 In 1.12.0 and 1.12.1 one can peform times 8 teleportation with the much simpler [PortalPearlWarp](https://www.youtube.com/watch?v=ITMnUkZz-8I) by RaysWorks, without requiring any update suppression.
+
+Multiply by 8 glitches are important for building [hyperlink networks](hyperlink.md).
