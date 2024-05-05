@@ -18,9 +18,9 @@
 In every dimension (i.e. in the overworld, nether and end) there are chunks.
 
 In every of these dimensions, a *chunk* is a region in 3d space. The space region is 16 units long along the x and z axis, and infinitely long along the y axis.
-The four edges of a chunk have integer x and z coordinates which are divisible by 16.
+The four corners of a chunk have integer x and z coordinates which are divisible by 16.
 
-The x and z coordinates of the edge with the least coordinates, are called the *block coordinates* of the chunk.
+The x and z coordinates of the corner with the least coordinates, are called the *block coordinates* of the chunk.
 The block coordinates divided by 16 are called the *chunk coordinates* of the chunk.
 
 In minecraft there is a class called `Chunk` in MCP and `WorldChunk` in Ornithe.
