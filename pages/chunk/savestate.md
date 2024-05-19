@@ -58,11 +58,11 @@ Open a writable book in minecraft.
 
 Hover with your mouse over the next page button.
 
-Then press Ctrl+Alt+F5 to create a type 1 savestate book.
+Then press Ctrl+Shift+Alt+F5 to create a type 1 savestate book.
 
 The script will paste in unicode symbols on the current page, then left-click with your mouse to go to the next page, and then repeat.
 
-If you do the same steps but press Ctrl+Alt+F9 instead, it will create type 2 savestate books.
+If you do the same steps but press Ctrl+Shift+Alt+F9 instead, it will create type 2 savestate books.
 
 The savestate books can then be copied using a crafting table.
 
