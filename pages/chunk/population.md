@@ -34,7 +34,7 @@ Terrain population places things like trees, dungeons, ores, small caves and lak
 Chunks which have been generated but not yet populated are called unpopulated chunks.
 
 When a chunk is populated, most of the blocks that get placed are placed in the 16x16 area that is 8 block offset in +x and +z direction from the chunk itself.
-This means the blocks mostly get placed in the 16x16 area which is at the center of the 2x2 grid of chunks that need to be loaded for the population to occur.
+This means the blocks mostly get placed in the 16x16 area which is at the center of the 2x2 grid of chunks that need to be loaded for the population to occur. This area is called the *population area* of the chunk.
 
 For example if we have 3 unpopulated chunks like on the left in the picture below, and we generate another chunk completing the 2x2 grid,
 then the chunk on the bottom left of the 2x2 grid will become populated, and new blocks will be placed in the center of the 2x2 grid.
@@ -45,7 +45,7 @@ This system allows the game to easily place trees and dungeons on chunk borders 
 
 # Manipulating Population
 
-The player can interact with chunks that have been generated but not yet populated, and this can change what blocks get placed during population.
+The player can interact with chunks that have been generated but not yet populated, or interact with the population area of unpopulated or ungenerated chunks. This can change what blocks get placed during population.
 The following methods allow changing unpopulated chunks.
 
 ## Flying machines
