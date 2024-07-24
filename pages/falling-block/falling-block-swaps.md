@@ -390,7 +390,7 @@ JKM shows in the unlisted video [Yay large fern](https://www.youtube.com/watch?v
 This makes it possible to obtain large fern items, which is the only block item that exists in 1.12 that cannot be obtained using the hashmap word tearing based generic method.
 Obtaining large fern items is often considered to not be worth the effort, because the method is difficult, and in 1.14+ versions large fern items generate naturally in village chests.
 
-The JKM true generic method works by doing an [unload chunk swap](../chunk/async-chunk-loading.md#unload-chunk-swap), except instead of doing it with the async `getBlockState` calls that every stained glass thread sends out,
+The JKM true generic method works by doing an [unload chunk swap](../chunk/chunk-hashmap.md#get-remove), except instead of doing it with the async `getBlockState` calls that every stained glass thread sends out,
 we create an async observer line in advance, let the observer line update a non-floating sand block, and use the async `getBlockState` calls in the code of the sand block for the chunk swap.
 The chunk in which we do this is unpopulated on disk, so if the unload chunk swap succeeds, it will trigger an async population, and this async population will trigger an async line that slows down the async thread for a very long time, while it is still in the middle of the falling block code.
 If the `getBlockState` call that triggered the unload chunk swap was the first `getBlockState` call in the `tryFall` method of the falling block code,
