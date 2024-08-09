@@ -15,8 +15,9 @@
   * [Applications](#applications)
   * [Cluster Finder Programs](#cluster-finder-programs)
     + [Earthcomputer](#earthcomputer)
-    + [Vastech](#vastech)
+    + [Vastech v0.1.2](#vastech)
     + [Cheater Codes](#cheater-codes)
+    + [Vastech v0.1.5.2 Tree Cluster](#vastech-tree)
 
 # Introduction
 
@@ -457,8 +458,8 @@ It then calculates an *unload chunk* which has the same hash value as the glass 
 If one loads the unload chunk and the cluster chunks, then the glass chunk will be clustered.
 Unloading the unload chunk will shift the glass chunk from the end of the cluster to the beginning of the cluster, and this can be used for an unload chunk swap.
 
-### Vastech
-The [vastech edition of carpet mod](https://github.com/Void-Skeleton/Carpet-Vastech-Addition).
+### Vastech v0.1.2 <a name="vastech"/>
+The v0.1.2 version of the [vastech edition of carpet mod](https://github.com/Void-Skeleton/Carpet-Vastech-Addition).
 contains a cluster finder for improving [falling block swap success rates](../falling-block/falling-block-swaps.md#optimizing-chances-with-cluster-chunks).
 
 To use it you need to set a few values first:
@@ -504,4 +505,30 @@ The white chunks are cluster chunks. The grey chunks are non-cluster chunks that
 ![Cheater Cluster](../../images/CheaterCodesCluster.png)
 
 
+### Vastech v01.5.2 Tree Cluster <a name="vastech-tree"/>
+
+The more recent v0.1.5.2 version of [vastech edition of carpet mod](https://github.com/Void-Skeleton/Carpet-Vastech-Addition) has updated the cluster finder, so that it also uses a [rectilinear minimum spanning tree](https://en.wikipedia.org/wiki/Rectilinear_minimum_spanning_tree).
+
+Here are usage instructions for the new vastech cluster finder from version v0.1.5.2:
+
+    /cluster read : reads the NBT into the internal state of the cluster calculator
+    
+    /cluster peek: peek the internal state of the cluster calculator
+    
+    /cluster compute: start the computation for the optimal cluster based on the given parameters. The computation is done asynchronously, so you must wait patiently to avoid undefined behavior. The optimal cluster is a cluster that has at least the specified clustering whose loading grid (connected component of chunks that contains all the cluster chunks) computed by a greedy algorithm analogous to that in Prim's algorithm has the smallest amount of chunks.
+    
+    /cluster loadCluster: load all the cluster chunks
+    
+    /cluster loadGrid: load all the chunks in the loading grid
+    
+    /cluster constructLoader [block] [meta] [y]: When [block] and [meta] are not both present, checks whether the loading grid is connected or not. This is used for debugging. When [block] and [meta] are specified, create a loading grid for this cluster at height [y] (defaults to 64 if unspecified) that consists of the block specified (in /setblock syntax) as building block, and also chests and hoppers. You can then take a schematic of this loading grid.
+    
+    For example, some parameters you may input into this new cluster calculator are:
+    
+    /cluster read {hashSize:8192,startX:0,startZ:0,endX:10,endZ:10,clusterCornerX:-300,clusterCornerZ:-300,desiredClustering:20000,clusterWidth:100,maxClusterHeight:200,widthDir:east,heightDir:north}
+
+These parameters searches the optimal cluster from [-300, -300] to [-200, -100] that gives at least 20000 clustering with hash size 8192 when performing falling block swaps in one of the chunks between [0, 0] (inclusive) and [10, 10] (exclusive)
+After that you can do /cluster compute and wait for ~20mins to get the result. Typically this grid will contain some 3600-4000 chunks, well below uphashing
+Next, you can run /cluster loadCluster and /cluster loadGrid to see the cluster/loading grid on the chunk debug map
+Then you can run, say, /cluster constructLoader iron_block 0 128, to generate a loader for the grid that consists of iron blocks as bridging blocks, chests and hoppers at y=128
 
