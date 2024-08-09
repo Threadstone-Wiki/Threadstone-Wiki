@@ -18,6 +18,7 @@
     + [Vastech v0.1.2](#vastech)
     + [Cheater Codes](#cheater-codes)
     + [Vastech v0.1.5.2 Tree Cluster](#vastech-tree)
+    + [rpm fireless cluster](#rpm-fireless-cluster)
 
 # Introduction
 
@@ -531,4 +532,8 @@ These parameters searches the optimal cluster from [-300, -300] to [-200, -100] 
 After that you can do /cluster compute and wait for ~20mins to get the result. Typically this grid will contain some 3600-4000 chunks, well below uphashing
 Next, you can run /cluster loadCluster and /cluster loadGrid to see the cluster/loading grid on the chunk debug map
 Then you can run, say, /cluster constructLoader iron_block 0 128, to generate a loader for the grid that consists of iron blocks as bridging blocks, chests and hoppers at y=128
+
+### rpm fireless cluster
+There is an unpublished cluster chunk finder by [rpm](https://www.youtube.com/@rpm0618) that only includes chunks in the cluster that have no fire in them.
+This helps avoid [the tile tick out of synch crash](../async-line.md#ticknexttick-list-ouf-of-synch-crash) when doing falling block in the nether in full vanilla.
 
