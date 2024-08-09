@@ -174,7 +174,7 @@ So even though there is still no known way to place beacons in unpopulated chunk
 The idea is that you savestate the glass chunk as unpopulated, then build the beacon tower, then perform the chunk swap.
 And if the chunk swap is successful, then the 4500 beacons are gone, but you've got an async observer line, and that is worth it.
 
-On 25.11.2022 also Myren Eario joins the project.
+On 25.11.2021 also Myren Eario joins the project.
 
 On 5th December the unload chunk swap setup by Xcom and punchster reaches a promising state, and an [unlisted video](https://www.youtube.com/watch?v=xYkuRN2_JOI) is published to the memes channel of the scicraft discord.
 
@@ -241,7 +241,7 @@ ElRichMC gets [falling bedrock](https://www.youtube.com/watch?v=VkrYzPefX3I).
 
 ElRichMC and Radixan create a very nice [automatic generic method](https://www.youtube.com/watch?v=U1yXvJBxhdM).
 
-Angarn and Floppy get unobtainable items on Dugged without using and savestates. The only public video about it is a [shitpost](https://www.youtube.com/watch?v=boZGqhwcnIk),
+Angarn and Floppy get unobtainable items on Dugged without using savestates. The only public video about it is a [shitpost](https://www.youtube.com/watch?v=boZGqhwcnIk),
 but there is a serious [unlisted video](https://www.youtube.com/watch?v=IF4zQxRicG4).
 
 A few months later, rpm creates a [falling nether portal in 1.8](https://www.youtube.com/watch?v=lDAyFK5WpYY).
