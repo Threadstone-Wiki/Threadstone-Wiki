@@ -97,7 +97,7 @@ While a permaloader is active, chunk unloading can be prevented in any other chu
 
 ## Mini Permaloader
 
-Mini Permaloaders are shown in Xcom's video [Mini Permaloader](https://www.youtube.com/watch?v=JAc0DAZRSGI).
+Mini Permaloaders are shown in Xcom's video [Mini Permaloader](https://www.youtube.com/watch?v=cdekBxhfvys).
 
 One can prevent the unloading of a single chunk without requiring a full gnembon permaloader, by using stained glass and beacons to cancel the unloading of the chunk in the [player phase](../tick-phases.md#player-inputs).
 
