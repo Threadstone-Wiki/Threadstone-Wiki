@@ -140,7 +140,7 @@ The `MinecraftServer` class has another `synchronized (this.pendingEvents)` bloc
 		}
 	}
 ```
-This is the [player phase of the main thread](tick-phases.md#player-phases).
+This is the [player phase of the main thread](../tick-phases.md#player-inputs).
 
 This leads to another way of slowing down stained glass threads:
 
