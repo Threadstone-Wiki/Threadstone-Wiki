@@ -341,7 +341,7 @@ The main difficulty with performing an async regular load is that the `getBlockS
 So to perform an async regular load, one needs to first schedule the chunk in which the async thread is running to be unloaded, and this scheduling happens in the player phase or even earlier. And then the main thread needs to get through the whole player phase, and the whole mob spawning phase and into the unload phase, all while the async thread does not do a single `getBlockState` call.
 If the async thread does do a single `getBlockState` call in this time, then the scheduled chunk unloading will be cancelled, and the chunk will not get unloaded in the unload phase.
 
-Void's synchronized setup use ITT instantfalling dragon eggs to break over 1000 stained glass blocks and start over 1000 staned glass threads.
+Void's synchronized setup use ITT instantfalling dragon eggs to break over 1000 stained glass blocks and start over 1000 stained glass threads.
 This is all done in the [player phase](tick-phases.md#player-phase), and all the stained glass blocks have beacons underneath them.
 As explained in the section on [slowing down stained glass threads](#slowing-down-stained-glass-threads), all the stained glass threads will wait at the beacons, until the main thread has finished the player phase.
 So at the end of the player phase, all the 1000 stained glass threads will still be alive, even though the player phase with all its instantfalling dragon eggs took a really long time.
