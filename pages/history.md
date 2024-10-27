@@ -246,4 +246,4 @@ but there is a serious [unlisted video](https://www.youtube.com/watch?v=IF4zQxRi
 
 A few months later, rpm creates a [falling nether portal in 1.8](https://www.youtube.com/watch?v=lDAyFK5WpYY).
 
-Much later, Void discovers the synchronized method for async chunk reload.
+Much later, Void discovers the [synchronized method for async chunk reload](chunk/async-chunk-loading.md#void-synchronized-method-for-regular-async-load).
