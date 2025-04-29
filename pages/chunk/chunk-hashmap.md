@@ -333,6 +333,7 @@ So one can improve the success rates by inserting as many [cluster chunks](#clus
 If one thread calls the `rehash` method while another thread calls the `get` method, then it can happen that the `get` method fails to find a chunk, even when the chunk is in the chunk hashmap.
 This results in a [rehash chunk swap](async-chunk-loading.md#rehash-chunk-swap).
 
+We will first discuss rehash chunk swaps, when the chunk in question is not clustered.
 
 In the `rehash` code we have the line
 ```
@@ -377,27 +378,17 @@ For the new value of `(int)HashCommon.mix(k) & this.mask` there are 3 possible o
 
 So the `(int)HashCommon.mix(k) & this.mask` line can only be used for rehash chunk swaps in chunks whose hash value after the upsize is exactly `100...000`, where the number of `0`s is equal to the number of bits of the chunk hashmap before the upsize.
 
-Let us next look at how `pos + 1 & this.mask` can be changed.
+That's how rehash chunk swaps without clustering work.
 
-The `get` method only reaches the `pos + 1 & this.mask` line, if we have [cluster chunks](#cluster-chunks) slowing down the `get` access.
-
-Also, changing the mask will only change the value of `pos + 1 & this.mask` if we have just reached the very end of the chunk hashmap while iterating through the cluster chunks.
-In that case we will again get the unused `0L` key that is always at the end of the `key` array, and get a successful rehash chunk swap.
-
-So to get a rehash chunk swap with the `pos + 1 & this.mask` line, the `get` method needs to start iterating through cluster chunks, then the `rehash` method needs to change the mask, and then the `get` method needs to reach the very end of the chunk hashmap before it finds its chunk.
-This is only possible if the chunk the `get` method is looking for had a hash value near the end of the chunk hashmap, and the cluster chunks forced the chunk to take an index near the beginning of the chunk hashmap.
-
-So for example if one has a hashsize of 8192, and has 1000 cluster chunks occupying all of the last 1000 indices of the chunk hashmap, and then loads a chunk with hash value 7200, then this chunk will be placed at the beginning of the chunk hashmap,
-and one can do a rehash chunk swap in that chunk. If one uses only 500 cluster chunks, then it is impossible to do a rehash chunk swap with a chunk with hash value 7200.
-
-Also note, that the more cluster chunks there are, the more likely it is that `this.mask` is changed at some point in time while the `get` method iterates through the cluster chunks.
+With cluster chunks one can do rehash chunk swaps almost anywhere, as long as some chunks in the cluster change their hash value after the upsize.
+If we iterate through a cluster trying to find a chunk, and then upsize, and there are then gaps in the cluster, then the chunk will never be found.
 
 So with rehash chunk swaps, cluster chunks improve both the chances of the rehash chunk swap occuring, and they increase the number of positions at which it is possible for a rehash chunk swap to occur.
 
 **Conclusion**:
 - Without cluster chunks, rehash chunk swaps can only be done with chunks whose hash value after the upsize is exactly 2^n, where n is the number of bits before the upsize. So only very few specific chunks can be used.
-- With cluster chunks, one can use any chunk with a hash value near the end of the chunk hashmap, that has been moved by the cluster chunks to the beginning of the chunk hashmap.
-- Attempting to do a rehash chunk swap in a chunk whose hash value is greater than 2^n after the upsize can result in an `ArrayIndexOutOfBounds` exception, even if one uses cluster chunks. This can [kill async lines](../async-line.md#async-thread-crashing) whenever one upsizes the chunk hashmap.
+- Attempting to do a clusterless rehash chunk swap in a chunk whose hash value is greater than 2^n after the upsize can result in an `ArrayIndexOutOfBounds` exception. This can [kill async lines](../async-line.md#async-thread-crashing) whenever one upsizes the chunk hashmap.
+- With cluster chunks, one can use almost any chunk, and just needs to make sure that some chunk near the end of the cluster changes its hash value after the upsize.
 
 
 
