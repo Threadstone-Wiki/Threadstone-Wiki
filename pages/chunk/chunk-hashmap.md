@@ -398,6 +398,8 @@ If the async thread upsizes the chunk hashmap while the main thread unloads a ch
 This creates a *wormhole* chunk. In the game this chunk is at two different positions at once, corresponding to the two different keys at the two different indices of the chunk.
 Placing or breaking a block at one of the positions of the chunk also places or breaks the block at the other position of that chunk.
 
+For more info (but honestly not much more info) you can read this document by punchster2: https://docs.google.com/document/d/1G5FeoM2ncdE53CUg-K_TlMaIfAy1kco4PXfQDeSwEGs/edit?tab=t.0
+
 
 
 # Cluster Chunks
