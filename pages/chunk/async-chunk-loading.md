@@ -185,9 +185,9 @@ A [cluster chunk finder](chunk-hashmap.md#cluster-finder-programs) intended for 
 A world download by cool mann for rehash chunk swaps with cluster chunks is [here](https://www.mediafire.com/file/2l7gfzedckdd398/hekate_setup_42.rar/file), but instructions for how to use that world download are nowhere.
 
 
-As explained in [the chunk hashmap article on rehash chunk swaps](chunk-hashmap.md#get-rehash) upsize rehash chunk swaps only work in specific locations:
-- If one uses no cluster chunks, then rehash chunk swaps work in chunks whose hash value is exactly 2^n after upsizing, where n is the number of bits of the chunk hashmap before upsizing.
-- If one uses [cluster chunks](chunk-hashmap.md#cluster-chunks), then the rehash can be done in any chunk whose hash value is near the end of the chunk hashmap, but whose index has been forced to the beginning of the chunk hashmap by the cluster.
+As explained in [the chunk hashmap article on rehash chunk swaps](chunk-hashmap.md#get-rehash) clusterless upsize rehash chunk swaps only work in specific locations:
+If one uses no cluster chunks, then rehash chunk swaps work in chunks whose hash value is exactly 2^n after upsizing, where n is the number of bits of the chunk hashmap before upsizing.
+If one uses [cluster chunks](chunk-hashmap.md#cluster-chunks), then the rehash can be done in any location.
 
 We will now assume that the glass chunk we want to asyncly load is in such a suitable location.
 
