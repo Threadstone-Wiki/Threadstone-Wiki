@@ -109,7 +109,7 @@ Later a Backdoor discord is made, containing many more people.
 
 On 7th August, cool mann released his video [How to Get All* Unobtainable Blocks as Items in Minecraft Survival [1.12] pt. 1](https://www.youtube.com/watch?v=VTbpUjK-A74).
 
-One day later, cool mann manages to get an end portal frame item from his non-surviva-friendly setup without mods to critical parts of the code.
+One day later, cool mann manages to get an end portal frame item from his non-survival-friendly setup without mods to critical parts of the code.
 
 ![Cool mann epf](../images/CoolMannEPF.PNG)
 
