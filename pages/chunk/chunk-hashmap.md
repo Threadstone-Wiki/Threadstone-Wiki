@@ -380,15 +380,17 @@ So the `(int)HashCommon.mix(k) & this.mask` line can only be used for rehash chu
 
 That's how rehash chunk swaps without clustering work.
 
-With cluster chunks one can do rehash chunk swaps almost anywhere, as long as some chunks in the cluster change their hash value after the upsize.
-If we iterate through a cluster trying to find a chunk, and then upsize, and there are then gaps in the cluster, then the chunk will never be found.
+Cluster chunk increase the succees chances of rehash chunk swaps and they increase the amount positions where rehash chunk swaps can be performed.
 
-So with rehash chunk swaps, cluster chunks improve both the chances of the rehash chunk swap occuring, and they increase the number of positions at which it is possible for a rehash chunk swap to occur.
+For rehash chunk swaps with cluster chunks, one should use a glass chunk whose hash value is near the end of the hashmap before the upsize, and then use cluster chunks that wrap around the hashmap so that the glass chunk gets placed near the beginning of the hashmap. If a thread does a `get` call and iterates through the cluster trying to find the glass chunk, and the chunk hashmap is upsized, then the mask changes and the `get` call will not be able to wrap around the end of the hashmap but just stop once it reaches the end of the hashmap and it will not find the chunk.
+
+Theoretically it would seem that one can also do rehash chunk swaps with clusters in almost any chunk, just because the `value` array gets swapped out, and if at the old position of the glass chunk there is `null` in the new `value` array, then one would get a rehash chunk swap that way. In practice this for some reason doesn't happen, because the `value` array isn`t `volatile` and the thread doing the `get` call still manages to have some cache reference to the old `value` array even after it has been switched out. More research would be needed to properly understand this phenomenon. Until it's better understood, we recommended to only do clustered rehash chunk swaps in those cases where the cluster wraps around the end of the array, so that it relies on the `mask` update instead of the `value` array update.
 
 **Conclusion**:
 - Without cluster chunks, rehash chunk swaps can only be done with chunks whose hash value after the upsize is exactly 2^n, where n is the number of bits before the upsize. So only very few specific chunks can be used.
 - Attempting to do a clusterless rehash chunk swap in a chunk whose hash value is greater than 2^n after the upsize can result in an `ArrayIndexOutOfBounds` exception. This can [kill async lines](../async-line.md#async-thread-crashing) whenever one upsizes the chunk hashmap.
-- With cluster chunks, one can use almost any chunk, and just needs to make sure that some chunk near the end of the cluster changes its hash value after the upsize.
+- With cluster chunks, one can any chunk whose hash value is near the end of the chunk hashmap, and one needs to wrap around the cluster around the end of the chunk hashmap.
+- Cluster chunk increase the succees chances of rehash chunk swaps and they increase the amount positions where rehash chunk swaps can be performed.
 
 
 
